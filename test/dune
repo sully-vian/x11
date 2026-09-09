@@ -1,19 +1,32 @@
+; Main test library
+
 (library
  (name test_x11)
+ (modules test_x11)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test))
+ (libraries x11 test_xevent))
+
+; XEvent conversion tests
+
+(library
+ (name test_xevent)
+ (modules test_xevent)
  (inline_tests)
  (preprocess
   (pps ppx_inline_test))
  (foreign_stubs
   (language c)
-  (names test_x11_stubs))
+  (names test_xevent_stubs))
  (libraries x11))
 
 (rule
  (with-stdout-to
-  test_x11_stubs.c.formatted
-  (run clang-format %{dep:test_x11_stubs.c})))
+  test_xevent_stubs.c.formatted
+  (run clang-format %{dep:test_xevent_stubs.c})))
 
 (rule
  (alias fmt)
  (action
-  (diff test_x11_stubs.c test_x11_stubs.c.formatted)))
+  (diff test_xevent_stubs.c test_xevent_stubs.c.formatted)))
