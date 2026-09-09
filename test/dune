@@ -1,0 +1,19 @@
+(library
+ (name test_x11)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test))
+ (foreign_stubs
+  (language c)
+  (names test_x11_stubs))
+ (libraries x11))
+
+(rule
+ (with-stdout-to
+  test_x11_stubs.c.formatted
+  (run clang-format %{dep:test_x11_stubs.c})))
+
+(rule
+ (alias fmt)
+ (action
+  (diff test_x11_stubs.c test_x11_stubs.c.formatted)))

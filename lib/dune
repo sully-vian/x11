@@ -1,0 +1,16 @@
+(library
+ (public_name x11)
+ (name x11)
+ (foreign_stubs
+  (language c)
+  (names x11_stubs)))
+
+(rule
+ (with-stdout-to
+  x11_stubs.c.formatted
+  (run clang-format %{dep:x11_stubs.c})))
+
+(rule
+ (alias fmt)
+ (action
+  (diff x11_stubs.c x11_stubs.c.formatted)))
