@@ -1,2 +1,3 @@
 # x11
-An OCaml binding to the X11 graphics library.
+
+X11 bindings for OCaml

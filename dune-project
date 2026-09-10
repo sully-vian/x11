@@ -5,19 +5,17 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github sully-vian/x11))
 
-(authors "Author Name <author@example.com>")
+(authors "Vianney HERVY <vian.hervy@gmail.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
-
-(license LICENSE)
+(license MIT)
 
 (documentation https://url/to/documentation)
 
 (package
  (name x11)
- (synopsis "A short synopsis")
+ (synopsis "X11 bindings for OCaml")
  (description "A longer description")
  (depends ocaml (ppx_inline_test :with-test))
  (tags
