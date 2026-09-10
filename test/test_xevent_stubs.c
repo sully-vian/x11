@@ -2,8 +2,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-/* Bypassing linker drop for testing */
-#include "../lib/x11_stubs.c"
+CAMLextern value x11_event_to_ocaml(XEvent *event);
 
 CAMLprim value test_gen_key_event(value unit) {
   CAMLparam1(unit);

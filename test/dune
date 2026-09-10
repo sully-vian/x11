@@ -16,9 +16,9 @@
  (libraries x11 alcotest))
 
 (test
-  (name run_tests)
-  (modules run_tests)
-  (libraries test_x11 test_xevent alcotest))
+ (name run_tests)
+ (modules run_tests)
+ (libraries test_x11 test_xevent alcotest))
 
 (rule
  (with-stdout-to
