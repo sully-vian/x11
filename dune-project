@@ -17,7 +17,7 @@
  (name x11)
  (synopsis "X11 bindings for OCaml")
  (description "A longer description")
- (depends ocaml (ppx_inline_test :with-test))
+ (depends ocaml (alcotest :with-test))
  (tags
   ("add topics" "to describe" your project)))
 

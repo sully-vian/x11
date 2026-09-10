@@ -3,23 +3,22 @@
 (library
  (name test_x11)
  (modules test_x11)
- (inline_tests)
- (preprocess
-  (pps ppx_inline_test))
- (libraries x11 test_xevent))
+ (libraries x11 test_xevent alcotest))
 
 ; XEvent conversion tests
 
 (library
  (name test_xevent)
  (modules test_xevent)
- (inline_tests)
- (preprocess
-  (pps ppx_inline_test))
  (foreign_stubs
   (language c)
   (names test_xevent_stubs))
- (libraries x11))
+ (libraries x11 alcotest))
+
+(test
+  (name run_tests)
+  (modules run_tests)
+  (libraries test_x11 test_xevent alcotest))
 
 (rule
  (with-stdout-to

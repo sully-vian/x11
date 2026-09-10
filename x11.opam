@@ -11,7 +11,7 @@ bug-reports: "https://github.com/sully-vian/x11/issues"
 depends: [
   "dune" {>= "3.24"}
   "ocaml"
-  "ppx_inline_test" {with-test}
+  "alcotest" {with-test}
   "odoc" {with-doc}
 ]
 build: [
