@@ -2,6 +2,8 @@
 
 (test
  (name test_x11)
+ (action
+  (run %{test} --show-errors))
  (modules test_x11)
  (libraries alcotest test_xevent test_example))
 

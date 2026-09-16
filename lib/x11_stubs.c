@@ -97,6 +97,85 @@ CAMLprim value x11_event_to_ocaml(XEvent *event) {
     Store_field(v_event, 0, v_record);
     break;
 
+  case DestroyNotify:
+    v_record = caml_alloc(5, 0);
+    Store_field(v_record, 0, Val_int(event->xdestroywindow.serial));
+    Store_field(v_record, 1, Val_bool(event->xdestroywindow.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xdestroywindow.display));
+    Store_field(v_record, 3, WRAP_XID(event->xdestroywindow.event));
+    Store_field(v_record, 4, WRAP_XID(event->xdestroywindow.window));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case UnmapNotify:
+    v_record = caml_alloc(6, 0);
+    Store_field(v_record, 0, Val_int(event->xunmap.serial));
+    Store_field(v_record, 1, Val_bool(event->xunmap.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xunmap.display));
+    Store_field(v_record, 3, WRAP_XID(event->xunmap.event));
+    Store_field(v_record, 4, WRAP_XID(event->xunmap.window));
+    Store_field(v_record, 5, Val_bool(event->xunmap.from_configure));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case MapNotify:
+    v_record = caml_alloc(6, 0);
+    Store_field(v_record, 0, Val_int(event->xmap.serial));
+    Store_field(v_record, 1, Val_bool(event->xmap.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xmap.display));
+    Store_field(v_record, 3, WRAP_XID(event->xmap.event));
+    Store_field(v_record, 4, WRAP_XID(event->xmap.window));
+    Store_field(v_record, 5, Val_bool(event->xmap.override_redirect));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case MapRequest:
+    v_record = caml_alloc(5, 0);
+    Store_field(v_record, 0, Val_int(event->xmaprequest.serial));
+    Store_field(v_record, 1, Val_bool(event->xmaprequest.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xmaprequest.display));
+    Store_field(v_record, 3, WRAP_XID(event->xmaprequest.parent));
+    Store_field(v_record, 4, WRAP_XID(event->xmaprequest.window));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case ConfigureRequest:
+    v_record = caml_alloc(12, 0);
+    Store_field(v_record, 0, Val_int(event->xconfigurerequest.serial));
+    Store_field(v_record, 1, Val_bool(event->xconfigurerequest.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xconfigurerequest.display));
+    Store_field(v_record, 3, WRAP_XID(event->xconfigurerequest.parent));
+    Store_field(v_record, 4, WRAP_XID(event->xconfigurerequest.window));
+    Store_field(v_record, 5, Val_int(event->xconfigurerequest.x));
+    Store_field(v_record, 6, Val_int(event->xconfigurerequest.y));
+    Store_field(v_record, 7, Val_int(event->xconfigurerequest.width));
+    Store_field(v_record, 8, Val_int(event->xconfigurerequest.height));
+    Store_field(v_record, 9, Val_int(event->xconfigurerequest.border_width));
+    Store_field(v_record, 10, WRAP_XID(event->xconfigurerequest.above));
+    Store_field(v_record, 11, Val_int(event->xconfigurerequest.detail));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case ReparentNotify:
+    v_record = caml_alloc(9, 0); // 9 fields
+    Store_field(v_record, 0, Val_int(event->xreparent.serial));
+    Store_field(v_record, 1, Val_bool(event->xreparent.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xreparent.display));
+    Store_field(v_record, 3, WRAP_XID(event->xreparent.event));
+    Store_field(v_record, 4, WRAP_XID(event->xreparent.window));
+    Store_field(v_record, 5, WRAP_XID(event->xreparent.parent));
+    Store_field(v_record, 6, Val_int(event->xreparent.x));
+    Store_field(v_record, 7, Val_int(event->xreparent.y));
+    Store_field(v_record, 8, Val_bool(event->xreparent.override_redirect));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
   case ConfigureNotify:
     v_record = caml_alloc(12, 0); // 12 fields
     Store_field(v_record, 0, Val_int(event->xconfigure.serial));
@@ -111,6 +190,75 @@ CAMLprim value x11_event_to_ocaml(XEvent *event) {
     Store_field(v_record, 9, Val_int(event->xconfigure.border_width));
     Store_field(v_record, 10, WRAP_XID(event->xconfigure.above));
     Store_field(v_record, 11, Val_bool(event->xconfigure.override_redirect));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case PropertyNotify:
+    v_record = caml_alloc(7, 0); // 7 fields
+    Store_field(v_record, 0, Val_int(event->xproperty.serial));
+    Store_field(v_record, 1, Val_bool(event->xproperty.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xproperty.display));
+    Store_field(v_record, 3, WRAP_XID(event->xproperty.window));
+    Store_field(v_record, 4, WRAP_XID(event->xproperty.atom));
+    Store_field(v_record, 5, WRAP_XID(event->xproperty.time));
+    Store_field(v_record, 6, Val_int(event->xproperty.state));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case ClientMessage:
+    CAMLlocal2(v_data, v_array);
+    switch (event->xclient.format) {
+    case 8:
+      v_array = caml_alloc(20, 0); // tag 0 for standard OCaml array
+      for (int i = 0; i < 20; i++) {
+        Store_field(v_array, i, Val_int(event->xclient.data.b[i]));
+      }
+      v_data = caml_alloc(1, 0); // tag 0 for Bytes
+      Store_field(v_data, 0, v_array);
+      break;
+    case 16:
+      v_array = caml_alloc(10, 0); // tag 0 for standard OCaml array
+      for (int i = 0; i < 10; i++) {
+        Store_field(v_array, i, Val_int(event->xclient.data.s[i]));
+      }
+      v_data = caml_alloc(1, 1); // tag 1 for Shorts
+      Store_field(v_data, 0, v_array);
+      break;
+    case 32:
+      v_array = caml_alloc(5, 0); // tag 0 for standard OCaml array
+      for (int i = 0; i < 5; i++) {
+        Store_field(v_array, i, Val_int(event->xclient.data.l[i]));
+      }
+      v_data = caml_alloc(1, 2); // tag 2 for Longs
+      Store_field(v_data, 0, v_array);
+      break;
+
+    default:
+      caml_failwith_fmt("Invalid ClientMessage format: %d",
+                        event->xclient.format);
+    }
+
+    v_record = caml_alloc(6, 0); // 7 fields
+    Store_field(v_record, 0, Val_int(event->xclient.serial));
+    Store_field(v_record, 1, Val_bool(event->xclient.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xclient.display));
+    Store_field(v_record, 3, WRAP_XID(event->xclient.window));
+    Store_field(v_record, 4, WRAP_XID(event->xclient.message_type));
+    Store_field(v_record, 5, v_data);
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
+
+  case FocusIn:
+    v_record = caml_alloc(6, 0); // 6 fields
+    Store_field(v_record, 0, Val_int(event->xfocus.serial));
+    Store_field(v_record, 1, Val_bool(event->xfocus.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xfocus.display));
+    Store_field(v_record, 3, WRAP_XID(event->xfocus.window));
+    Store_field(v_record, 4, Val_int(event->xfocus.mode));
+    Store_field(v_record, 5, Val_int(event->xfocus.detail));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
     break;

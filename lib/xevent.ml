@@ -10,6 +10,11 @@ type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
 type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 
+type message_data =
+  | Bytes of char array
+  | Shorts of int array
+  | Longs of int array
+
 type notifyMode =
   | NotifyNormal
   | NotifyGrab
@@ -347,8 +352,7 @@ type xClientMessageEvent = {
   display : display;
   window : window;
   message_type : atom;
-  format : int;
-  data : string;
+  data : message_data;
 }
 
 type xMappingEvent = {
@@ -418,10 +422,10 @@ type xEvent =
   | XMap of xMapEvent (* 19 *)
   | XMapRequest of xMapRequestEvent (* 20 *)
   | XReparent of xReparentEvent (* 21 *)
-  | XConfigure of xConfigureEvent (* 22 *)
-  | XGravityNotify of xGravityEvent (* 23 *)
-  | XResizeRequest of xResizeRequestEvent (* 24 *)
-  | XConfigureRequest of xConfigureRequestEvent (* 25 *)
+  | XConfigureNotify of xConfigureEvent (* 22 *)
+  | XConfigureRequest of xConfigureRequestEvent (* 23 *)
+  | XGravityNotify of xGravityEvent (* 24 *)
+  | XResizeRequest of xResizeRequestEvent (* 25 *)
   | XCirculate of xCirculateEvent (* 26 *)
   | XCirculateRequest of xCirculateRequestEvent (* 27 *)
   | XProperty of xPropertyEvent (* 28 *)
