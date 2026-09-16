@@ -1,97 +1,114 @@
 #include <X11/Xlib.h>
+#include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-CAMLextern value x11_event_to_ocaml(XEvent *event);
+/* Declared in x11_stubs.c */
+extern value x11_event_to_ocaml(XEvent *event);
 
-CAMLprim value test_gen_key_event(value unit) {
+CAMLprim value get_key_press_event(value unit) {
   CAMLparam1(unit);
-  XEvent ev = {.xkey = {.type = KeyPress,
-                        .serial = 100,
-                        .send_event = 1,
-                        .display = (Display *)0x1234,
-                        .window = 10,
-                        .root = 20,
-                        .subwindow = 30,
-                        .time = 1000,
-                        .x = 50,
-                        .y = 60,
-                        .x_root = 70,
-                        .y_root = 80,
-                        .state = 5,
-                        .keycode = 13,
-                        .same_screen = 1}};
-  CAMLreturn(x11_event_to_ocaml(&ev));
+  XEvent event = {.xkey = {
+                      .type = KeyPress,
+                      .serial = 42,
+                      .send_event = False,
+                      .display = (Display *)0x1234,
+                      .window = 123,
+                      .root = 456,
+                      .subwindow = 789,
+                      .time = 1000,
+                      .x = 10,
+                      .y = 20,
+                      .x_root = 100,
+                      .y_root = 200,
+                      .state = 0,
+                      .keycode = 65,
+                      .same_screen = True,
+                  }};
+  CAMLreturn(x11_event_to_ocaml(&event));
 }
 
-CAMLprim value test_gen_button_event(value unit) {
+CAMLprim value get_key_release_event(value unit) {
   CAMLparam1(unit);
-  XEvent ev = {.xbutton = {.type = ButtonPress,
-                           .serial = 101,
-                           .send_event = 0,
-                           .display = (Display *)0x5678,
-                           .window = 11,
-                           .root = 21,
-                           .subwindow = 31,
-                           .time = 2000,
-                           .x = 51,
-                           .y = 61,
-                           .x_root = 71,
-                           .y_root = 81,
-                           .state = 6,
-                           .button = 1,
-                           .same_screen = 1}};
-  CAMLreturn(x11_event_to_ocaml(&ev));
+  XEvent event = {.xkey = {
+                      .type = KeyRelease,
+                      .serial = 42,
+                      .send_event = False,
+                      .display = (Display *)0x1234,
+                      .window = 123,
+                      .root = 456,
+                      .subwindow = 789,
+                      .time = 1000,
+                      .x = 10,
+                      .y = 20,
+                      .x_root = 100,
+                      .y_root = 200,
+                      .state = 0,
+                      .keycode = 65,
+                      .same_screen = True,
+                  }};
+  CAMLreturn(x11_event_to_ocaml(&event));
 }
 
-CAMLprim value test_gen_motion_event(value unit) {
+CAMLprim value get_button_press_event(value unit) {
   CAMLparam1(unit);
-  XEvent ev = {.xmotion = {.type = MotionNotify,
-                           .serial = 102,
-                           .send_event = 1,
-                           .display = (Display *)0x9ABC,
-                           .window = 12,
-                           .root = 22,
-                           .subwindow = 32,
-                           .time = 3000,
-                           .x = 52,
-                           .y = 62,
-                           .x_root = 72,
-                           .y_root = 82,
-                           .state = 7,
-                           .same_screen = 0}};
-  CAMLreturn(x11_event_to_ocaml(&ev));
+  XEvent event = {.xbutton = {
+                      .type = ButtonPress,
+                      .serial = 100,
+                      .send_event = True,
+                      .display = (Display *)0x5678,
+                      .window = 111,
+                      .root = 222,
+                      .subwindow = 333,
+                      .time = 2000,
+                      .x = 50,
+                      .y = 75,
+                      .x_root = 150,
+                      .y_root = 250,
+                      .state = 1,
+                      .button = 1,
+                      .same_screen = True,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
 }
 
-CAMLprim value test_gen_expose_event(value unit) {
+CAMLprim value get_motion_notify_event(value unit) {
   CAMLparam1(unit);
-  XEvent ev = {.xexpose = {.type = Expose,
-                           .serial = 103,
-                           .send_event = 0,
-                           .display = (Display *)0xDEF0,
-                           .window = 13,
-                           .x = 100,
-                           .y = 200,
-                           .width = 800,
-                           .height = 600,
-                           .count = 2}};
-  CAMLreturn(x11_event_to_ocaml(&ev));
+  XEvent event = {.xmotion = {
+                      .type = MotionNotify,
+                      .serial = 200,
+                      .send_event = False,
+                      .display = (Display *)0x9abc,
+                      .window = 211,
+                      .root = 212,
+                      .subwindow = 213,
+                      .time = 3000,
+                      .x = 30,
+                      .y = 40,
+                      .x_root = 130,
+                      .y_root = 240,
+                      .state = 2,
+                      .same_screen = True,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
 }
 
-CAMLprim value test_gen_configure_event(value unit) {
+CAMLprim value get_expose_event(value unit) {
   CAMLparam1(unit);
-  XEvent ev = {.xconfigure = {.type = ConfigureNotify,
-                              .serial = 104,
-                              .send_event = 1,
-                              .display = (Display *)0x1111,
-                              .event = 40,
-                              .window = 14,
-                              .x = 300,
-                              .y = 400,
-                              .width = 1024,
-                              .height = 768,
-                              .border_width = 2,
-                              .above = 50,
-                              .override_redirect = 0}};
-  CAMLreturn(x11_event_to_ocaml(&ev));
+  XEvent event = {.xexpose = {
+                      .type = Expose,
+                      .serial = 300,
+                      .send_event = True,
+                      .display = (Display *)0xdef0,
+                      .window = 311,
+                      .x = 5,
+                      .y = 15,
+                      .width = 800,
+                      .height = 600,
+                      .count = 0,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
 }

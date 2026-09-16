@@ -1,0 +1,270 @@
+==> test/dune <==
+; Main test library
+
+(library
+ (name test_x11)
+ (modules test_x11)
+ (libraries x11 test_xevent alcotest))
+
+; XEvent conversion tests
+
+(library
+ (name test_xevent)
+ (modules test_xevent)
+ (foreign_stubs
+  (language c)
+  (names test_xevent_stubs))
+ (libraries x11 alcotest))
+
+(library
+  (name example)
+  (modules example)
+  (libraries x11 alcotest))
+
+(test
+ (name run_tests)
+ (modules run_tests)
+ (libraries test_x11 test_xevent example alcotest))
+
+(rule
+ (with-stdout-to
+  test_xevent_stubs.c.formatted
+  (run clang-format %{dep:test_xevent_stubs.c})))
+
+(rule
+ (alias fmt)
+ (action
+  (diff test_xevent_stubs.c test_xevent_stubs.c.formatted)))
+
+==> test/example.ml <==
+open X11
+
+let test_example () = Alcotest.(check int) "example" 1 1
+
+let suite =
+  let open Alcotest in
+  [ test_case "example" `Quick test_example ]
+
+==> test/test_x11.ml <==
+
+==> test/run_tests.ml <==
+let () =
+  Alcotest.run "X11 Core Bindings"
+    [ ("Xevent", Test_xevent.suite); ("X11 example", Example.suite) ]
+
+==> test/test_xevent.ml <==
+open X11.Xevent
+
+(* External C functions *)
+external get_key_press_event : unit -> xEvent = "get_key_press_event"
+external get_key_release_event : unit -> xEvent = "get_key_release_event"
+external get_button_press_event : unit -> xEvent = "get_button_press_event"
+external get_motion_notify_event : unit -> xEvent = "get_motion_notify_event"
+external get_expose_event : unit -> xEvent = "get_expose_event"
+
+(* Helper to convert between abstract types and nativeint for comparison.
+   NOTE: The display and window types are abstract in xevent.ml, so we can't
+   directly compare them. These bindings should be updated to expose the
+   underlying values, or we should use a custom equality function. For now,
+   this helper allows manual verification if needed. *)
+let to_native : 'a -> nativeint = fun x -> Obj.magic x
+
+let test_key_press_event () =
+  match get_key_press_event () with
+  | XKeyPress ev ->
+      Alcotest.(check int) "serial" ev.serial 42;
+      Alcotest.(check bool) "send_event" ev.send_event false;
+      (* NOTE: display and window are abstract types, cannot directly compare.
+         User should add concrete accessors to xevent.ml or use a custom testable. *)
+      Alcotest.(check int) "x" ev.x 10;
+      Alcotest.(check int) "y" ev.y 20;
+      Alcotest.(check int) "x_root" ev.x_root 100;
+      Alcotest.(check int) "y_root" ev.y_root 200;
+      Alcotest.(check int) "state" ev.state 0;
+      Alcotest.(check int) "keycode" ev.keycode 65;
+      Alcotest.(check bool) "same_screen" ev.same_screen true
+  | _ -> Alcotest.fail "Expected XKeyPress event"
+
+let test_key_release_event () =
+  match get_key_release_event () with
+  | XKeyRelease ev ->
+      Alcotest.(check int) "serial" ev.serial 42;
+      Alcotest.(check bool) "send_event" ev.send_event false;
+      (* NOTE: display and window are abstract types, cannot directly compare.
+         User should add concrete accessors to xevent.ml or use a custom testable. *)
+      Alcotest.(check int) "x" ev.x 10;
+      Alcotest.(check int) "y" ev.y 20;
+      Alcotest.(check int) "x_root" ev.x_root 100;
+      Alcotest.(check int) "y_root" ev.y_root 200;
+      Alcotest.(check int) "state" ev.state 0;
+      Alcotest.(check int) "keycode" ev.keycode 65;
+      Alcotest.(check bool) "same_screen" ev.same_screen true
+  | _ -> Alcotest.fail "Expected XKeyRelease event"
+
+let test_button_press_event () =
+  match get_button_press_event () with
+  | XButtonPress ev ->
+      Alcotest.(check int) "serial" ev.serial 100;
+      Alcotest.(check bool) "send_event" ev.send_event true;
+      (* NOTE: display, window, root, subwindow are abstract types *)
+      Alcotest.(check int) "x" ev.x 50;
+      Alcotest.(check int) "y" ev.y 75;
+      Alcotest.(check int) "x_root" ev.x_root 150;
+      Alcotest.(check int) "y_root" ev.y_root 250;
+      Alcotest.(check int) "state" ev.state 1;
+      Alcotest.(check int) "button" ev.button 1;
+      Alcotest.(check bool) "same_screen" ev.same_screen true
+  | _ -> Alcotest.fail "Expected XButtonPress event"
+
+let test_motion_notify_event () =
+  match get_motion_notify_event () with
+  | XMotionNotify ev ->
+      Alcotest.(check int) "serial" ev.serial 200;
+      Alcotest.(check bool) "send_event" ev.send_event false;
+      (* NOTE: display, window, root, subwindow are abstract types *)
+      Alcotest.(check int) "x" ev.x 30;
+      Alcotest.(check int) "y" ev.y 40;
+      Alcotest.(check int) "x_root" ev.x_root 130;
+      Alcotest.(check int) "y_root" ev.y_root 240;
+      Alcotest.(check int) "state" ev.state 2;
+      Alcotest.(check bool) "same_screen" ev.same_screen true
+  | _ -> Alcotest.fail "Expected XMotionNotify event"
+
+let test_expose_event () =
+  match get_expose_event () with
+  | XExpose ev ->
+      Alcotest.(check int) "serial" ev.serial 300;
+      Alcotest.(check bool) "send_event" ev.send_event true;
+      (* NOTE: display and window are abstract types *)
+      Alcotest.(check int) "x" ev.x 5;
+      Alcotest.(check int) "y" ev.y 15;
+      Alcotest.(check int) "width" ev.width 800;
+      Alcotest.(check int) "height" ev.height 600;
+      Alcotest.(check int) "count" ev.count 0
+  | _ -> Alcotest.fail "Expected XExpose event"
+
+let suite =
+  let open Alcotest in
+  [
+    test_case "KeyPress" `Quick test_key_press_event;
+    test_case "KeyRelease" `Quick test_key_release_event;
+    test_case "ButtonPress" `Quick test_button_press_event;
+    test_case "MotionNotify" `Quick test_motion_notify_event;
+    test_case "Expose" `Quick test_expose_event;
+  ]
+
+==> test/test_xevent_stubs.c <==
+#include <X11/Xlib.h>
+#include <caml/alloc.h>
+#include <caml/memory.h>
+#include <caml/mlvalues.h>
+
+/* Declared in x11_stubs.c */
+extern value x11_event_to_ocaml(XEvent *event);
+
+CAMLprim value get_key_press_event(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xkey = {
+                      .type = KeyPress,
+                      .serial = 42,
+                      .send_event = False,
+                      .display = (Display *)0x1234,
+                      .window = 123,
+                      .root = 456,
+                      .subwindow = 789,
+                      .time = 1000,
+                      .x = 10,
+                      .y = 20,
+                      .x_root = 100,
+                      .y_root = 200,
+                      .state = 0,
+                      .keycode = 65,
+                      .same_screen = True,
+                  }};
+  CAMLreturn(x11_event_to_ocaml(&event));
+}
+
+CAMLprim value get_key_release_event(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xkey = {
+                      .type = KeyRelease,
+                      .serial = 42,
+                      .send_event = False,
+                      .display = (Display *)0x1234,
+                      .window = 123,
+                      .root = 456,
+                      .subwindow = 789,
+                      .time = 1000,
+                      .x = 10,
+                      .y = 20,
+                      .x_root = 100,
+                      .y_root = 200,
+                      .state = 0,
+                      .keycode = 65,
+                      .same_screen = True,
+                  }};
+  CAMLreturn(x11_event_to_ocaml(&event));
+}
+
+CAMLprim value get_button_press_event(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xbutton = {
+                      .type = ButtonPress,
+                      .serial = 100,
+                      .send_event = True,
+                      .display = (Display *)0x5678,
+                      .window = 111,
+                      .root = 222,
+                      .subwindow = 333,
+                      .time = 2000,
+                      .x = 50,
+                      .y = 75,
+                      .x_root = 150,
+                      .y_root = 250,
+                      .state = 1,
+                      .button = 1,
+                      .same_screen = True,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
+}
+
+CAMLprim value get_motion_notify_event(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xmotion = {
+                      .type = MotionNotify,
+                      .serial = 200,
+                      .send_event = False,
+                      .display = (Display *)0x9abc,
+                      .window = 211,
+                      .root = 212,
+                      .subwindow = 213,
+                      .time = 3000,
+                      .x = 30,
+                      .y = 40,
+                      .x_root = 130,
+                      .y_root = 240,
+                      .state = 2,
+                      .same_screen = True,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
+}
+
+CAMLprim value get_expose_event(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xexpose = {
+                      .type = Expose,
+                      .serial = 300,
+                      .send_event = True,
+                      .display = (Display *)0xdef0,
+                      .window = 311,
+                      .x = 5,
+                      .y = 15,
+                      .width = 800,
+                      .height = 600,
+                      .count = 0,
+                  }};
+
+  CAMLreturn(x11_event_to_ocaml(&event));
+}

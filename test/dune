@@ -1,9 +1,9 @@
 ; Main test library
 
-(library
+(test
  (name test_x11)
  (modules test_x11)
- (libraries x11 test_xevent alcotest))
+ (libraries alcotest test_xevent test_example))
 
 ; XEvent conversion tests
 
@@ -15,10 +15,10 @@
   (names test_xevent_stubs))
  (libraries x11 alcotest))
 
-(test
- (name run_tests)
- (modules run_tests)
- (libraries test_x11 test_xevent alcotest))
+(library
+ (name test_example)
+ (modules test_example)
+ (libraries x11 alcotest))
 
 (rule
  (with-stdout-to

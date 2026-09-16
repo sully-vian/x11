@@ -396,36 +396,40 @@ type xGenericEventCookie = {
 }
 
 type xEvent =
-  | XAnyEvent of xAnyEvent
-  | XKeyEvent of xKeyEvent
-  | XButtonEvent of xButtonEvent
-  | XMotionEvent of xMotionEvent
-  | XCrossingEvent of xCrossingEvent
-  | XFocusChangeEvent of xFocusChangeEvent
-  | XExposeEvent of xExposeEvent
-  | XGraphicsExposeEvent of xGraphicsExposeEvent
-  | XNoExposeEvent of xNoExposeEvent
-  | XVisibilityEvent of xVisibilityEvent
-  | XCreateWindowEvent of xCreateWindowEvent
-  | XDestroyWindowEvent of xDestroyWindowEvent
-  | XUnmapEvent of xUnmapEvent
-  | XMapEvent of xMapEvent
-  | XMapRequestEvent of xMapRequestEvent
-  | XReparentEvent of xReparentEvent
-  | XConfigureEvent of xConfigureEvent
-  | XGravityEvent of xGravityEvent
-  | XResizeRequestEvent of xResizeRequestEvent
-  | XConfigureRequestEvent of xConfigureRequestEvent
-  | XCirculateEvent of xCirculateEvent
-  | XCirculateRequestEvent of xCirculateRequestEvent
-  | XPropertyEvent of xPropertyEvent
-  | XSelectionClearEvent of xSelectionClearEvent
-  | XSelectionRequestEvent of xSelectionRequestEvent
-  | XSelectionEvent of xSelectionEvent
-  | XColormapEvent of xColormapEvent
-  | XClientMessageEvent of xClientMessageEvent
-  | XMappingEvent of xMappingEvent
-  | XErrorEvent of xErrorEvent
-  | XKeymapEvent of xKeymapEvent
-  | XGenericEvent of xGenericEvent
-  | XGenericEventCookie of xGenericEventCookie
+  | XErrorEvent of xErrorEvent (* 0 *)
+  | TODO of unit (* 1 *)
+  | XKeyPress of xKeyEvent (* 2 *)
+  | XKeyRelease of xKeyEvent (* 3 *)
+  | XButtonPress of xButtonEvent (* 4 *)
+  | XButtonRelease of xButtonEvent (* 5 *)
+  | XMotionNotify of xMotionEvent (* 6 *)
+  | XEnterNotify of xCrossingEvent (* 7 *)
+  | XLeaveNotify of xCrossingEvent (* 8 *)
+  | XFocusIn of xFocusChangeEvent (* 9 *)
+  | XFocusOut of xFocusChangeEvent (* 10 *)
+  | XKeymapNotify of xKeymapEvent (* 11 *)
+  | XExpose of xExposeEvent (* 12 *)
+  | XGraphicsExpose of xGraphicsExposeEvent (* 13 *)
+  | XNoExpose of xNoExposeEvent (* 14 *)
+  | XVisibilityNotify of xVisibilityEvent (* 15 *)
+  | XCreateWindow of xCreateWindowEvent (* 16 *)
+  | XDestroyWindow of xDestroyWindowEvent (* 17 *)
+  | XUnmap of xUnmapEvent (* 18 *)
+  | XMap of xMapEvent (* 19 *)
+  | XMapRequest of xMapRequestEvent (* 20 *)
+  | XReparent of xReparentEvent (* 21 *)
+  | XConfigure of xConfigureEvent (* 22 *)
+  | XGravityNotify of xGravityEvent (* 23 *)
+  | XResizeRequest of xResizeRequestEvent (* 24 *)
+  | XConfigureRequest of xConfigureRequestEvent (* 25 *)
+  | XCirculate of xCirculateEvent (* 26 *)
+  | XCirculateRequest of xCirculateRequestEvent (* 27 *)
+  | XProperty of xPropertyEvent (* 28 *)
+  | XSelectionClear of xSelectionClearEvent (* 29 *)
+  | XSelectionRequest of xSelectionRequestEvent (* 30 *)
+  | XSelection of xSelectionEvent (* 31 *)
+  | XColormap of xColormapEvent (* 32 *)
+  | XClientMessage of xClientMessageEvent (* 33 *)
+  | XMapping of xMappingEvent (* 34 *)
+  | XGeneric of xGenericEvent (* 35 *)
+  | XGenericCookie of xGenericEventCookie (* 36 *)

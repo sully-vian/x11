@@ -13,28 +13,8 @@ void caml_failwith_fmt(const char *fmt, ...) {
   caml_failwith(buffer);
 }
 
-static inline value wrap_xid(unsigned long id) {
-  return caml_copy_nativeint(id);
-}
-static inline value wrap_ptr(void *ptr) {
-  return caml_copy_nativeint((intptr_t)ptr);
-}
-
-/* --- OCaml Field Assignment Macros --- */
-#define ALLOC_RECORD(n)                                                        \
-  v_record = caml_alloc(n, 0);                                                 \
-  int _i = 0;
-
-#define FIELD_INT(val) Store_field(v_record, _i++, Val_int(val))
-#define FIELD_XID(val) Store_field(v_record, _i++, wrap_xid(val))
-#define FIELD_PTR(val) Store_field(v_record, _i++, wrap_ptr(val))
-#define FIELD_BOOL(val) Store_field(v_record, _i++, Val_int(val ? 1 : 0))
-
-#define YIELD_EVENT(tag)                                                       \
-  v_event = caml_alloc(1, tag);                                                \
-  Store_field(v_event, 0, v_record);                                           \
-  break;
-/* ------------------------------------- */
+#define WRAP_XID(x) caml_copy_nativeint(x)
+#define WRAP_PTR(x) caml_copy_nativeint((intptr_t)x)
 
 CAMLprim value x11_event_to_ocaml(XEvent *event) {
   CAMLparam0();
@@ -42,102 +22,101 @@ CAMLprim value x11_event_to_ocaml(XEvent *event) {
 
   switch (event->type) {
   case KeyPress:
-  case KeyRelease: {
-    XKeyEvent *e = &event->xkey;
-    ALLOC_RECORD(14);
-    FIELD_INT(e->serial);
-    FIELD_BOOL(e->send_event);
-    FIELD_PTR(e->display);
-    FIELD_XID(e->window);
-    FIELD_XID(e->root);
-    FIELD_XID(e->subwindow);
-    FIELD_XID(e->time);
-    FIELD_INT(e->x);
-    FIELD_INT(e->y);
-    FIELD_INT(e->x_root);
-    FIELD_INT(e->y_root);
-    FIELD_INT(e->state);
-    FIELD_INT(e->keycode);
-    FIELD_BOOL(e->same_screen);
-    YIELD_EVENT(1); // XKeyEvent tag
-  }
+  case KeyRelease:
+    v_record = caml_alloc(14, 0); // 14 fields
+    Store_field(v_record, 0, Val_int(event->xkey.serial));
+    Store_field(v_record, 1, Val_bool(event->xkey.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xkey.display));
+    Store_field(v_record, 3, WRAP_XID(event->xkey.window));
+    Store_field(v_record, 4, WRAP_XID(event->xkey.root));
+    Store_field(v_record, 5, WRAP_XID(event->xkey.subwindow));
+    Store_field(v_record, 6, WRAP_XID(event->xkey.time));
+    Store_field(v_record, 7, Val_int(event->xkey.x));
+    Store_field(v_record, 8, Val_int(event->xkey.y));
+    Store_field(v_record, 9, Val_int(event->xkey.x_root));
+    Store_field(v_record, 10, Val_int(event->xkey.y_root));
+    Store_field(v_record, 11, Val_int(event->xkey.state));
+    Store_field(v_record, 12, Val_int(event->xkey.keycode));
+    Store_field(v_record, 13, Val_bool(event->xkey.same_screen));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
 
   case ButtonPress:
-  case ButtonRelease: {
-    XButtonEvent *e = &event->xbutton;
-    ALLOC_RECORD(14);
-    FIELD_INT(e->serial);
-    FIELD_BOOL(e->send_event);
-    FIELD_PTR(e->display);
-    FIELD_XID(e->window);
-    FIELD_XID(e->root);
-    FIELD_XID(e->subwindow);
-    FIELD_XID(e->time);
-    FIELD_INT(e->x);
-    FIELD_INT(e->y);
-    FIELD_INT(e->x_root);
-    FIELD_INT(e->y_root);
-    FIELD_INT(e->state);
-    FIELD_INT(e->button);
-    FIELD_BOOL(e->same_screen);
-    YIELD_EVENT(2); // XButtonEvent tag
-  }
+  case ButtonRelease:
+    v_record = caml_alloc(14, 0); //  14 fields
+    Store_field(v_record, 0, Val_int(event->xbutton.serial));
+    Store_field(v_record, 1, Val_bool(event->xbutton.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xbutton.display));
+    Store_field(v_record, 3, WRAP_XID(event->xbutton.window));
+    Store_field(v_record, 4, WRAP_XID(event->xbutton.root));
+    Store_field(v_record, 5, WRAP_XID(event->xbutton.subwindow));
+    Store_field(v_record, 6, WRAP_XID(event->xbutton.time));
+    Store_field(v_record, 7, Val_int(event->xbutton.x));
+    Store_field(v_record, 8, Val_int(event->xbutton.y));
+    Store_field(v_record, 9, Val_int(event->xbutton.x_root));
+    Store_field(v_record, 10, Val_int(event->xbutton.y_root));
+    Store_field(v_record, 11, Val_int(event->xbutton.state));
+    Store_field(v_record, 12, Val_int(event->xbutton.button));
+    Store_field(v_record, 13, Val_bool(event->xbutton.same_screen));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
 
-  case MotionNotify: {
-    XMotionEvent *e = &event->xmotion;
-    ALLOC_RECORD(13);
-    FIELD_INT(e->serial);
-    FIELD_BOOL(e->send_event);
-    FIELD_PTR(e->display);
-    FIELD_XID(e->window);
-    FIELD_XID(e->root);
-    FIELD_XID(e->subwindow);
-    FIELD_XID(e->time);
-    FIELD_INT(e->x);
-    FIELD_INT(e->y);
-    FIELD_INT(e->x_root);
-    FIELD_INT(e->y_root);
-    FIELD_INT(e->state);
-    FIELD_BOOL(e->same_screen);
-    YIELD_EVENT(3); // XMotionEvent tag
-  }
+  case MotionNotify:
+    v_record = caml_alloc(13, 0); // 13 fields
+    Store_field(v_record, 0, Val_int(event->xmotion.serial));
+    Store_field(v_record, 1, Val_bool(event->xmotion.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xmotion.display));
+    Store_field(v_record, 3, WRAP_XID(event->xmotion.window));
+    Store_field(v_record, 4, WRAP_XID(event->xmotion.root));
+    Store_field(v_record, 5, WRAP_XID(event->xmotion.subwindow));
+    Store_field(v_record, 6, WRAP_XID(event->xmotion.time));
+    Store_field(v_record, 7, Val_int(event->xmotion.x));
+    Store_field(v_record, 8, Val_int(event->xmotion.y));
+    Store_field(v_record, 9, Val_int(event->xmotion.x_root));
+    Store_field(v_record, 10, Val_int(event->xmotion.y_root));
+    Store_field(v_record, 11, Val_int(event->xmotion.state));
+    Store_field(v_record, 12, Val_bool(event->xmotion.same_screen));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
 
-  case Expose: {
-    XExposeEvent *e = &event->xexpose;
-    ALLOC_RECORD(9);
-    FIELD_INT(e->serial);
-    FIELD_BOOL(e->send_event);
-    FIELD_PTR(e->display);
-    FIELD_XID(e->window);
-    FIELD_INT(e->x);
-    FIELD_INT(e->y);
-    FIELD_INT(e->width);
-    FIELD_INT(e->height);
-    FIELD_INT(e->count);
-    YIELD_EVENT(6); // XExposeEvent tag
-  }
+  case Expose:
+    v_record = caml_alloc(9, 0); // 9 fields
+    Store_field(v_record, 0, Val_int(event->xexpose.serial));
+    Store_field(v_record, 1, Val_bool(event->xexpose.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xexpose.display));
+    Store_field(v_record, 3, WRAP_XID(event->xexpose.window));
+    Store_field(v_record, 4, Val_int(event->xexpose.x));
+    Store_field(v_record, 5, Val_int(event->xexpose.y));
+    Store_field(v_record, 6, Val_int(event->xexpose.width));
+    Store_field(v_record, 7, Val_int(event->xexpose.height));
+    Store_field(v_record, 8, Val_int(event->xexpose.count));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
 
-  case ConfigureNotify: {
-    XConfigureEvent *e = &event->xconfigure;
-    ALLOC_RECORD(12);
-    FIELD_INT(e->serial);
-    FIELD_BOOL(e->send_event);
-    FIELD_PTR(e->display);
-    FIELD_XID(e->event);
-    FIELD_XID(e->window);
-    FIELD_INT(e->x);
-    FIELD_INT(e->y);
-    FIELD_INT(e->width);
-    FIELD_INT(e->height);
-    FIELD_INT(e->border_width);
-    FIELD_XID(e->above);
-    FIELD_BOOL(e->override_redirect);
-    YIELD_EVENT(16); // XConfigureEvent tag
-  }
+  case ConfigureNotify:
+    v_record = caml_alloc(12, 0); // 12 fields
+    Store_field(v_record, 0, Val_int(event->xconfigure.serial));
+    Store_field(v_record, 1, Val_bool(event->xconfigure.send_event));
+    Store_field(v_record, 2, WRAP_PTR(event->xconfigure.display));
+    Store_field(v_record, 3, WRAP_XID(event->xconfigure.event));
+    Store_field(v_record, 4, WRAP_XID(event->xconfigure.window));
+    Store_field(v_record, 5, Val_int(event->xconfigure.x));
+    Store_field(v_record, 6, Val_int(event->xconfigure.y));
+    Store_field(v_record, 7, Val_int(event->xconfigure.width));
+    Store_field(v_record, 8, Val_int(event->xconfigure.height));
+    Store_field(v_record, 9, Val_int(event->xconfigure.border_width));
+    Store_field(v_record, 10, WRAP_XID(event->xconfigure.above));
+    Store_field(v_record, 11, Val_bool(event->xconfigure.override_redirect));
+    v_event = caml_alloc(1, event->type);
+    Store_field(v_event, 0, v_record);
+    break;
 
   default:
     caml_failwith_fmt("Unsupported event type %d", event->type);
   }
-
   CAMLreturn(v_event);
 }
