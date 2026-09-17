@@ -3,14 +3,22 @@
  (name x11)
  (foreign_stubs
   (language c)
-  (names x11_stubs)))
+  (names xevent x))
+ (c_library_flags (-lX11)))
 
 (rule
  (with-stdout-to
-  x11_stubs.c.formatted
-  (run clang-format %{dep:x11_stubs.c})))
+  xevent.c.formatted
+  (run clang-format %{dep:xevent.c})))
+
+(rule
+ (with-stdout-to
+  x.c.formatted
+  (run clang-format %{dep:x.c})))
 
 (rule
  (alias fmt)
  (action
-  (diff x11_stubs.c x11_stubs.c.formatted)))
+  (progn
+   (diff xevent.c xevent.c.formatted)
+   (diff x.c x.c.formatted))))

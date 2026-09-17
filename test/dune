@@ -5,7 +5,7 @@
  (action
   (run %{test} --show-errors))
  (modules test_x11)
- (libraries alcotest test_xevent test_example))
+ (libraries alcotest test_xevent test_x test_example))
 
 ; XEvent conversion tests
 
@@ -15,6 +15,11 @@
  (foreign_stubs
   (language c)
   (names test_xevent_stubs))
+ (libraries x11 alcotest))
+
+(library
+ (name test_x)
+ (modules test_x)
  (libraries x11 alcotest))
 
 (library
