@@ -1,3 +1,4 @@
+open C.Functions
 open Xevent
 
 type visual

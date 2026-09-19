@@ -1,5 +1,3 @@
-open X11.X
-open X11.Xevent
 open X11.C.Functions
 
 let test_open_display_ok () =
@@ -10,7 +8,7 @@ let test_open_display_ok () =
 let test_open_display_fail () =
   match open_display (Some ":999") with
   | None -> ()
-  | Some display -> Alcotest.fail "Expected None"
+  | Some _ -> Alcotest.fail "Expected None"
 
 let suite =
   let open Alcotest in

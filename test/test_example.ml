@@ -1,5 +1,3 @@
-open X11
-
 let test_example () = Alcotest.(check int) "example" 1 1
 
 let suite =

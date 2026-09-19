@@ -1,6 +1,4 @@
-module Types (F : Ctypes.TYPE) : sig
-  open F
-
+module Types (_ : Ctypes.TYPE) : sig
   module EventMask : sig
     type t
 
