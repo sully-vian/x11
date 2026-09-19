@@ -25,8 +25,6 @@ type xWindowAttributes = {
   screen : screen;
 }
 
-external open_display : string option -> display option = "caml_XOpenDisplay"
-external close_display : display -> unit = "caml_XCloseDisplay"
 external select_input : display -> window -> int -> unit = "caml_XSelectInput"
 external next_event : display -> xEvent = "caml_XNextEvent"
 

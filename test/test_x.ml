@@ -1,5 +1,6 @@
 open X11.X
 open X11.Xevent
+open X11.C.Functions
 
 let test_open_display_ok () =
   match open_display None with
