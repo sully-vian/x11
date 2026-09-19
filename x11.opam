@@ -11,6 +11,7 @@ bug-reports: "https://github.com/sully-vian/x11/issues"
 depends: [
   "dune" {>= "3.24"}
   "ocaml"
+  "ctypes"
   "alcotest" {with-test}
   "odoc" {with-doc}
 ]

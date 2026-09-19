@@ -1,10 +1,22 @@
 (library
  (public_name x11)
  (name x11)
+ (libraries ctypes ctypes.stubs)
  (foreign_stubs
   (language c)
   (names xevent x))
- (c_library_flags (-lX11)))
+ (c_library_flags (-lX11))
+ (ctypes
+  (external_library_name x11)
+  (headers
+   (include "X11/X.h" "X11/Xlib.h"))
+  (type_description
+   (instance Types)
+   (functor type_description))
+  (function_description
+   (instance Functions)
+   (functor function_description))
+  (generated_entry_point C)))
 
 (rule
  (with-stdout-to

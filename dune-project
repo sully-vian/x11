@@ -1,4 +1,5 @@
 (lang dune 3.24)
+(using ctypes 0.3)
 
 (name x11)
 
@@ -17,7 +18,7 @@
  (name x11)
  (synopsis "X11 bindings for OCaml")
  (description "A longer description")
- (depends ocaml (alcotest :with-test))
+ (depends ocaml ctypes (alcotest :with-test))
  (tags
   ("add topics" "to describe" your project)))
 
