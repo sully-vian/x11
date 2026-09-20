@@ -18,7 +18,7 @@
  (name x11)
  (synopsis "X11 bindings for OCaml")
  (description "A longer description")
- (depends ocaml ctypes (alcotest :with-test))
+ (depends ocaml ctypes (alcotest :with-test) (odoc :with-doc))
  (tags
   ("add topics" "to describe" your project)))
 

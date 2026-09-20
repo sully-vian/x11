@@ -1,4 +1,4 @@
-open X11.C.Functions
+open X11
 
 let test_open_display_ok () =
   match open_display None with

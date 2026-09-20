@@ -1,4 +1,4 @@
-open X11.Xevent
+open X11
 
 (* External C functions *)
 external get_key_press_ev : unit -> xEvent = "get_key_press_ev"
