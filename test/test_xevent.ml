@@ -28,7 +28,7 @@ let to_native : 'a -> nativeint = fun x -> Obj.magic x
 
 let test_key_press_ev () =
   match get_key_press_ev () with
-  | XKeyPress ev ->
+  | KeyPress ev ->
       Alcotest.(check int) "serial" 42 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
@@ -40,11 +40,11 @@ let test_key_press_ev () =
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
-  | _ -> Alcotest.fail "Expected XKeyPress event"
+  | _ -> Alcotest.fail "Expected KeyPress event"
 
 let test_key_release_ev () =
   match get_key_release_ev () with
-  | XKeyRelease ev ->
+  | KeyRelease ev ->
       Alcotest.(check int) "serial" 42 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
@@ -56,11 +56,11 @@ let test_key_release_ev () =
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
-  | _ -> Alcotest.fail "Expected XKeyRelease event"
+  | _ -> Alcotest.fail "Expected KeyRelease event"
 
 let test_button_press_ev () =
   match get_button_press_ev () with
-  | XButtonPress ev ->
+  | ButtonPress ev ->
       Alcotest.(check int) "serial" 100 ev.serial;
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
@@ -71,11 +71,11 @@ let test_button_press_ev () =
       Alcotest.(check int) "state" 1 ev.state;
       Alcotest.(check int) "button" 1 ev.button;
       Alcotest.(check bool) "same_screen" true ev.same_screen
-  | _ -> Alcotest.fail "Expected XButtonPress event"
+  | _ -> Alcotest.fail "Expected ButtonPress event"
 
 let test_motion_notify_ev () =
   match get_motion_notify_ev () with
-  | XMotionNotify ev ->
+  | MotionNotify ev ->
       Alcotest.(check int) "serial" 200 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
@@ -85,11 +85,11 @@ let test_motion_notify_ev () =
       Alcotest.(check int) "y_root" 240 ev.y_root;
       Alcotest.(check int) "state" 2 ev.state;
       Alcotest.(check bool) "same_screen" true ev.same_screen
-  | _ -> Alcotest.fail "Expected XMotionNotify event"
+  | _ -> Alcotest.fail "Expected MotionNotify event"
 
 let test_expose_ev () =
   match get_expose_ev () with
-  | XExpose ev ->
+  | Expose ev ->
       Alcotest.(check int) "serial" 300 ev.serial;
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display and window are abstract types *)
@@ -98,53 +98,53 @@ let test_expose_ev () =
       Alcotest.(check int) "width" 800 ev.width;
       Alcotest.(check int) "height" 600 ev.height;
       Alcotest.(check int) "count" 0 ev.count
-  | _ -> Alcotest.fail "Expected XExpose event"
+  | _ -> Alcotest.fail "Expected Expose event"
 
 let test_destroy_window_ev () =
   match get_destroy_window_ev () with
-  | XDestroyWindow ev -> Alcotest.(check int) "serial" 150 ev.serial
-  | _ -> Alcotest.fail "Expected XDestroyWindow"
+  | DestroyWindow ev -> Alcotest.(check int) "serial" 150 ev.serial
+  | _ -> Alcotest.fail "Expected DestroyWindow"
 
 let test_unmap_notify_ev () =
   match get_unmap_notify_ev () with
-  | XUnmap ev ->
+  | Unmap ev ->
       Alcotest.(check int) "serial" 160 ev.serial;
       Alcotest.(check bool) "from_configure" false ev.from_configure
-  | _ -> Alcotest.fail "Expected XUnmap"
+  | _ -> Alcotest.fail "Expected Unmap"
 
 let test_map_notify_ev () =
   match get_map_notify_ev () with
-  | XMap ev ->
+  | Map ev ->
       Alcotest.(check int) "serial" 170 ev.serial;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
-  | _ -> Alcotest.fail "Expected XMap"
+  | _ -> Alcotest.fail "Expected Map"
 
 let test_map_request_ev () =
   match get_map_request_ev () with
-  | XMapRequest ev -> Alcotest.(check int) "serial" 180 ev.serial
-  | _ -> Alcotest.fail "Expected XMapRequest"
+  | MapRequest ev -> Alcotest.(check int) "serial" 180 ev.serial
+  | _ -> Alcotest.fail "Expected MapRequest"
 
 let test_configure_request_ev () =
   match get_configure_request_ev () with
-  | XConfigureRequest ev ->
+  | ConfigureRequest ev ->
       Alcotest.(check int) "serial" 190 ev.serial;
       Alcotest.(check int) "width" 800 ev.width;
       Alcotest.(check int) "height" 600 ev.height
-  | _ -> Alcotest.fail "Expected XConfigureRequest"
+  | _ -> Alcotest.fail "Expected ConfigureRequest"
 
 let test_reparent_notify_ev () =
   match get_reparent_notify_ev () with
-  | XReparent ev ->
+  | Reparent ev ->
       Alcotest.(check int) "serial" 210 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       Alcotest.(check int) "x" 10 ev.x;
       Alcotest.(check int) "y" 20 ev.y;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
-  | _ -> Alcotest.fail "Expected XReparent event"
+  | _ -> Alcotest.fail "Expected Reparent event"
 
 let test_configure_notify_ev () =
   match get_configure_notify_ev () with
-  | XConfigureNotify ev ->
+  | ConfigureNotify ev ->
       Alcotest.(check int) "serial" 220 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       Alcotest.(check int) "x" 100 ev.x;
@@ -153,18 +153,18 @@ let test_configure_notify_ev () =
       Alcotest.(check int) "height" 768 ev.height;
       Alcotest.(check int) "border_width" 2 ev.border_width;
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
-  | _ -> Alcotest.fail "Expected XConfigureNotify event"
+  | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
 let test_property_notify_ev () =
   match get_property_notify_ev () with
-  | XProperty ev ->
+  | Property ev ->
       Alcotest.(check int) "serial" 280 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event
-  | _ -> Alcotest.fail "Expected XProperty event"
+  | _ -> Alcotest.fail "Expected Property event"
 
 let test_client_message_ev_b () =
   match get_client_message_ev_b () with
-  | XClientMessage ev -> (
+  | ClientMessage ev -> (
       Alcotest.(check int) "serial" 330 ev.serial;
       Alcotest.(check bool) "send_event" true ev.send_event;
       match ev.data with
@@ -174,11 +174,11 @@ let test_client_message_ev_b () =
             ("ABCDEFGHIJKLMNOPQRST" |> String.to_seq)
             (Array.to_seq b)
       | _ -> Alcotest.fail "Expected bytes")
-  | _ -> Alcotest.fail "Expected XClientMessage event"
+  | _ -> Alcotest.fail "Expected ClientMessage event"
 
 let test_client_meessage_ev_s () =
   match get_client_message_ev_s () with
-  | XClientMessage ev -> (
+  | ClientMessage ev -> (
       match ev.data with
       | Shorts s ->
           Alcotest.(check (array int))
@@ -186,22 +186,22 @@ let test_client_meessage_ev_s () =
             [| 0; 1; 2; 3; 4; 5; 6; 7; 8; 9 |]
             s
       | _ -> Alcotest.fail "Expected short")
-  | _ -> Alcotest.fail "Expected XClientMessage event"
+  | _ -> Alcotest.fail "Expected ClientMessage event"
 
 let test_client_meessage_ev_l () =
   match get_client_message_ev_l () with
-  | XClientMessage ev -> (
+  | ClientMessage ev -> (
       match ev.data with
       | Longs s -> Alcotest.(check (array int)) "data" [| 0; 1; 2; 3; 4 |] s
       | _ -> Alcotest.fail "Expected long")
-  | _ -> Alcotest.fail "Expected XClientMessage event"
+  | _ -> Alcotest.fail "Expected ClientMessage event"
 
 let test_focus_in_ev () =
   match get_focus_in_ev () with
-  | XFocusIn ev ->
+  | FocusIn ev ->
       Alcotest.(check int) "serial" 90 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event
-  | _ -> Alcotest.fail "Expected XFocusIn event"
+  | _ -> Alcotest.fail "Expected FocusIn event"
 
 let suite =
   let open Alcotest in

@@ -1,5 +1,5 @@
-type display
-type window
+open C.Functions
+
 type time
 type drawable
 type atom
@@ -31,7 +31,7 @@ type notifyDetail =
   | NotifyPointerRoot
   | NotifyDetailNone
 
-type xKeyEvent = {
+type keyEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -48,7 +48,7 @@ type xKeyEvent = {
   same_screen : bool;
 }
 
-type xButtonEvent = {
+type buttonEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -65,10 +65,10 @@ type xButtonEvent = {
   same_screen : bool;
 }
 
-type xButtonPressedEvent = xButtonEvent
-type xButtonReleasedEvent = xButtonEvent
+type buttonPressedEvent = buttonEvent
+type buttonReleasedEvent = buttonEvent
 
-type xMotionEvent = {
+type motionEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -84,9 +84,9 @@ type xMotionEvent = {
   same_screen : bool;
 }
 
-type xPointerMovedEvent = xMotionEvent
+type pointerMovedEvent = motionEvent
 
-type xCrossingEvent = {
+type crossingEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -102,10 +102,10 @@ type xCrossingEvent = {
   detail : notifyDetail;
 }
 
-type xEnterWindowEvent = xCrossingEvent
-type xLeaveWindowEvent = xCrossingEvent
+type enterWindowEvent = crossingEvent
+type leaveWindowEvent = crossingEvent
 
-type xFocusChangeEvent = {
+type focusChangeEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -114,10 +114,10 @@ type xFocusChangeEvent = {
   detail : notifyDetail;
 }
 
-type xFocusInEvent = xFocusChangeEvent
-type xFocusOutEvent = xFocusChangeEvent
+type focusInEvent = focusChangeEvent
+type focusOutEvent = focusChangeEvent
 
-type xKeymapEvent = {
+type keymapEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -125,7 +125,7 @@ type xKeymapEvent = {
   key_vector : string;
 }
 
-type xExposeEvent = {
+type exposeEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -137,7 +137,7 @@ type xExposeEvent = {
   count : int;
 }
 
-type xGraphicsExposeEvent = {
+type graphicsExposeEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -149,7 +149,7 @@ type xGraphicsExposeEvent = {
   minor_code : int;
 }
 
-type xNoExposeEvent = {
+type noExposeEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -158,7 +158,7 @@ type xNoExposeEvent = {
   minor_code : int;
 }
 
-type xVisibilityEvent = {
+type visibilityEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -166,7 +166,7 @@ type xVisibilityEvent = {
   state : int;
 }
 
-type xCreateWindowEvent = {
+type createWindowEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -180,7 +180,7 @@ type xCreateWindowEvent = {
   override_redirect : bool;
 }
 
-type xDestroyWindowEvent = {
+type destroyWindowEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -188,7 +188,7 @@ type xDestroyWindowEvent = {
   window : window;
 }
 
-type xUnmapEvent = {
+type unmapEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -197,7 +197,7 @@ type xUnmapEvent = {
   from_configure : bool;
 }
 
-type xMapEvent = {
+type mapEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -206,7 +206,7 @@ type xMapEvent = {
   override_redirect : bool;
 }
 
-type xMapRequestEvent = {
+type mapRequestEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -214,7 +214,7 @@ type xMapRequestEvent = {
   window : window;
 }
 
-type xReparentEvent = {
+type reparentEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -226,7 +226,7 @@ type xReparentEvent = {
   override_redirect : bool;
 }
 
-type xConfigureEvent = {
+type configureEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -241,7 +241,7 @@ type xConfigureEvent = {
   override_redirect : bool;
 }
 
-type xGravityEvent = {
+type gravityEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -251,7 +251,7 @@ type xGravityEvent = {
   y : int;
 }
 
-type xResizeRequestEvent = {
+type resizeRequestEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -260,7 +260,7 @@ type xResizeRequestEvent = {
   height : int;
 }
 
-type xConfigureRequestEvent = {
+type configureRequestEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -276,7 +276,7 @@ type xConfigureRequestEvent = {
   value_mask : int;
 }
 
-type xCirculateEvent = {
+type circulateEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -285,7 +285,7 @@ type xCirculateEvent = {
   place : circulationRequest;
 }
 
-type xCirculateRequestEvent = {
+type circulateRequestEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -294,7 +294,7 @@ type xCirculateRequestEvent = {
   place : circulationRequest;
 }
 
-type xPropertyEvent = {
+type propertyEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -304,7 +304,7 @@ type xPropertyEvent = {
   state : propertyNotification;
 }
 
-type xSelectionClearEvent = {
+type selectionClearEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -313,7 +313,7 @@ type xSelectionClearEvent = {
   time : time;
 }
 
-type xSelectionRequestEvent = {
+type selectionRequestEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -325,7 +325,7 @@ type xSelectionRequestEvent = {
   time : time;
 }
 
-type xSelectionEvent = {
+type selectionEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -336,7 +336,7 @@ type xSelectionEvent = {
   time : time;
 }
 
-type xColormapEvent = {
+type colormapEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -346,7 +346,7 @@ type xColormapEvent = {
   state : colorMapNotification;
 }
 
-type xClientMessageEvent = {
+type clientMessageEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -355,7 +355,7 @@ type xClientMessageEvent = {
   data : message_data;
 }
 
-type xMappingEvent = {
+type mappingEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -365,7 +365,7 @@ type xMappingEvent = {
   count : int;
 }
 
-type xErrorEvent = {
+type errorEvent = {
   display : display;
   resourceid : xid;
   serial : int;
@@ -374,14 +374,14 @@ type xErrorEvent = {
   minor_code : int;
 }
 
-type xAnyEvent = {
+type anyEvent = {
   serial : int;
   send_event : bool;
   display : display;
   window : window;
 }
 
-type xGenericEvent = {
+type genericEvent = {
   serial : int;
   send_event : bool;
   display : display;
@@ -389,7 +389,7 @@ type xGenericEvent = {
   evtype : int;
 }
 
-type xGenericEventCookie = {
+type genericEventCookie = {
   serial : int;
   send_event : bool;
   display : display;
@@ -400,43 +400,43 @@ type xGenericEventCookie = {
 }
 
 type xEvent =
-  | XErrorEvent of xErrorEvent
+  | ErrorEvent of errorEvent
   | TODO of unit
-  | XKeyPress of xKeyEvent
-  | XKeyRelease of xKeyEvent
-  | XButtonPress of xButtonEvent
-  | XButtonRelease of xButtonEvent
-  | XMotionNotify of xMotionEvent
-  | XEnterNotify of xCrossingEvent
-  | XLeaveNotify of xCrossingEvent
-  | XFocusIn of xFocusChangeEvent
-  | XFocusOut of xFocusChangeEvent
-  | XKeymapNotify of xKeymapEvent
-  | XExpose of xExposeEvent
-  | XGraphicsExpose of xGraphicsExposeEvent
-  | XNoExpose of xNoExposeEvent
-  | XVisibilityNotify of xVisibilityEvent
-  | XCreateWindow of xCreateWindowEvent
-  | XDestroyWindow of xDestroyWindowEvent
-  | XUnmap of xUnmapEvent
-  | XMap of xMapEvent
-  | XMapRequest of xMapRequestEvent
-  | XReparent of xReparentEvent
-  | XConfigureNotify of xConfigureEvent
-  | XConfigureRequest of xConfigureRequestEvent
-  | XGravityNotify of xGravityEvent
-  | XResizeRequest of xResizeRequestEvent
-  | XCirculate of xCirculateEvent
-  | XCirculateRequest of xCirculateRequestEvent
-  | XProperty of xPropertyEvent
-  | XSelectionClear of xSelectionClearEvent
-  | XSelectionRequest of xSelectionRequestEvent
-  | XSelection of xSelectionEvent
-  | XColormap of xColormapEvent
-  | XClientMessage of xClientMessageEvent
-  | XMapping of xMappingEvent
-  | XGeneric of xGenericEvent
-  | XGenericCookie of xGenericEventCookie
+  | KeyPress of keyEvent
+  | KeyRelease of keyEvent
+  | ButtonPress of buttonEvent
+  | ButtonRelease of buttonEvent
+  | MotionNotify of motionEvent
+  | EnterNotify of crossingEvent
+  | LeaveNotify of crossingEvent
+  | FocusIn of focusChangeEvent
+  | FocusOut of focusChangeEvent
+  | KeymapNotify of keymapEvent
+  | Expose of exposeEvent
+  | GraphicsExpose of graphicsExposeEvent
+  | NoExpose of noExposeEvent
+  | VisibilityNotify of visibilityEvent
+  | CreateWindow of createWindowEvent
+  | DestroyWindow of destroyWindowEvent
+  | Unmap of unmapEvent
+  | Map of mapEvent
+  | MapRequest of mapRequestEvent
+  | Reparent of reparentEvent
+  | ConfigureNotify of configureEvent
+  | ConfigureRequest of configureRequestEvent
+  | GravityNotify of gravityEvent
+  | ResizeRequest of resizeRequestEvent
+  | Circulate of circulateEvent
+  | CirculateRequest of circulateRequestEvent
+  | Property of propertyEvent
+  | SelectionClear of selectionClearEvent
+  | SelectionRequest of selectionRequestEvent
+  | Selection of selectionEvent
+  | Colormap of colormapEvent
+  | ClientMessage of clientMessageEvent
+  | Mapping of mappingEvent
+  | Generic of genericEvent
+  | GenericCookie of genericEventCookie
 
 type eventMask
 
