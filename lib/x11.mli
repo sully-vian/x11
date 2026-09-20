@@ -438,5 +438,51 @@ type xEvent =
   | XGeneric of xGenericEvent
   | XGenericCookie of xGenericEventCookie
 
+type eventMask
+
+val noEventMask : eventMask
+val keyPressMask : eventMask
+val keyReleaseMask : eventMask
+val buttonPressMask : eventMask
+val buttonReleaseMask : eventMask
+val enterWindowMask : eventMask
+val leaveWindowMask : eventMask
+val pointerMotionMask : eventMask
+val pointerMotionHintMask : eventMask
+val button1MotionMask : eventMask
+val button2MotionMask : eventMask
+val button3MotionMask : eventMask
+val button4MotionMask : eventMask
+val button5MotionMask : eventMask
+val buttonMotionMask : eventMask
+val keymapStateMask : eventMask
+val exposureMask : eventMask
+val visibilityChangeMask : eventMask
+val structureNotifyMask : eventMask
+val resizeRedirectMask : eventMask
+val substructureNotifyMask : eventMask
+val substructureRedirectMask : eventMask
+val focusChangeMask : eventMask
+val propertyChangeMask : eventMask
+val colormapChangeMask : eventMask
+val ownerGrabButtonMask : eventMask
+
+type keyMask
+
+val shiftMask : keyMask
+val lockMask : keyMask
+val controlMask : keyMask
+val mod1Mask : keyMask
+val mod2Mask : keyMask
+val mod3Mask : keyMask
+val mod4Mask : keyMask
+val mod5Mask : keyMask
+
+type grabMode
+
+val grabModeSync : grabMode
+val grabModeAsync : grabMode
 val open_display : string option -> display option
 val close_display : display -> unit
+val flush : display -> unit
+val move_resize_window : display -> window -> int * int -> int * int -> unit

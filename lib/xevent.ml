@@ -1,6 +1,5 @@
 open C.Functions
 
-type window
 type xid
 type time
 type atom
