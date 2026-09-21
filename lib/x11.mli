@@ -1,5 +1,7 @@
-open C.Functions
-
+type keysym
+type keycode
+type display
+type window
 type time
 type drawable
 type atom
@@ -438,7 +440,12 @@ type xEvent =
   | Generic of genericEvent
   | GenericCookie of genericEventCookie
 
-type eventMask
+type 'a mask
+
+val ( ||| ) : 'a mask -> 'a mask -> 'a mask
+
+type event_tag
+type eventMask = event_tag mask
 
 val noEventMask : eventMask
 val keyPressMask : eventMask
@@ -467,7 +474,8 @@ val propertyChangeMask : eventMask
 val colormapChangeMask : eventMask
 val ownerGrabButtonMask : eventMask
 
-type keyMask
+type key_tag
+type keyMask = key_tag mask
 
 val shiftMask : keyMask
 val lockMask : keyMask
@@ -486,3 +494,16 @@ val open_display : string option -> display option
 val close_display : display -> unit
 val flush : display -> unit
 val move_resize_window : display -> window -> int * int -> int * int -> unit
+val default_root_window : display -> window
+val select_input : display -> window -> eventMask -> unit
+val keysym_to_keycode : display -> keysym -> keycode
+
+val grab_key :
+  display ->
+  keycode ->
+  keyMask ->
+  window ->
+  bool ->
+  grabMode ->
+  grabMode ->
+  unit

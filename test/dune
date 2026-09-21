@@ -5,7 +5,7 @@
  (action
   (run %{test} --show-errors))
  (modules test_x11)
- (libraries alcotest test_xevent test_x test_example))
+ (libraries alcotest test_xevent test_x test_compilation))
 
 ; XEvent conversion tests
 
@@ -23,8 +23,8 @@
  (libraries x11 alcotest))
 
 (library
- (name test_example)
- (modules test_example)
+ (name test_compilation)
+ (modules test_compilation)
  (libraries x11 alcotest))
 
 (rule

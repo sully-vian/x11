@@ -26,8 +26,4 @@ type xWindowAttributes = {
   screen : screen;
 }
 
-external select_input : display -> window -> int -> unit = "caml_XSelectInput"
 external next_event : display -> xEvent = "caml_XNextEvent"
-
-external move_resize_window :
-  display -> window -> int * int -> int * int -> unit = "caml_XMoveResizeWindow"

@@ -1,8 +1,6 @@
 module Types (F : Ctypes.TYPE) = struct
   open F
 
-  type eventMask = int const
-
   let noEventMask = constant "NoEventMask" int
   let keyPressMask = constant "KeyPressMask" int
   let keyReleaseMask = constant "KeyReleaseMask" int
@@ -29,9 +27,6 @@ module Types (F : Ctypes.TYPE) = struct
   let propertyChangeMask = constant "PropertyChangeMask" int
   let colormapChangeMask = constant "ColormapChangeMask" int
   let ownerGrabButtonMask = constant "OwnerGrabButtonMask" int
-
-  type keyMask = int const
-
   let shiftMask = constant "ShiftMask" int
   let lockMask = constant "LockMask" int
   let controlMask = constant "ControlMask" int
@@ -40,9 +35,6 @@ module Types (F : Ctypes.TYPE) = struct
   let mod3Mask = constant "Mod3Mask" int
   let mod4Mask = constant "Mod4Mask" int
   let mod5Mask = constant "Mod5Mask" int
-
-  type grabMode = int const
-
   let grabModeSync = constant "GrabModeSync" int
   let grabModeAsync = constant "GrabModeAsync" int
 end
