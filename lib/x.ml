@@ -4,7 +4,7 @@ open Xevent
 type visual
 type screen
 
-type xWindowAttributes = {
+type windowAttributes = {
   pos : int * int;
   size : int * int;
   border_width : int;
@@ -27,3 +27,6 @@ type xWindowAttributes = {
 }
 
 external next_event : display -> xEvent = "caml_XNextEvent"
+
+external get_window_attributes : display -> window -> windowAttributes
+  = "caml_XGetWindowAttributes"

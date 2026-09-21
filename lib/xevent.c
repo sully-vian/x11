@@ -1,3 +1,4 @@
+#include "utils.h"
 #include <X11/Xlib.h>
 #include <caml/alloc.h>
 #include <caml/fail.h>
@@ -13,10 +14,7 @@ void caml_failwith_fmt(const char *fmt, ...) {
   caml_failwith(buffer);
 }
 
-#define WRAP_XID(x) caml_copy_nativeint(x)
-#define WRAP_PTR(x) caml_copy_nativeint((intptr_t)x)
-
-CAMLprim value x11_event_to_ocaml(XEvent *event) {
+value x11_event_to_ocaml(XEvent *event) {
   CAMLparam0();
   CAMLlocal2(v_record, v_event);
 

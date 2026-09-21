@@ -4,7 +4,7 @@
  (libraries ctypes ctypes.stubs)
  (foreign_stubs
   (language c)
-  (names xevent x))
+  (names xevent xwindowattributes x))
  (c_library_flags (-lX11))
  (ctypes
   (external_library_name x11)
@@ -25,6 +25,11 @@
 
 (rule
  (with-stdout-to
+  xwindowattributes.c.formatted
+  (run clang-format %{dep:xwindowattributes.c})))
+
+(rule
+ (with-stdout-to
   x.c.formatted
   (run clang-format %{dep:x.c})))
 
@@ -32,5 +37,6 @@
  (alias fmt)
  (action
   (progn
+   (diff xwindowattributes.c xwindowattributes.c.formatted)
    (diff xevent.c xevent.c.formatted)
    (diff x.c x.c.formatted))))
