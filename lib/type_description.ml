@@ -37,4 +37,10 @@ module Types (F : Ctypes.TYPE) = struct
   let mod5Mask = constant "Mod5Mask" int
   let grabModeSync = constant "GrabModeSync" int
   let grabModeAsync = constant "GrabModeAsync" int
+  let anyButton = constant "AnyButton" int
+  let button1 = constant "Button1" int
+  let button2 = constant "Button2" int
+  let button3 = constant "Button3" int
+  let button4 = constant "Button4" int
+  let button5 = constant "Button5" int
 end

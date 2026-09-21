@@ -14,6 +14,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let keysym = int
   let keycode = int
   let grabMode = int
+  let button = int
+  let cursor = int
   let keyMask = int
 
   let open_display =
@@ -29,11 +31,19 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let default_root_window =
     foreign "XDefaultRootWindow" (display @-> returning window)
 
+  let raise_window =
+    foreign "XRaiseWindow" (display @-> window @-> returning void)
+
   let select_input =
     foreign "XSelectInput" (display @-> window @-> eventMask @-> returning void)
 
   let keysym_to_keycode =
     foreign "XKeysymToKeycode" (display @-> keysym @-> returning keycode)
+
+  let grab_button =
+    foreign "XGrabButton"
+      (display @-> button @-> keyMask @-> window @-> bool @-> eventMask
+     @-> grabMode @-> grabMode @-> window @-> cursor @-> returning void)
 
   let grab_key =
     foreign "XGrabKey"

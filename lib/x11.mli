@@ -1,3 +1,4 @@
+type cursor
 type keysym
 type keycode
 type display
@@ -490,13 +491,36 @@ type grabMode
 
 val grabModeSync : grabMode
 val grabModeAsync : grabMode
+
+type button
+
+val anyButton : button
+val button1 : button
+val button2 : button
+val button3 : button
+val button4 : button
+val button5 : button
 val open_display : string option -> display option
 val close_display : display -> unit
 val flush : display -> unit
 val move_resize_window : display -> window -> int * int -> int * int -> unit
 val default_root_window : display -> window
+val raise_window : display -> window -> unit
 val select_input : display -> window -> eventMask -> unit
 val keysym_to_keycode : display -> keysym -> keycode
+
+val grab_button :
+  display ->
+  button ->
+  keyMask ->
+  window ->
+  bool ->
+  eventMask ->
+  grabMode ->
+  grabMode ->
+  window ->
+  cursor ->
+  unit
 
 val grab_key :
   display ->
