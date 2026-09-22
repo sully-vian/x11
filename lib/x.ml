@@ -1,5 +1,6 @@
 open C.Functions
 open Xevent
+open Mask
 
 type visual
 type screen
@@ -19,8 +20,8 @@ type windowAttributes = {
   backing_pixel : int;
   save_under : bool;
   map_state : int;
-  all_event_masks : int;
-  your_event_mask : int;
+  all_event_masks : eventMask;
+  your_event_mask : eventMask;
   do_not_propagate_mask : int;
   override_redirect : bool;
   screen : screen;

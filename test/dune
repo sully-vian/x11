@@ -5,9 +5,22 @@
  (action
   (run %{test} --show-errors))
  (modules test_x11)
- (libraries alcotest test_xevent test_x test_compilation))
+ (libraries
+  alcotest
+  test_xwindowattributes
+  test_xevent
+  test_x
+  test_compilation))
 
 ; XEvent conversion tests
+
+(library
+ (name test_xwindowattributes)
+ (modules test_xwindowattributes)
+ (foreign_stubs
+  (language c)
+  (names test_xwindowattributes))
+ (libraries x11 alcotest))
 
 (library
  (name test_xevent)
