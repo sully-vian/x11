@@ -39,10 +39,8 @@ type keyEvent = {
   root : window;
   subwindow : window;
   time : time;
-  x : int;
-  y : int;
-  x_root : int;
-  y_root : int;
+  pos : int * int;
+  root_pos : int * int;
   state : int;
   keycode : int;
   same_screen : bool;
@@ -56,10 +54,8 @@ type buttonEvent = {
   root : window;
   subwindow : window;
   time : time;
-  x : int;
-  y : int;
-  x_root : int;
-  y_root : int;
+  pos : int * int;
+  root_pos : int * int;
   state : int;
   button : int;
   same_screen : bool;
@@ -76,10 +72,8 @@ type motionEvent = {
   root : window;
   subwindow : window;
   time : time;
-  x : int;
-  y : int;
-  x_root : int;
-  y_root : int;
+  pos : int * int;
+  root_pos : int * int;
   state : int;
   same_screen : bool;
 }
@@ -94,10 +88,8 @@ type crossingEvent = {
   root : window;
   subwindow : window;
   time : time;
-  x : int;
-  y : int;
-  x_root : int;
-  y_root : int;
+  pos : int * int;
+  root_pos : int * int;
   mode : notifyMode;
   detail : notifyDetail;
 }
@@ -130,10 +122,8 @@ type exposeEvent = {
   send_event : bool;
   display : display;
   window : window;
-  x : int;
-  y : int;
-  width : int;
-  height : int;
+  pos : int * int;
+  size : int * int;
   count : int;
 }
 
@@ -142,11 +132,9 @@ type graphicsExposeEvent = {
   send_event : bool;
   display : display;
   drawable : drawable;
-  x : int;
-  y : int;
+  pos : int * int;
   count : int;
-  major_code : int;
-  minor_code : int;
+  codes : int * int;
 }
 
 type noExposeEvent = {
@@ -154,8 +142,7 @@ type noExposeEvent = {
   send_event : bool;
   display : display;
   drawable : drawable;
-  major_code : int;
-  minor_code : int;
+  codes : int * int;
 }
 
 type visibilityEvent = {
@@ -172,10 +159,8 @@ type createWindowEvent = {
   display : display;
   parent : window;
   window : window;
-  x : int;
-  y : int;
-  width : int;
-  height : int;
+  pos : int * int;
+  size : int * int;
   border_width : int;
   override_redirect : bool;
 }
@@ -221,8 +206,7 @@ type reparentEvent = {
   event : window;
   window : window;
   parent : window;
-  x : int;
-  y : int;
+  pos : int * int;
   override_redirect : bool;
 }
 
@@ -232,10 +216,8 @@ type configureEvent = {
   display : display;
   event : window;
   window : window;
-  x : int;
-  y : int;
-  width : int;
-  height : int;
+  pos : int * int;
+  size : int * int;
   border_width : int;
   above : window;
   override_redirect : bool;
@@ -247,8 +229,7 @@ type gravityEvent = {
   display : display;
   event : window;
   window : window;
-  x : int;
-  y : int;
+  pos : int * int;
 }
 
 type resizeRequestEvent = {
@@ -256,8 +237,7 @@ type resizeRequestEvent = {
   send_event : bool;
   display : display;
   window : window;
-  width : int;
-  height : int;
+  size : int * int;
 }
 
 type configureRequestEvent = {
@@ -266,10 +246,8 @@ type configureRequestEvent = {
   display : display;
   parent : window;
   window : window;
-  x : int;
-  y : int;
-  width : int;
-  height : int;
+  pos : int * int;
+  size : int * int;
   border_width : int;
   above : window;
   detail : windowStackingMethod;
@@ -369,9 +347,7 @@ type errorEvent = {
   display : display;
   resourceid : xid;
   serial : int;
-  error_code : int;
-  request_code : int;
-  minor_code : int;
+  codes : int * int * int;
 }
 
 type anyEvent = {

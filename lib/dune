@@ -4,7 +4,7 @@
  (libraries ctypes ctypes.stubs)
  (foreign_stubs
   (language c)
-  (names xevent xwindowattributes x))
+  (names utils xevent xwindowattributes x))
  (c_library_flags (-lX11))
  (ctypes
   (external_library_name x11)

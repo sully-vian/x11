@@ -19,12 +19,13 @@ value Val_xwindowattributes(XWindowAttributes *attrs) {
   Store_field(v_dim, 0, Val_int(attrs->width));
   Store_field(v_dim, 1, Val_int(attrs->height));
 
+  v_pos = caml_tuple2(Val_int(attrs->x), Val_int(attrs->y));
   Store_field(v_record, 0, v_pos);
   Store_field(v_record, 1, v_dim);
   Store_field(v_record, 2, Val_int(attrs->border_width));
   Store_field(v_record, 3, Val_int(attrs->depth));
-  Store_field(v_record, 4, WRAP_PTR(attrs->visual));
-  Store_field(v_record, 5, WRAP_XID(attrs->root));
+  Store_field(v_record, 4, Val_ptr(attrs->visual));
+  Store_field(v_record, 5, Val_xid(attrs->root));
   Store_field(v_record, 6, Val_int(attrs->class));
   Store_field(v_record, 7, Val_int(attrs->bit_gravity));
   Store_field(v_record, 8, Val_int(attrs->win_gravity));
@@ -37,6 +38,6 @@ value Val_xwindowattributes(XWindowAttributes *attrs) {
   Store_field(v_record, 15, Val_int(attrs->your_event_mask));
   Store_field(v_record, 16, Val_int(attrs->do_not_propagate_mask));
   Store_field(v_record, 17, Val_bool(attrs->override_redirect));
-  Store_field(v_record, 18, WRAP_PTR(attrs->screen));
+  Store_field(v_record, 18, Val_ptr(attrs->screen));
   CAMLreturn(v_record);
 }

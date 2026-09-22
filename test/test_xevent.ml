@@ -33,10 +33,8 @@ let test_key_press_ev () =
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
          User should add concrete accessors to xevent.ml or use a custom testable. *)
-      Alcotest.(check int) "x" 10 ev.x;
-      Alcotest.(check int) "y" 20 ev.y;
-      Alcotest.(check int) "x_root" 100 ev.x_root;
-      Alcotest.(check int) "y_root" 200 ev.y_root;
+      Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
+      Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -49,10 +47,8 @@ let test_key_release_ev () =
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
          User should add concrete accessors to xevent.ml or use a custom testable. *)
-      Alcotest.(check int) "x" 10 ev.x;
-      Alcotest.(check int) "y" 20 ev.y;
-      Alcotest.(check int) "x_root" 100 ev.x_root;
-      Alcotest.(check int) "y_root" 200 ev.y_root;
+      Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
+      Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -64,10 +60,8 @@ let test_button_press_ev () =
       Alcotest.(check int) "serial" 100 ev.serial;
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
-      Alcotest.(check int) "x" 50 ev.x;
-      Alcotest.(check int) "y" 75 ev.y;
-      Alcotest.(check int) "x_root" 150 ev.x_root;
-      Alcotest.(check int) "y_root" 250 ev.y_root;
+      Alcotest.(check (pair int int)) "pos" (50, 75) ev.pos;
+      Alcotest.(check (pair int int)) "root" (150, 250) ev.root_pos;
       Alcotest.(check int) "state" 1 ev.state;
       Alcotest.(check int) "button" 1 ev.button;
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -79,10 +73,8 @@ let test_motion_notify_ev () =
       Alcotest.(check int) "serial" 200 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
-      Alcotest.(check int) "x" 30 ev.x;
-      Alcotest.(check int) "y" 40 ev.y;
-      Alcotest.(check int) "x_root" 130 ev.x_root;
-      Alcotest.(check int) "y_root" 240 ev.y_root;
+      Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
+      Alcotest.(check (pair int int)) "root" (130, 240) ev.root_pos;
       Alcotest.(check int) "state" 2 ev.state;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected MotionNotify event"
@@ -93,10 +85,8 @@ let test_expose_ev () =
       Alcotest.(check int) "serial" 300 ev.serial;
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display and window are abstract types *)
-      Alcotest.(check int) "x" 5 ev.x;
-      Alcotest.(check int) "y" 15 ev.y;
-      Alcotest.(check int) "width" 800 ev.width;
-      Alcotest.(check int) "height" 600 ev.height;
+      Alcotest.(check (pair int int)) "pos" (5, 15) ev.pos;
+      Alcotest.(check (pair int int)) "area" (800, 600) ev.size;
       Alcotest.(check int) "count" 0 ev.count
   | _ -> Alcotest.fail "Expected Expose event"
 
@@ -128,8 +118,7 @@ let test_configure_request_ev () =
   match get_configure_request_ev () with
   | ConfigureRequest ev ->
       Alcotest.(check int) "serial" 190 ev.serial;
-      Alcotest.(check int) "width" 800 ev.width;
-      Alcotest.(check int) "height" 600 ev.height
+      Alcotest.(check (pair int int)) "size" (800, 600) ev.size
   | _ -> Alcotest.fail "Expected ConfigureRequest"
 
 let test_reparent_notify_ev () =
@@ -137,8 +126,7 @@ let test_reparent_notify_ev () =
   | Reparent ev ->
       Alcotest.(check int) "serial" 210 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "x" 10 ev.x;
-      Alcotest.(check int) "y" 20 ev.y;
+      Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Reparent event"
 
@@ -147,10 +135,8 @@ let test_configure_notify_ev () =
   | ConfigureNotify ev ->
       Alcotest.(check int) "serial" 220 ev.serial;
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "x" 100 ev.x;
-      Alcotest.(check int) "y" 200 ev.y;
-      Alcotest.(check int) "width" 1024 ev.width;
-      Alcotest.(check int) "height" 768 ev.height;
+      Alcotest.(check (pair int int)) "pos" (100, 200) ev.pos;
+      Alcotest.(check (pair int int)) "size" (1024, 768) ev.size;
       Alcotest.(check int) "border_width" 2 ev.border_width;
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
