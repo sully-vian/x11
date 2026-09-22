@@ -4,6 +4,7 @@ open Mask
 
 type visual
 type screen
+type windowClass = int
 
 type windowAttributes = {
   pos : int * int;
@@ -12,7 +13,7 @@ type windowAttributes = {
   depth : int;
   visual : visual;
   root : window;
-  c_class : int;
+  c_class : windowClass;
   bit_gravity : int;
   win_gravity : int;
   backing_store : int;

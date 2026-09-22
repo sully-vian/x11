@@ -43,4 +43,7 @@ module Types (F : Ctypes.TYPE) = struct
   let button3 = constant "Button3" int
   let button4 = constant "Button4" int
   let button5 = constant "Button5" int
+  let copyFromParent = constant "CopyFromParent" int
+  let inputOutput = constant "InputOutput" int
+  let inputOnly = constant "InputOnly" int
 end

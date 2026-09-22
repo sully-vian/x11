@@ -13,6 +13,8 @@ type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
 type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 
+(** {1 Event Data Structures} *)
+
 type message_data =
   | Bytes of char array
   | Shorts of int array
@@ -378,6 +380,8 @@ type genericEventCookie = {
   data : string;
 }
 
+(** {1 The XEvent Type} *)
+
 type xEvent =
   | ErrorEvent of errorEvent
   | TODO of unit
@@ -417,9 +421,13 @@ type xEvent =
   | Generic of genericEvent
   | GenericCookie of genericEventCookie
 
+(** {1 Masks and Modifiers} *)
+
 type 'a mask
 
 val ( ||| ) : 'a mask -> 'a mask -> 'a mask
+
+(** {2 Event Masks} *)
 
 type event_tag
 type eventMask = event_tag mask
@@ -451,6 +459,8 @@ val propertyChangeMask : eventMask
 val colormapChangeMask : eventMask
 val ownerGrabButtonMask : eventMask
 
+(** {2 Key Masks} *)
+
 type key_tag
 type keyMask = key_tag mask
 
@@ -476,6 +486,15 @@ val button2 : button
 val button3 : button
 val button4 : button
 val button5 : button
+
+type windowClass
+
+val copyFromParent : windowClass
+val inputOutput : windowClass
+val inputOnly : windowClass
+
+(** {1 Core Functions} *)
+
 val open_display : string option -> display option
 val close_display : display -> unit
 val flush : display -> unit
@@ -520,7 +539,7 @@ type windowAttributes = {
   depth : int;
   visual : visual;
   root : window;
-  c_class : int;
+  c_class : windowClass;
   bit_gravity : int;
   win_gravity : int;
   backing_store : int;

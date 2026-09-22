@@ -31,7 +31,7 @@ let test_xwa_basic () =
   Alcotest.(check (pair int int)) "size" (800, 600) xwa.size;
   Alcotest.(check int) "border_width" 2 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -55,7 +55,7 @@ let test_xwa_zeroed () =
   Alcotest.(check (pair int int)) "size" (0, 0) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 0 xwa.depth;
-  Alcotest.(check int) "c_class" 0 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (copyFromParent = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 0 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 0 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -79,7 +79,7 @@ let test_xwa_negative_coords () =
   Alcotest.(check (pair int int)) "size" (1920, 1080) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -95,7 +95,7 @@ let test_xwa_huge_dimensions () =
   Alcotest.(check (pair int int)) "size" (2147483647, 2147483647) xwa.size;
   Alcotest.(check int) "border_width" 2147483647 xwa.border_width;
   Alcotest.(check int) "depth" 32 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -111,7 +111,7 @@ let test_xwa_input_only () =
   Alcotest.(check (pair int int)) "size" (100, 100) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 0 xwa.depth;
-  Alcotest.(check int) "c_class" 2 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOnly = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 0 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -136,7 +136,7 @@ let test_xwa_max_masks_planes () =
   Alcotest.(check (pair int int)) "size" (10, 10) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -162,7 +162,7 @@ let test_xwa_bools_true () =
   Alcotest.(check (pair int int)) "size" (50, 50) xwa.size;
   Alcotest.(check int) "border_width" 1 xwa.border_width;
   Alcotest.(check int) "depth" 8 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
@@ -181,7 +181,7 @@ let test_xwa_gravities_store () =
   Alcotest.(check (pair int int)) "size" (200, 200) xwa.size;
   Alcotest.(check int) "border_width" 5 xwa.border_width;
   Alcotest.(check int) "depth" 32 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 5 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 10 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 2 xwa.backing_store;
@@ -200,7 +200,7 @@ let test_xwa_unviewable () =
   Alcotest.(check (pair int int)) "size" (1920, 1080) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 1 xwa.backing_store;
@@ -217,7 +217,7 @@ let test_xwa_max_pointers () =
   Alcotest.(check (pair int int)) "size" (1, 1) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 1 xwa.depth;
-  Alcotest.(check int) "c_class" 1 xwa.c_class;
+  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
   Alcotest.(check int) "backing_store" 0 xwa.backing_store;
