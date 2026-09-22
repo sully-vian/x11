@@ -7,6 +7,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
   type window = Unsigned.ULong.t
   type keysym = int
   type keycode = int
+  type button = int
 
   let display = ptr void
   let window = ulong

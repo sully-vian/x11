@@ -63,7 +63,7 @@ let test_button_press_ev () =
       Alcotest.(check (pair int int)) "pos" (50, 75) ev.pos;
       Alcotest.(check (pair int int)) "root" (150, 250) ev.root_pos;
       Alcotest.(check int) "state" 1 ev.state;
-      Alcotest.(check int) "button" 1 ev.button;
+      Alcotest.(check bool) "button" true (button1 = ev.button);
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected ButtonPress event"
 

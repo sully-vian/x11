@@ -13,6 +13,78 @@ type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
 type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 
+(** {1 Masks and Modifiers} *)
+
+type 'a mask
+
+val ( ||| ) : 'a mask -> 'a mask -> 'a mask
+
+(** {2 Event Masks} *)
+
+type event_tag
+type eventMask = event_tag mask
+
+val noEventMask : eventMask
+val keyPressMask : eventMask
+val keyReleaseMask : eventMask
+val buttonPressMask : eventMask
+val buttonReleaseMask : eventMask
+val enterWindowMask : eventMask
+val leaveWindowMask : eventMask
+val pointerMotionMask : eventMask
+val pointerMotionHintMask : eventMask
+val button1MotionMask : eventMask
+val button2MotionMask : eventMask
+val button3MotionMask : eventMask
+val button4MotionMask : eventMask
+val button5MotionMask : eventMask
+val buttonMotionMask : eventMask
+val keymapStateMask : eventMask
+val exposureMask : eventMask
+val visibilityChangeMask : eventMask
+val structureNotifyMask : eventMask
+val resizeRedirectMask : eventMask
+val substructureNotifyMask : eventMask
+val substructureRedirectMask : eventMask
+val focusChangeMask : eventMask
+val propertyChangeMask : eventMask
+val colormapChangeMask : eventMask
+val ownerGrabButtonMask : eventMask
+
+(** {2 Key Masks} *)
+
+type key_tag
+type keyMask = key_tag mask
+
+val shiftMask : keyMask
+val lockMask : keyMask
+val controlMask : keyMask
+val mod1Mask : keyMask
+val mod2Mask : keyMask
+val mod3Mask : keyMask
+val mod4Mask : keyMask
+val mod5Mask : keyMask
+
+type grabMode
+
+val grabModeSync : grabMode
+val grabModeAsync : grabMode
+
+type button
+
+val anyButton : button
+val button1 : button
+val button2 : button
+val button3 : button
+val button4 : button
+val button5 : button
+
+type windowClass
+
+val copyFromParent : windowClass
+val inputOutput : windowClass
+
+val inputOnly : windowClass
 (** {1 Event Data Structures} *)
 
 type message_data =
@@ -62,7 +134,7 @@ type buttonEvent = {
   pos : int * int;
   root_pos : int * int;
   state : int;
-  button : int;
+  button : button;
   same_screen : bool;
 }
 
@@ -420,78 +492,6 @@ type xEvent =
   | Mapping of mappingEvent
   | Generic of genericEvent
   | GenericCookie of genericEventCookie
-
-(** {1 Masks and Modifiers} *)
-
-type 'a mask
-
-val ( ||| ) : 'a mask -> 'a mask -> 'a mask
-
-(** {2 Event Masks} *)
-
-type event_tag
-type eventMask = event_tag mask
-
-val noEventMask : eventMask
-val keyPressMask : eventMask
-val keyReleaseMask : eventMask
-val buttonPressMask : eventMask
-val buttonReleaseMask : eventMask
-val enterWindowMask : eventMask
-val leaveWindowMask : eventMask
-val pointerMotionMask : eventMask
-val pointerMotionHintMask : eventMask
-val button1MotionMask : eventMask
-val button2MotionMask : eventMask
-val button3MotionMask : eventMask
-val button4MotionMask : eventMask
-val button5MotionMask : eventMask
-val buttonMotionMask : eventMask
-val keymapStateMask : eventMask
-val exposureMask : eventMask
-val visibilityChangeMask : eventMask
-val structureNotifyMask : eventMask
-val resizeRedirectMask : eventMask
-val substructureNotifyMask : eventMask
-val substructureRedirectMask : eventMask
-val focusChangeMask : eventMask
-val propertyChangeMask : eventMask
-val colormapChangeMask : eventMask
-val ownerGrabButtonMask : eventMask
-
-(** {2 Key Masks} *)
-
-type key_tag
-type keyMask = key_tag mask
-
-val shiftMask : keyMask
-val lockMask : keyMask
-val controlMask : keyMask
-val mod1Mask : keyMask
-val mod2Mask : keyMask
-val mod3Mask : keyMask
-val mod4Mask : keyMask
-val mod5Mask : keyMask
-
-type grabMode
-
-val grabModeSync : grabMode
-val grabModeAsync : grabMode
-
-type button
-
-val anyButton : button
-val button1 : button
-val button2 : button
-val button3 : button
-val button4 : button
-val button5 : button
-
-type windowClass
-
-val copyFromParent : windowClass
-val inputOutput : windowClass
-val inputOnly : windowClass
 
 (** {1 Core Functions} *)
 

@@ -57,7 +57,7 @@ type buttonEvent = {
   pos : int * int;
   root_pos : int * int;
   state : int;
-  button : int;
+  button : button;
   same_screen : bool;
 }
 
