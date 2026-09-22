@@ -14,7 +14,7 @@ void caml_failwith_fmt(const char *fmt, ...) {
   caml_failwith(buffer);
 }
 
-value x11_event_to_ocaml(XEvent *event) {
+value Val_xevent(XEvent *event) {
   CAMLparam0();
   CAMLlocal2(v_record, v_event);
 

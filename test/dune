@@ -14,7 +14,7 @@
  (modules test_xevent)
  (foreign_stubs
   (language c)
-  (names test_xevent_stubs))
+  (names test_xevent))
  (libraries x11 alcotest))
 
 (library
@@ -29,10 +29,10 @@
 
 (rule
  (with-stdout-to
-  test_xevent_stubs.c.formatted
-  (run clang-format %{dep:test_xevent_stubs.c})))
+  test_xevent.c.formatted
+  (run clang-format %{dep:test_xevent.c})))
 
 (rule
  (alias fmt)
  (action
-  (diff test_xevent_stubs.c test_xevent_stubs.c.formatted)))
+  (diff test_xevent.c test_xevent.c.formatted)))

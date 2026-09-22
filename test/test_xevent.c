@@ -3,8 +3,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-/* Declared in x11_stubs.c */
-extern value x11_event_to_ocaml(XEvent *event);
+extern value Val_xevent(XEvent *event);
 
 CAMLprim value get_key_press_ev(value unit) {
   CAMLparam1(unit);
@@ -25,7 +24,7 @@ CAMLprim value get_key_press_ev(value unit) {
                       .keycode = 65,
                       .same_screen = True,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_key_release_ev(value unit) {
@@ -47,7 +46,7 @@ CAMLprim value get_key_release_ev(value unit) {
                       .keycode = 65,
                       .same_screen = True,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_button_press_ev(value unit) {
@@ -70,7 +69,7 @@ CAMLprim value get_button_press_ev(value unit) {
                       .same_screen = True,
                   }};
 
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_motion_notify_ev(value unit) {
@@ -92,7 +91,7 @@ CAMLprim value get_motion_notify_ev(value unit) {
                       .same_screen = True,
                   }};
 
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_expose_ev(value unit) {
@@ -110,7 +109,7 @@ CAMLprim value get_expose_ev(value unit) {
                       .count = 0,
                   }};
 
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_destroy_window_ev(value unit) {
@@ -123,7 +122,7 @@ CAMLprim value get_destroy_window_ev(value unit) {
                       .event = 5001,
                       .window = 5002,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_unmap_notify_ev(value unit) {
@@ -137,7 +136,7 @@ CAMLprim value get_unmap_notify_ev(value unit) {
                       .window = 6002,
                       .from_configure = False,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_map_notify_ev(value unit) {
@@ -151,7 +150,7 @@ CAMLprim value get_map_notify_ev(value unit) {
                       .window = 7002,
                       .override_redirect = False,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_map_request_ev(value unit) {
@@ -164,7 +163,7 @@ CAMLprim value get_map_request_ev(value unit) {
                       .parent = 8001,
                       .window = 8002,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_configure_request_ev(value unit) {
@@ -185,7 +184,7 @@ CAMLprim value get_configure_request_ev(value unit) {
                       .detail = Above,
                       .value_mask = 15,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_reparent_notify_ev(value unit) {
@@ -202,7 +201,7 @@ CAMLprim value get_reparent_notify_ev(value unit) {
                       .y = 20,
                       .override_redirect = False,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_configure_notify_ev(value unit) {
@@ -222,7 +221,7 @@ CAMLprim value get_configure_notify_ev(value unit) {
                       .above = 2203,
                       .override_redirect = True,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_property_notify_ev(value unit) {
@@ -237,7 +236,7 @@ CAMLprim value get_property_notify_ev(value unit) {
                       .time = 5000,
                       .state = PropertyNewValue,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_client_message_ev_b(value unit) {
@@ -255,7 +254,7 @@ CAMLprim value get_client_message_ev_b(value unit) {
   for (int i = 0; i < 20; i++) {
     event.xclient.data.b[i] = i + 65;
   }
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_client_message_ev_s(value unit) {
@@ -268,7 +267,7 @@ CAMLprim value get_client_message_ev_s(value unit) {
   for (int i = 0; i < 10; i++) {
     event.xclient.data.s[i] = i;
   }
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_client_message_ev_l(value unit) {
@@ -281,7 +280,7 @@ CAMLprim value get_client_message_ev_l(value unit) {
   for (long i = 0; i < 5; i++) {
     event.xclient.data.l[i] = i;
   }
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }
 
 CAMLprim value get_focus_in_ev(value unit) {
@@ -295,5 +294,5 @@ CAMLprim value get_focus_in_ev(value unit) {
                       .mode = NotifyNormal,
                       .detail = NotifyNonlinear,
                   }};
-  CAMLreturn(x11_event_to_ocaml(&event));
+  CAMLreturn(Val_xevent(&event));
 }

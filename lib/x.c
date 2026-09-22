@@ -8,8 +8,8 @@
 
 #define caml_None Val_int(0) // None is 0
 
-extern value x11_event_to_ocaml(XEvent *);
-extern value x11_attributes_to_ocaml(XWindowAttributes *);
+extern value Val_xevent(XEvent *);
+extern value Val_xwindowattributes(XWindowAttributes *);
 
 CAMLprim value caml_XNextEvent(value v_display) {
   CAMLparam1(v_display);
@@ -17,7 +17,7 @@ CAMLprim value caml_XNextEvent(value v_display) {
   XEvent event;
 
   XNextEvent(display, &event);
-  value v_event = x11_event_to_ocaml(&event);
+  value v_event = Val_xevent(&event);
   CAMLreturn(v_event);
 }
 
@@ -27,6 +27,6 @@ CAMLprim value caml_XGetWindowAttributes(value v_display, value v_window) {
   Window window = (Window)Field(v_window, 0);
   XWindowAttributes attributes;
   XGetWindowAttributes(display, window, &attributes);
-  value v_attributes = x11_attributes_to_ocaml(&attributes);
+  value v_attributes = Val_xwindowattributes(&attributes);
   CAMLreturn(v_attributes);
 }

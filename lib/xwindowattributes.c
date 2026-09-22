@@ -6,7 +6,7 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-value x11_attributes_to_ocaml(XWindowAttributes *attrs) {
+value Val_xwindowattributes(XWindowAttributes *attrs) {
   CAMLparam0();
   CAMLlocal3(v_record, v_pos, v_dim);
   v_record = caml_alloc(19, 0); // 19 fields
