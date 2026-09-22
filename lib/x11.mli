@@ -527,6 +527,8 @@ type windowAttributes = {
   backing_planes : int;
   backing_pixel : int;
   save_under : bool;
+  colormap : colormap;
+  map_installed : bool;
   map_state : int;
   all_event_masks : eventMask;
   your_event_mask : eventMask;
