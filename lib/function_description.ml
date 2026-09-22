@@ -1,4 +1,5 @@
 open Ctypes
+open Utils
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
@@ -44,7 +45,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let grab_button =
     foreign "XGrabButton"
       (display @-> button @-> keyMask @-> window @-> bool @-> eventMask
-     @-> grabMode @-> grabMode @-> window @-> cursor @-> returning void)
+     @-> grabMode @-> grabMode @-> ulong_opt @-> int_opt @-> returning void)
 
   let grab_key =
     foreign "XGrabKey"

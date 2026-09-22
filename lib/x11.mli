@@ -513,8 +513,8 @@ val grab_button :
   eventMask ->
   grabMode ->
   grabMode ->
-  window ->
-  cursor ->
+  window option ->
+  cursor option ->
   unit
 
 val grab_key :
