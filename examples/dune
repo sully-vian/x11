@@ -1,0 +1,4 @@
+(executables
+  (names
+    event_loop)
+  (libraries x11))

@@ -31,6 +31,7 @@ type windowAttributes = {
 }
 
 external next_event : display -> xEvent = "caml_XNextEvent"
+external close_display_2 : display -> unit = "caml_XCloseDisplay"
 
 external get_window_attributes : display -> window -> windowAttributes
   = "caml_XGetWindowAttributes"

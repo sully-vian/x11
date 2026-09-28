@@ -51,4 +51,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
     foreign "XGrabKey"
       (display @-> keycode @-> keyMask @-> window @-> bool @-> grabMode
      @-> grabMode @-> returning void)
+
+  (*type xevent_raw
+
+  let xevent_raw : xevent_raw union typ = union "XEvent"
+
+  let next_event_raw =
+    foreign "XNextEvent" (display @-> ptr xevent_raw @-> returning int)*)
 end

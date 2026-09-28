@@ -497,6 +497,7 @@ type xEvent =
 
 val open_display : string option -> display option
 val close_display : display -> unit
+val close_display_2 : display -> unit
 val flush : display -> unit
 val move_resize_window : display -> window -> int * int -> int * int -> unit
 val default_root_window : display -> window
