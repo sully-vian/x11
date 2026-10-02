@@ -9,7 +9,7 @@
  (ctypes
   (external_library_name x11)
   (headers
-   (include "X11/X.h" "X11/Xlib.h"))
+   (include "X11/X.h" "X11/Xlib.h" "X11/Xutil.h"))
   (type_description
    (instance Types)
    (functor type_description))

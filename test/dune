@@ -10,9 +10,8 @@
   test_xwindowattributes
   test_xevent
   test_x
-  test_compilation))
-
-; XEvent conversion tests
+  test_compilation
+  test_integration))
 
 (library
  (name test_xwindowattributes)
@@ -28,6 +27,11 @@
  (foreign_stubs
   (language c)
   (names test_xevent))
+ (libraries x11 alcotest))
+
+(library
+ (name test_integration)
+ (modules test_integration)
  (libraries x11 alcotest))
 
 (library

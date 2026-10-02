@@ -1,4 +1,3 @@
 (executables
-  (names
-    event_loop)
-  (libraries x11))
+ (names event_loop)
+ (libraries x11))

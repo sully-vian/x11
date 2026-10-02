@@ -1,6 +1,6 @@
 type cursor
-type keysym
 type keycode
+(** {{:https://tronche.com/gui/x/iccccm/sec-4.html#4.2.1} XKeycode} *)
 type display
 type window
 type time
@@ -12,6 +12,119 @@ type circulationRequest = PlaceOnTop | PlaceOnBottom
 type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
 type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
+
+(** {1 Keycodes} *)
+
+type keysym
+(** {{:https://tronche.com/gui/x/xlib/input/keyboard-encoding.html#KeySym}
+     KeySym} *)
+
+val xk_BackSpace : keysym
+val xk_Tab : keysym
+val xk_Linefeed : keysym
+val xk_Clear : keysym
+val xk_Return : keysym
+val xk_Pause : keysym
+val xk_Scroll_Lock : keysym
+val xk_Sys_Req : keysym
+val xk_Escape : keysym
+val xk_Delete : keysym
+val xk_space : keysym
+val xk_exclam : keysym
+val xk_quotedbl : keysym
+val xk_numbersign : keysym
+val xk_dollar : keysym
+val xk_percent : keysym
+val xk_ampersand : keysym
+val xk_apostrophe : keysym
+val xk_quoteright : keysym
+val xk_parenleft : keysym
+val xk_parenright : keysym
+val xk_asterisk : keysym
+val xk_plus : keysym
+val xk_comma : keysym
+val xk_minus : keysym
+val xk_period : keysym
+val xk_slash : keysym
+val xk_0 : keysym
+val xk_1 : keysym
+val xk_2 : keysym
+val xk_3 : keysym
+val xk_4 : keysym
+val xk_5 : keysym
+val xk_6 : keysym
+val xk_7 : keysym
+val xk_8 : keysym
+val xk_9 : keysym
+val xk_colon : keysym
+val xk_semicolon : keysym
+val xk_less : keysym
+val xk_equal : keysym
+val xk_greater : keysym
+val xk_question : keysym
+val xk_A : keysym
+val xk_B : keysym
+val xk_C : keysym
+val xk_D : keysym
+val xk_E : keysym
+val xk_F : keysym
+val xk_G : keysym
+val xk_H : keysym
+val xk_I : keysym
+val xk_J : keysym
+val xk_K : keysym
+val xk_L : keysym
+val xk_M : keysym
+val xk_N : keysym
+val xk_O : keysym
+val xk_P : keysym
+val xk_Q : keysym
+val xk_R : keysym
+val xk_S : keysym
+val xk_T : keysym
+val xk_U : keysym
+val xk_V : keysym
+val xk_W : keysym
+val xk_X : keysym
+val xk_Y : keysym
+val xk_Z : keysym
+val xk_bracketleft : keysym
+val xk_backslash : keysym
+val xk_bracketright : keysym
+val xk_asciicircum : keysym
+val xk_underscore : keysym
+val xk_grave : keysym
+val xk_quoteleft : keysym
+val xk_a : keysym
+val xk_b : keysym
+val xk_c : keysym
+val xk_d : keysym
+val xk_e : keysym
+val xk_f : keysym
+val xk_g : keysym
+val xk_h : keysym
+val xk_i : keysym
+val xk_j : keysym
+val xk_k : keysym
+val xk_l : keysym
+val xk_m : keysym
+val xk_n : keysym
+val xk_o : keysym
+val xk_p : keysym
+val xk_q : keysym
+val xk_r : keysym
+val xk_s : keysym
+val xk_t : keysym
+val xk_u : keysym
+val xk_v : keysym
+val xk_w : keysym
+val xk_x : keysym
+val xk_y : keysym
+val xk_z : keysym
+val xk_braceleft : keysym
+val xk_bar : keysym
+val xk_braceright : keysym
+val xk_asciitilde : keysym
 
 (** {1 Masks and Modifiers} *)
 
@@ -83,8 +196,8 @@ type windowClass
 
 val copyFromParent : windowClass
 val inputOutput : windowClass
-
 val inputOnly : windowClass
+
 (** {1 Event Data Structures} *)
 
 type message_data =
@@ -119,9 +232,10 @@ type keyEvent = {
   pos : int * int;
   root_pos : int * int;
   state : int;
-  keycode : int;
+  keycode : keycode;
   same_screen : bool;
 }
+(** {{:https://man.archlinux.org/man/XKeyEvent.3.en} XKeyEvent} *)
 
 type buttonEvent = {
   serial : int;
@@ -137,9 +251,13 @@ type buttonEvent = {
   button : button;
   same_screen : bool;
 }
+(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonEvent} *)
 
 type buttonPressedEvent = buttonEvent
+(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonPressedEvent} *)
+
 type buttonReleasedEvent = buttonEvent
+(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonReleasedEvent} *)
 
 type motionEvent = {
   serial : int;
@@ -154,6 +272,7 @@ type motionEvent = {
   state : int;
   same_screen : bool;
 }
+(** {{:https://man.archlinux.org/man/XMotionEvent.3.en} XMotionEvent} *)
 
 type pointerMovedEvent = motionEvent
 
@@ -170,6 +289,7 @@ type crossingEvent = {
   mode : notifyMode;
   detail : notifyDetail;
 }
+(** {{:https://man.archlinux.org/man/XCrossingEvent.3.en} XCrossingEvent} *)
 
 type enterWindowEvent = crossingEvent
 type leaveWindowEvent = crossingEvent
@@ -182,6 +302,8 @@ type focusChangeEvent = {
   mode : notifyMode;
   detail : notifyDetail;
 }
+(** {{:https://man.archlinux.org/man/XFocusChangeEvent.3.en} XFocusChangeEvent}
+*)
 
 type focusInEvent = focusChangeEvent
 type focusOutEvent = focusChangeEvent
@@ -193,6 +315,7 @@ type keymapEvent = {
   window : window;
   key_vector : string;
 }
+(** {{:https://man.archlinux.org/man/XKeymapEvent.3.en} XKeymapEvent} *)
 
 type exposeEvent = {
   serial : int;
@@ -203,6 +326,7 @@ type exposeEvent = {
   size : int * int;
   count : int;
 }
+(** {{:https://man.archlinux.org/man/XExposeEvent.3.en} XExposeEvent} *)
 
 type graphicsExposeEvent = {
   serial : int;
@@ -213,6 +337,8 @@ type graphicsExposeEvent = {
   count : int;
   codes : int * int;
 }
+(** {{:https://man.archlinux.org/man/XGraphicsExposeEvent.3.en}
+     XGraphicsExposeEvent} *)
 
 type noExposeEvent = {
   serial : int;
@@ -221,6 +347,7 @@ type noExposeEvent = {
   drawable : drawable;
   codes : int * int;
 }
+(** {{:https://man.archlinux.org/man/XNoExposeEvent.3.en} XNoExposeEvent} *)
 
 type visibilityEvent = {
   serial : int;
@@ -229,6 +356,7 @@ type visibilityEvent = {
   window : window;
   state : int;
 }
+(** {{:https://man.archlinux.org/man/XVisibilityEvent.3.en} XVisibilityEvent} *)
 
 type createWindowEvent = {
   serial : int;
@@ -241,6 +369,8 @@ type createWindowEvent = {
   border_width : int;
   override_redirect : bool;
 }
+(** {{:https://man.archlinux.org/man/XCreateWindowEvent.3.en}
+     XCreateWindowEvent} *)
 
 type destroyWindowEvent = {
   serial : int;
@@ -249,6 +379,8 @@ type destroyWindowEvent = {
   event : window;
   window : window;
 }
+(** {{:https://man.archlinux.org/man/XDestroyWindowEvent.3.en}
+     XDestroyWindowEvent} *)
 
 type unmapEvent = {
   serial : int;
@@ -258,6 +390,7 @@ type unmapEvent = {
   window : window;
   from_configure : bool;
 }
+(** {{:https://man.archlinux.org/man/XUnmapEvent.3.en} XUnmapEvent} *)
 
 type mapEvent = {
   serial : int;
@@ -267,6 +400,7 @@ type mapEvent = {
   window : window;
   override_redirect : bool;
 }
+(** {{:https://man.archlinux.org/man/XMapEvent.3.en} XMapEvent} *)
 
 type mapRequestEvent = {
   serial : int;
@@ -275,6 +409,7 @@ type mapRequestEvent = {
   parent : window;
   window : window;
 }
+(** {{:https://man.archlinux.org/man/XMapRequestEvent.3.en} XMapRequestEvent} *)
 
 type reparentEvent = {
   serial : int;
@@ -496,14 +631,44 @@ type xEvent =
 (** {1 Core Functions} *)
 
 val open_display : string option -> display option
+(** {{:https://man.archlinux.org/man/XOpenDisplay.3.en} XOpenDisplay} *)
+
 val close_display : display -> unit
-val close_display_2 : display -> unit
+(** {{:https://man.archlinux.org/man/XCloseDisplay.3.en} XCloseDisplay} *)
+
 val flush : display -> unit
+(** {{:https://man.archlinux.org/man/XFlush.3.en} XFlush} *)
+
+val clear_window : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XClearWindow.3.en} XClearWindow} *)
+
+val set_window_background : display -> window -> int -> unit
+(** {{:https://man.archlinux.org/man/XSetWindowBackground.3.en}
+     XSetWindowBackground} *)
+
+val map_window : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XMapWindow.3.en} XMapWindow} *)
+
+val create_simple_window :
+  display -> window -> int * int -> int * int -> int -> int -> int -> window
+(** {{:https://man.archlinux.org/man/XCreateWindow.3.en} XCreateSimpleWindow} *)
+
 val move_resize_window : display -> window -> int * int -> int * int -> unit
+(** {{:https://man.archlinux.org/man/XMoveResizeWindow.3.en} XMoveResizeWindow}
+*)
+
 val default_root_window : display -> window
+(** {{:https://man.archlinux.org/man/XDefaultRootWindow.3.en}
+     XDefaultRootWindow} *)
+
 val raise_window : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XRaiseWindow.3.en} XRaiseWindow} *)
+
 val select_input : display -> window -> eventMask -> unit
+(** {{:https://man.archlinux.org/man/XSelectInput.3.en} XSelectInput} *)
+
 val keysym_to_keycode : display -> keysym -> keycode
+(** {{:https://man.archlinux.org/man/XKeysymToKeycode.3.en} XKeysymToKeycode} *)
 
 val grab_button :
   display ->
@@ -517,6 +682,7 @@ val grab_button :
   window option ->
   cursor option ->
   unit
+(** {{:https://man.archlinux.org/man/XGrabButton.3.en} XGrabButton} *)
 
 val grab_key :
   display ->
@@ -527,8 +693,10 @@ val grab_key :
   grabMode ->
   grabMode ->
   unit
+(** {{:https://man.archlinux.org/man/XGrabKey.3.en} XGrabKey} *)
 
 val next_event : display -> xEvent
+(** {{:https://man.archlinux.org/man/XNextEvent.3.en} XNextEvent} *)
 
 type visual
 type screen

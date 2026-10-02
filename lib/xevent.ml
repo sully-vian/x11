@@ -42,7 +42,7 @@ type keyEvent = {
   pos : int * int;
   root_pos : int * int;
   state : int;
-  keycode : int;
+  keycode : keycode;
   same_screen : bool;
 }
 

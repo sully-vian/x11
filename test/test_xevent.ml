@@ -36,7 +36,7 @@ let test_key_press_ev () =
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
       Alcotest.(check int) "state" 0 ev.state;
-      Alcotest.(check int) "keycode" 65 ev.keycode;
+      Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected KeyPress event"
 
@@ -50,7 +50,7 @@ let test_key_release_ev () =
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
       Alcotest.(check int) "state" 0 ev.state;
-      Alcotest.(check int) "keycode" 65 ev.keycode;
+      Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected KeyRelease event"
 

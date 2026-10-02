@@ -26,6 +26,20 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let close_display = foreign "XCloseDisplay" (display @-> returning void)
   let flush = foreign "XFlush" (display @-> returning void)
 
+  let clear_window =
+    foreign "XClearWindow" (display @-> window @-> returning void)
+
+  let set_window_background =
+    foreign "XSetWindowBackground"
+      (display @-> window @-> int @-> returning void)
+
+  let map_window = foreign "XMapWindow" (display @-> window @-> returning void)
+
+  let create_simple_window_verbose =
+    foreign "XCreateSimpleWindow"
+      (display @-> window @-> int @-> int @-> int @-> int @-> int @-> int
+     @-> int @-> returning window)
+
   let move_resize_window_verbose =
     foreign "XMoveResizeWindow"
       (display @-> window @-> int @-> int @-> int @-> int @-> returning void)
