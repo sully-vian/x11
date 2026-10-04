@@ -1,6 +1,27 @@
+open Ctypes
+
 module Types (F : Ctypes.TYPE) = struct
   open F
 
+  type display = unit ptr
+  type atom = Unsigned.ULong.t
+  type window = Unsigned.ULong.t
+  type time = Unsigned.ULong.t
+  type keysym = int
+  type keycode = int
+  type button = int
+
+  let display = ptr void
+  let atom = ulong
+  let window = ulong
+  let time = ulong
+  let keysym = int
+  let keycode = int
+  let button = int
+  let eventMask = int
+  let grabMode = int
+  let cursor = int
+  let keyMask = int
   let noEventMask = constant "NoEventMask" int
   let keyPressMask = constant "KeyPressMask" int
   let keyReleaseMask = constant "KeyReleaseMask" int
@@ -152,4 +173,88 @@ module Types (F : Ctypes.TYPE) = struct
   let xk_bar = constant "XK_bar" int
   let xk_braceright = constant "XK_braceright" int
   let xk_asciitilde = constant "XK_asciitilde" int
+
+  type xany_event
+
+  let xany_event : xany_event structure typ =
+    typedef (structure "xany_anonymous") "XAnyEvent"
+
+  let xany_type = field xany_event "type" int
+  let xany_serial = field xany_event "serial" ulong
+  let xany_send_event = field xany_event "send_event" int
+  let xany_display = field xany_event "display" display
+  let xany_window = field xany_event "window" window
+  let () = seal xany_event
+
+  type xkey_event
+
+  let xkey_event : xkey_event structure typ =
+    typedef (structure "xkey_anonymous") "XKeyEvent"
+
+  let xkey_type = field xkey_event "type" int
+  let xkey_serial = field xkey_event "serial" ulong
+  let xkey_send_event = field xkey_event "send_event" int
+  let xkey_display = field xkey_event "display" display
+  let xkey_window = field xkey_event "window" window
+  let xkey_root = field xkey_event "root" window
+  let xkey_subwindow = field xkey_event "subwindow" window
+  let xkey_time = field xkey_event "time" time
+  let xkey_x = field xkey_event "x" int
+  let xkey_y = field xkey_event "y" int
+  let xkey_x_root = field xkey_event "x_root" int
+  let xkey_y_root = field xkey_event "y_root" int
+  let xkey_state = field xkey_event "state" uint
+  let xkey_keycode = field xkey_event "keycode" uint
+  let xkey_same_screen = field xkey_event "same_screen" int
+  let () = seal xkey_event
+
+  type xbutton_event
+
+  let xbutton_event : xbutton_event structure typ =
+    typedef (structure "xbutton_anonymous") "XButtonEvent"
+
+  let xbutton_type = field xbutton_event "type" int
+  let xbutton_serial = field xbutton_event "serial" ulong
+  let xbutton_send_event = field xbutton_event "send_event" int
+  let xbutton_display = field xbutton_event "display" display
+  let xbutton_window = field xbutton_event "window" window
+  let xbutton_root = field xbutton_event "root" window
+  let xbutton_subwindow = field xbutton_event "subwindow" window
+  let xbutton_time = field xbutton_event "time" time
+  let xbutton_x = field xbutton_event "x" int
+  let xbutton_y = field xbutton_event "y" int
+  let xbutton_x_root = field xbutton_event "x_root" int
+  let xbutton_y_root = field xbutton_event "y_root" int
+  let xbutton_state = field xbutton_event "state" uint
+  let xbutton_button = field xbutton_event "button" uint
+  let xbutton_same_screen = field xbutton_event "same_screen" int
+  let () = seal xbutton_event
+
+  type xclient_event
+
+  let xclient_event : xclient_event structure typ =
+    typedef (structure "xclient_anonymous") "XClientMessageEvent"
+
+  let xc_type = field xclient_event "type" int
+  let xc_serial = field xclient_event "serial" ulong
+  let xc_send_event = field xclient_event "send_event" int
+  let xc_display = field xclient_event "display" display
+  let xc_window = field xclient_event "window" window
+  let xc_message_type = field xclient_event "message_type" atom
+  let xc_format = field xclient_event "format" int
+
+  (*let xc_data = field xclient_event "data" client_message_data*)
+  let xc_data_b = field xclient_event "data.b" (array 20 char)
+  let xc_data_s = field xclient_event "data.s" (array 10 short)
+  let xc_data_l = field xclient_event "data.l" (array 5 long)
+  let () = seal xclient_event
+
+  type xevent_union
+
+  let xevent_union : xevent_union union typ = union "_XEvent"
+  let xev_any = field xevent_union "xany" xany_event
+  let xev_key = field xevent_union "xkey" xkey_event
+  let xev_button = field xevent_union "xbutton" xbutton_event
+  let xev_client = field xevent_union "xclient" xclient_event
+  let () = seal xevent_union
 end

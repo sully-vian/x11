@@ -1,24 +1,9 @@
 open Ctypes
 open Utils
+open Types_generated
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
-
-  type display = unit ptr
-  type window = Unsigned.ULong.t
-  type keysym = int
-  type keycode = int
-  type button = int
-
-  let display = ptr void
-  let window = ulong
-  let eventMask = int
-  let keysym = int
-  let keycode = int
-  let grabMode = int
-  let button = int
-  let cursor = int
-  let keyMask = int
 
   let open_display =
     foreign "XOpenDisplay" (string_opt @-> returning (ptr_opt void))
@@ -66,10 +51,6 @@ module Functions (F : Ctypes.FOREIGN) = struct
       (display @-> keycode @-> keyMask @-> window @-> bool @-> grabMode
      @-> grabMode @-> returning void)
 
-  (*type xevent_raw
-
-  let xevent_raw : xevent_raw union typ = union "XEvent"
-
-  let next_event_raw =
-    foreign "XNextEvent" (display @-> ptr xevent_raw @-> returning int)*)
+  let next_event_stub =
+    foreign "XNextEvent" (display @-> ptr xevent_union @-> returning void)
 end

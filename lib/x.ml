@@ -1,8 +1,8 @@
 module CI = Cstubs_internals
 module CS = Ctypes_static
 module CP = Ctypes_ptr
-open C.Functions
 open Xevent
+open C.Types
 open Mask
 
 type visual

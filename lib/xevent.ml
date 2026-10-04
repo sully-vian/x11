@@ -1,8 +1,6 @@
-open C.Functions
+open C.Types
 
 type xid
-type time
-type atom
 type colormap
 type drawable
 type circulationRequest = PlaceOnTop | PlaceOnBottom
@@ -13,7 +11,7 @@ type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 type message_data =
   | Bytes of char array
   | Shorts of int array
-  | Longs of int array
+  | Longs of Signed.long array
 
 type notifyMode =
   | NotifyNormal
@@ -32,7 +30,7 @@ type notifyDetail =
   | NotifyDetailNone
 
 type keyEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -40,14 +38,14 @@ type keyEvent = {
   subwindow : window;
   time : time;
   pos : int * int;
-  root_pos : int * int;
+  pos_root : int * int;
   state : int;
   keycode : keycode;
   same_screen : bool;
 }
 
 type buttonEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -55,7 +53,7 @@ type buttonEvent = {
   subwindow : window;
   time : time;
   pos : int * int;
-  root_pos : int * int;
+  pos_root : int * int;
   state : int;
   button : button;
   same_screen : bool;
@@ -65,7 +63,7 @@ type buttonPressedEvent = buttonEvent
 type buttonReleasedEvent = buttonEvent
 
 type motionEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -73,7 +71,7 @@ type motionEvent = {
   subwindow : window;
   time : time;
   pos : int * int;
-  root_pos : int * int;
+  pos_root : int * int;
   state : int;
   same_screen : bool;
 }
@@ -81,7 +79,7 @@ type motionEvent = {
 type pointerMovedEvent = motionEvent
 
 type crossingEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -89,7 +87,7 @@ type crossingEvent = {
   subwindow : window;
   time : time;
   pos : int * int;
-  root_pos : int * int;
+  pos_root : int * int;
   mode : notifyMode;
   detail : notifyDetail;
 }
@@ -98,7 +96,7 @@ type enterWindowEvent = crossingEvent
 type leaveWindowEvent = crossingEvent
 
 type focusChangeEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -110,7 +108,7 @@ type focusInEvent = focusChangeEvent
 type focusOutEvent = focusChangeEvent
 
 type keymapEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -118,7 +116,7 @@ type keymapEvent = {
 }
 
 type exposeEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -128,7 +126,7 @@ type exposeEvent = {
 }
 
 type graphicsExposeEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   drawable : drawable;
@@ -138,7 +136,7 @@ type graphicsExposeEvent = {
 }
 
 type noExposeEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   drawable : drawable;
@@ -146,7 +144,7 @@ type noExposeEvent = {
 }
 
 type visibilityEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -154,7 +152,7 @@ type visibilityEvent = {
 }
 
 type createWindowEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   parent : window;
@@ -166,7 +164,7 @@ type createWindowEvent = {
 }
 
 type destroyWindowEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -174,7 +172,7 @@ type destroyWindowEvent = {
 }
 
 type unmapEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -183,7 +181,7 @@ type unmapEvent = {
 }
 
 type mapEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -192,7 +190,7 @@ type mapEvent = {
 }
 
 type mapRequestEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   parent : window;
@@ -200,7 +198,7 @@ type mapRequestEvent = {
 }
 
 type reparentEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -211,7 +209,7 @@ type reparentEvent = {
 }
 
 type configureEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -224,7 +222,7 @@ type configureEvent = {
 }
 
 type gravityEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -233,7 +231,7 @@ type gravityEvent = {
 }
 
 type resizeRequestEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -241,7 +239,7 @@ type resizeRequestEvent = {
 }
 
 type configureRequestEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   parent : window;
@@ -255,7 +253,7 @@ type configureRequestEvent = {
 }
 
 type circulateEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   event : window;
@@ -264,7 +262,7 @@ type circulateEvent = {
 }
 
 type circulateRequestEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   parent : window;
@@ -273,7 +271,7 @@ type circulateRequestEvent = {
 }
 
 type propertyEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -283,7 +281,7 @@ type propertyEvent = {
 }
 
 type selectionClearEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -292,7 +290,7 @@ type selectionClearEvent = {
 }
 
 type selectionRequestEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   owner : window;
@@ -304,7 +302,7 @@ type selectionRequestEvent = {
 }
 
 type selectionEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   requestor : window;
@@ -315,7 +313,7 @@ type selectionEvent = {
 }
 
 type colormapEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -325,7 +323,7 @@ type colormapEvent = {
 }
 
 type clientMessageEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -334,7 +332,7 @@ type clientMessageEvent = {
 }
 
 type mappingEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
@@ -346,19 +344,19 @@ type mappingEvent = {
 type errorEvent = {
   display : display;
   resourceid : xid;
-  serial : int;
+  serial : Unsigned.ulong;
   codes : int * int * int;
 }
 
 type anyEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
 }
 
 type genericEvent = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   extension : int;
@@ -366,7 +364,7 @@ type genericEvent = {
 }
 
 type genericEventCookie = {
-  serial : int;
+  serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   extension : int;

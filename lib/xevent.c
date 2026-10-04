@@ -7,25 +7,25 @@
 
 value Val_xevent(XEvent *event) {
   CAMLparam0();
-  CAMLlocal5(v_record, v_pos, v_root_pos, v_size, v_event);
+  CAMLlocal5(v_record, v_pos, v_pos_root, v_size, v_event);
   int off = 0;
 
   switch (event->type) {
   case KeyPress:
   case KeyRelease:
     v_record = caml_alloc(12, 0); // 12 fields
-    Store_field(v_record, off++, Val_int(event->xkey.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xkey.serial));
     Store_field(v_record, off++, Val_bool(event->xkey.send_event));
     Store_field(v_record, off++, Val_ptr(event->xkey.display));
-    Store_field(v_record, off++, Val_xid(event->xkey.window));
-    Store_field(v_record, off++, Val_xid(event->xkey.root));
-    Store_field(v_record, off++, Val_xid(event->xkey.subwindow));
-    Store_field(v_record, off++, Val_xid(event->xkey.time));
+    Store_field(v_record, off++, caml_copy_int64(event->xkey.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xkey.root));
+    Store_field(v_record, off++, caml_copy_int64(event->xkey.subwindow));
+    Store_field(v_record, off++, caml_copy_int64(event->xkey.time));
     v_pos = caml_tuple2(Val_int(event->xkey.x), Val_int(event->xkey.y));
     Store_field(v_record, off++, v_pos);
-    v_root_pos =
+    v_pos_root =
         caml_tuple2(Val_int(event->xkey.x_root), Val_int(event->xkey.y_root));
-    Store_field(v_record, off++, v_root_pos);
+    Store_field(v_record, off++, v_pos_root);
     Store_field(v_record, off++, Val_int(event->xkey.state));
     Store_field(v_record, off++, Val_int(event->xkey.keycode));
     Store_field(v_record, off++, Val_bool(event->xkey.same_screen));
@@ -36,18 +36,18 @@ value Val_xevent(XEvent *event) {
   case ButtonPress:
   case ButtonRelease:
     v_record = caml_alloc(12, 0); //  12 fields
-    Store_field(v_record, off++, Val_int(event->xbutton.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xbutton.serial));
     Store_field(v_record, off++, Val_bool(event->xbutton.send_event));
     Store_field(v_record, off++, Val_ptr(event->xbutton.display));
-    Store_field(v_record, off++, Val_xid(event->xbutton.window));
-    Store_field(v_record, off++, Val_xid(event->xbutton.root));
-    Store_field(v_record, off++, Val_xid(event->xbutton.subwindow));
-    Store_field(v_record, off++, Val_xid(event->xbutton.time));
+    Store_field(v_record, off++, caml_copy_int64(event->xbutton.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xbutton.root));
+    Store_field(v_record, off++, caml_copy_int64(event->xbutton.subwindow));
+    Store_field(v_record, off++, caml_copy_int64(event->xbutton.time));
     v_pos = caml_tuple2(Val_int(event->xbutton.x), Val_int(event->xbutton.y));
     Store_field(v_record, off++, v_pos);
-    v_root_pos = caml_tuple2(Val_int(event->xbutton.x_root),
+    v_pos_root = caml_tuple2(Val_int(event->xbutton.x_root),
                              Val_int(event->xbutton.y_root));
-    Store_field(v_record, off++, v_root_pos);
+    Store_field(v_record, off++, v_pos_root);
     Store_field(v_record, off++, Val_int(event->xbutton.state));
     Store_field(v_record, off++, Val_int(event->xbutton.button));
     Store_field(v_record, off++, Val_bool(event->xbutton.same_screen));
@@ -57,18 +57,18 @@ value Val_xevent(XEvent *event) {
 
   case MotionNotify:
     v_record = caml_alloc(13, 0); // 13 fields
-    Store_field(v_record, off++, Val_int(event->xmotion.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xmotion.serial));
     Store_field(v_record, off++, Val_bool(event->xmotion.send_event));
     Store_field(v_record, off++, Val_ptr(event->xmotion.display));
-    Store_field(v_record, off++, Val_xid(event->xmotion.window));
-    Store_field(v_record, off++, Val_xid(event->xmotion.root));
-    Store_field(v_record, off++, Val_xid(event->xmotion.subwindow));
-    Store_field(v_record, off++, Val_xid(event->xmotion.time));
+    Store_field(v_record, off++, caml_copy_int64(event->xmotion.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xmotion.root));
+    Store_field(v_record, off++, caml_copy_int64(event->xmotion.subwindow));
+    Store_field(v_record, off++, caml_copy_int64(event->xmotion.time));
     v_pos = caml_tuple2(Val_int(event->xmotion.x), Val_int(event->xmotion.y));
     Store_field(v_record, off++, v_pos);
-    v_root_pos = caml_tuple2(Val_int(event->xmotion.x_root),
+    v_pos_root = caml_tuple2(Val_int(event->xmotion.x_root),
                              Val_int(event->xmotion.y_root));
-    Store_field(v_record, off++, v_root_pos);
+    Store_field(v_record, off++, v_pos_root);
     Store_field(v_record, off++, Val_int(event->xmotion.state));
     Store_field(v_record, off++, Val_bool(event->xmotion.same_screen));
     v_event = caml_alloc(1, event->type);
@@ -77,10 +77,10 @@ value Val_xevent(XEvent *event) {
 
   case Expose:
     v_record = caml_alloc(7, 0); // 7 fields
-    Store_field(v_record, off++, Val_int(event->xexpose.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xexpose.serial));
     Store_field(v_record, off++, Val_bool(event->xexpose.send_event));
     Store_field(v_record, off++, Val_ptr(event->xexpose.display));
-    Store_field(v_record, off++, Val_xid(event->xexpose.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xexpose.window));
     v_pos = caml_tuple2(Val_int(event->xexpose.x), Val_int(event->xexpose.y));
     Store_field(v_record, off++, v_pos);
     v_size = caml_tuple2(Val_int(event->xexpose.width),
@@ -93,22 +93,22 @@ value Val_xevent(XEvent *event) {
 
   case DestroyNotify:
     v_record = caml_alloc(5, 0);
-    Store_field(v_record, off++, Val_int(event->xdestroywindow.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xdestroywindow.serial));
     Store_field(v_record, off++, Val_bool(event->xdestroywindow.send_event));
     Store_field(v_record, off++, Val_ptr(event->xdestroywindow.display));
-    Store_field(v_record, off++, Val_xid(event->xdestroywindow.event));
-    Store_field(v_record, off++, Val_xid(event->xdestroywindow.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xdestroywindow.event));
+    Store_field(v_record, off++, caml_copy_int64(event->xdestroywindow.window));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
     break;
 
   case UnmapNotify:
     v_record = caml_alloc(6, 0);
-    Store_field(v_record, off++, Val_int(event->xunmap.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xunmap.serial));
     Store_field(v_record, off++, Val_bool(event->xunmap.send_event));
     Store_field(v_record, off++, Val_ptr(event->xunmap.display));
-    Store_field(v_record, off++, Val_xid(event->xunmap.event));
-    Store_field(v_record, off++, Val_xid(event->xunmap.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xunmap.event));
+    Store_field(v_record, off++, caml_copy_int64(event->xunmap.window));
     Store_field(v_record, off++, Val_bool(event->xunmap.from_configure));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -116,11 +116,11 @@ value Val_xevent(XEvent *event) {
 
   case MapNotify:
     v_record = caml_alloc(6, 0);
-    Store_field(v_record, off++, Val_int(event->xmap.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xmap.serial));
     Store_field(v_record, off++, Val_bool(event->xmap.send_event));
     Store_field(v_record, off++, Val_ptr(event->xmap.display));
-    Store_field(v_record, off++, Val_xid(event->xmap.event));
-    Store_field(v_record, off++, Val_xid(event->xmap.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xmap.event));
+    Store_field(v_record, off++, caml_copy_int64(event->xmap.window));
     Store_field(v_record, off++, Val_bool(event->xmap.override_redirect));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -128,22 +128,25 @@ value Val_xevent(XEvent *event) {
 
   case MapRequest:
     v_record = caml_alloc(5, 0);
-    Store_field(v_record, off++, Val_int(event->xmaprequest.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xmaprequest.serial));
     Store_field(v_record, off++, Val_bool(event->xmaprequest.send_event));
     Store_field(v_record, off++, Val_ptr(event->xmaprequest.display));
-    Store_field(v_record, off++, Val_xid(event->xmaprequest.parent));
-    Store_field(v_record, off++, Val_xid(event->xmaprequest.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xmaprequest.parent));
+    Store_field(v_record, off++, caml_copy_int64(event->xmaprequest.window));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
     break;
 
   case ConfigureRequest:
     v_record = caml_alloc(12, 0);
-    Store_field(v_record, off++, Val_int(event->xconfigurerequest.serial));
+    Store_field(v_record, off++,
+                caml_copy_int64(event->xconfigurerequest.serial));
     Store_field(v_record, off++, Val_bool(event->xconfigurerequest.send_event));
     Store_field(v_record, off++, Val_ptr(event->xconfigurerequest.display));
-    Store_field(v_record, off++, Val_xid(event->xconfigurerequest.parent));
-    Store_field(v_record, off++, Val_xid(event->xconfigurerequest.window));
+    Store_field(v_record, off++,
+                caml_copy_int64(event->xconfigurerequest.parent));
+    Store_field(v_record, off++,
+                caml_copy_int64(event->xconfigurerequest.window));
     v_pos = caml_tuple2(Val_int(event->xconfigurerequest.x),
                         Val_int(event->xconfigurerequest.y));
     Store_field(v_record, off++, v_pos);
@@ -152,7 +155,8 @@ value Val_xevent(XEvent *event) {
     Store_field(v_record, off++, v_size);
     Store_field(v_record, off++,
                 Val_int(event->xconfigurerequest.border_width));
-    Store_field(v_record, off++, Val_xid(event->xconfigurerequest.above));
+    Store_field(v_record, off++,
+                caml_copy_int64(event->xconfigurerequest.above));
     Store_field(v_record, off++, Val_int(event->xconfigurerequest.detail));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -160,12 +164,12 @@ value Val_xevent(XEvent *event) {
 
   case ReparentNotify:
     v_record = caml_alloc(9, 0); // 9 fields
-    Store_field(v_record, off++, Val_int(event->xreparent.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xreparent.serial));
     Store_field(v_record, off++, Val_bool(event->xreparent.send_event));
     Store_field(v_record, off++, Val_ptr(event->xreparent.display));
-    Store_field(v_record, off++, Val_xid(event->xreparent.event));
-    Store_field(v_record, off++, Val_xid(event->xreparent.window));
-    Store_field(v_record, off++, Val_xid(event->xreparent.parent));
+    Store_field(v_record, off++, caml_copy_int64(event->xreparent.event));
+    Store_field(v_record, off++, caml_copy_int64(event->xreparent.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xreparent.parent));
     v_pos =
         caml_tuple2(Val_int(event->xreparent.x), Val_int(event->xreparent.y));
     Store_field(v_record, off++, v_pos);
@@ -176,11 +180,11 @@ value Val_xevent(XEvent *event) {
 
   case ConfigureNotify:
     v_record = caml_alloc(12, 0); // 12 fields
-    Store_field(v_record, off++, Val_int(event->xconfigure.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xconfigure.serial));
     Store_field(v_record, off++, Val_bool(event->xconfigure.send_event));
     Store_field(v_record, off++, Val_ptr(event->xconfigure.display));
-    Store_field(v_record, off++, Val_xid(event->xconfigure.event));
-    Store_field(v_record, off++, Val_xid(event->xconfigure.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xconfigure.event));
+    Store_field(v_record, off++, caml_copy_int64(event->xconfigure.window));
     v_pos =
         caml_tuple2(Val_int(event->xconfigure.x), Val_int(event->xconfigure.y));
     Store_field(v_record, off++, v_pos);
@@ -188,7 +192,7 @@ value Val_xevent(XEvent *event) {
                          Val_int(event->xconfigure.height));
     Store_field(v_record, off++, v_size);
     Store_field(v_record, off++, Val_int(event->xconfigure.border_width));
-    Store_field(v_record, off++, Val_xid(event->xconfigure.above));
+    Store_field(v_record, off++, caml_copy_int64(event->xconfigure.above));
     Store_field(v_record, off++, Val_bool(event->xconfigure.override_redirect));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -196,12 +200,12 @@ value Val_xevent(XEvent *event) {
 
   case PropertyNotify:
     v_record = caml_alloc(7, 0); // 7 fields
-    Store_field(v_record, off++, Val_int(event->xproperty.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xproperty.serial));
     Store_field(v_record, off++, Val_bool(event->xproperty.send_event));
     Store_field(v_record, off++, Val_ptr(event->xproperty.display));
-    Store_field(v_record, off++, Val_xid(event->xproperty.window));
-    Store_field(v_record, off++, Val_xid(event->xproperty.atom));
-    Store_field(v_record, off++, Val_xid(event->xproperty.time));
+    Store_field(v_record, off++, caml_copy_int64(event->xproperty.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xproperty.atom));
+    Store_field(v_record, off++, caml_copy_int64(event->xproperty.time));
     Store_field(v_record, off++, Val_int(event->xproperty.state));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -229,7 +233,7 @@ value Val_xevent(XEvent *event) {
     case 32:
       v_array = caml_alloc(5, 0); // tag 0 for standard OCaml array
       for (int i = 0; i < 5; i++) {
-        Store_field(v_array, i, Val_int(event->xclient.data.l[i]));
+        Store_field(v_array, i, caml_copy_int64(event->xclient.data.l[i]));
       }
       v_data = caml_alloc(1, 2); // tag 2 for Longs
       Store_field(v_data, 0, v_array);
@@ -241,11 +245,11 @@ value Val_xevent(XEvent *event) {
     }
 
     v_record = caml_alloc(6, 0); // 7 fields
-    Store_field(v_record, off++, Val_int(event->xclient.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xclient.serial));
     Store_field(v_record, off++, Val_bool(event->xclient.send_event));
     Store_field(v_record, off++, Val_ptr(event->xclient.display));
-    Store_field(v_record, off++, Val_xid(event->xclient.window));
-    Store_field(v_record, off++, Val_xid(event->xclient.message_type));
+    Store_field(v_record, off++, caml_copy_int64(event->xclient.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xclient.message_type));
     Store_field(v_record, off++, v_data);
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -254,19 +258,19 @@ value Val_xevent(XEvent *event) {
   case EnterNotify:
   case LeaveNotify:
     v_record = caml_alloc(11, 0); // 11 fields
-    Store_field(v_record, off++, Val_int(event->xcrossing.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xcrossing.serial));
     Store_field(v_record, off++, Val_bool(event->xcrossing.send_event));
     Store_field(v_record, off++, Val_ptr(event->xcrossing.display));
-    Store_field(v_record, off++, Val_xid(event->xcrossing.window));
-    Store_field(v_record, off++, Val_xid(event->xcrossing.root));
-    Store_field(v_record, off++, Val_xid(event->xcrossing.subwindow));
-    Store_field(v_record, off++, Val_xid(event->xcrossing.time));
+    Store_field(v_record, off++, caml_copy_int64(event->xcrossing.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xcrossing.root));
+    Store_field(v_record, off++, caml_copy_int64(event->xcrossing.subwindow));
+    Store_field(v_record, off++, caml_copy_int64(event->xcrossing.time));
     v_pos =
         caml_tuple2(Val_int(event->xcrossing.x), Val_int(event->xcrossing.y));
     Store_field(v_record, off++, v_pos);
-    v_root_pos = caml_tuple2(Val_int(event->xcrossing.x_root),
+    v_pos_root = caml_tuple2(Val_int(event->xcrossing.x_root),
                              Val_int(event->xcrossing.y_root));
-    Store_field(v_record, off++, v_root_pos);
+    Store_field(v_record, off++, v_pos_root);
     /* TODO */
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
@@ -275,10 +279,10 @@ value Val_xevent(XEvent *event) {
   case FocusIn:
   case FocusOut:
     v_record = caml_alloc(6, 0); // 6 fields
-    Store_field(v_record, off++, Val_int(event->xfocus.serial));
+    Store_field(v_record, off++, caml_copy_int64(event->xfocus.serial));
     Store_field(v_record, off++, Val_bool(event->xfocus.send_event));
     Store_field(v_record, off++, Val_ptr(event->xfocus.display));
-    Store_field(v_record, off++, Val_xid(event->xfocus.window));
+    Store_field(v_record, off++, caml_copy_int64(event->xfocus.window));
     Store_field(v_record, off++, Val_int(event->xfocus.mode));
     Store_field(v_record, off++, Val_int(event->xfocus.detail));
     v_event = caml_alloc(1, event->type);

@@ -29,12 +29,12 @@ let to_native : 'a -> nativeint = fun x -> Obj.magic x
 let test_key_press_ev () =
   match get_key_press_ev () with
   | KeyPress ev ->
-      Alcotest.(check int) "serial" 42 ev.serial;
+      Alcotest.(check int) "serial" 42 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
          User should add concrete accessors to xevent.ml or use a custom testable. *)
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
-      Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
+      Alcotest.(check (pair int int)) "root" (100, 200) ev.pos_root;
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -43,12 +43,12 @@ let test_key_press_ev () =
 let test_key_release_ev () =
   match get_key_release_ev () with
   | KeyRelease ev ->
-      Alcotest.(check int) "serial" 42 ev.serial;
+      Alcotest.(check int) "serial" 42 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display and window are abstract types, cannot directly compare.
          User should add concrete accessors to xevent.ml or use a custom testable. *)
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
-      Alcotest.(check (pair int int)) "root" (100, 200) ev.root_pos;
+      Alcotest.(check (pair int int)) "root" (100, 200) ev.pos_root;
       Alcotest.(check int) "state" 0 ev.state;
       Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -57,11 +57,11 @@ let test_key_release_ev () =
 let test_button_press_ev () =
   match get_button_press_ev () with
   | ButtonPress ev ->
-      Alcotest.(check int) "serial" 100 ev.serial;
+      Alcotest.(check int) "serial" 100 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
       Alcotest.(check (pair int int)) "pos" (50, 75) ev.pos;
-      Alcotest.(check (pair int int)) "root" (150, 250) ev.root_pos;
+      Alcotest.(check (pair int int)) "root" (150, 250) ev.pos_root;
       Alcotest.(check int) "state" 1 ev.state;
       Alcotest.(check bool) "button" true (button1 = ev.button);
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -70,11 +70,11 @@ let test_button_press_ev () =
 let test_motion_notify_ev () =
   match get_motion_notify_ev () with
   | MotionNotify ev ->
-      Alcotest.(check int) "serial" 200 ev.serial;
+      Alcotest.(check int) "serial" 200 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
       (* NOTE: display, window, root, subwindow are abstract types *)
       Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
-      Alcotest.(check (pair int int)) "root" (130, 240) ev.root_pos;
+      Alcotest.(check (pair int int)) "root" (130, 240) ev.pos_root;
       Alcotest.(check int) "state" 2 ev.state;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected MotionNotify event"
@@ -82,7 +82,7 @@ let test_motion_notify_ev () =
 let test_expose_ev () =
   match get_expose_ev () with
   | Expose ev ->
-      Alcotest.(check int) "serial" 300 ev.serial;
+      Alcotest.(check int) "serial" 300 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display and window are abstract types *)
       Alcotest.(check (pair int int)) "pos" (5, 15) ev.pos;
@@ -92,39 +92,41 @@ let test_expose_ev () =
 
 let test_destroy_window_ev () =
   match get_destroy_window_ev () with
-  | DestroyWindow ev -> Alcotest.(check int) "serial" 150 ev.serial
+  | DestroyWindow ev ->
+      Alcotest.(check int) "serial" 150 (Unsigned.ULong.to_int ev.serial)
   | _ -> Alcotest.fail "Expected DestroyWindow"
 
 let test_unmap_notify_ev () =
   match get_unmap_notify_ev () with
   | Unmap ev ->
-      Alcotest.(check int) "serial" 160 ev.serial;
+      Alcotest.(check int) "serial" 160 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "from_configure" false ev.from_configure
   | _ -> Alcotest.fail "Expected Unmap"
 
 let test_map_notify_ev () =
   match get_map_notify_ev () with
   | Map ev ->
-      Alcotest.(check int) "serial" 170 ev.serial;
+      Alcotest.(check int) "serial" 170 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Map"
 
 let test_map_request_ev () =
   match get_map_request_ev () with
-  | MapRequest ev -> Alcotest.(check int) "serial" 180 ev.serial
+  | MapRequest ev ->
+      Alcotest.(check int) "serial" 180 (Unsigned.ULong.to_int ev.serial)
   | _ -> Alcotest.fail "Expected MapRequest"
 
 let test_configure_request_ev () =
   match get_configure_request_ev () with
   | ConfigureRequest ev ->
-      Alcotest.(check int) "serial" 190 ev.serial;
+      Alcotest.(check int) "serial" 190 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check (pair int int)) "size" (800, 600) ev.size
   | _ -> Alcotest.fail "Expected ConfigureRequest"
 
 let test_reparent_notify_ev () =
   match get_reparent_notify_ev () with
   | Reparent ev ->
-      Alcotest.(check int) "serial" 210 ev.serial;
+      Alcotest.(check int) "serial" 210 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
@@ -133,7 +135,7 @@ let test_reparent_notify_ev () =
 let test_configure_notify_ev () =
   match get_configure_notify_ev () with
   | ConfigureNotify ev ->
-      Alcotest.(check int) "serial" 220 ev.serial;
+      Alcotest.(check int) "serial" 220 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
       Alcotest.(check (pair int int)) "pos" (100, 200) ev.pos;
       Alcotest.(check (pair int int)) "size" (1024, 768) ev.size;
@@ -144,14 +146,14 @@ let test_configure_notify_ev () =
 let test_property_notify_ev () =
   match get_property_notify_ev () with
   | Property ev ->
-      Alcotest.(check int) "serial" 280 ev.serial;
+      Alcotest.(check int) "serial" 280 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event
   | _ -> Alcotest.fail "Expected Property event"
 
 let test_client_message_ev_b () =
   match get_client_message_ev_b () with
   | ClientMessage ev -> (
-      Alcotest.(check int) "serial" 330 ev.serial;
+      Alcotest.(check int) "serial" 330 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
       match ev.data with
       | Bytes b ->
@@ -178,14 +180,17 @@ let test_client_meessage_ev_l () =
   match get_client_message_ev_l () with
   | ClientMessage ev -> (
       match ev.data with
-      | Longs s -> Alcotest.(check (array int)) "data" [| 0; 1; 2; 3; 4 |] s
+      | Longs s ->
+          Alcotest.(check (array int))
+            "data" [| 0; 1; 2; 3; 4 |]
+            (Array.map Signed.Long.to_int s)
       | _ -> Alcotest.fail "Expected long")
   | _ -> Alcotest.fail "Expected ClientMessage event"
 
 let test_focus_in_ev () =
   match get_focus_in_ev () with
   | FocusIn ev ->
-      Alcotest.(check int) "serial" 90 ev.serial;
+      Alcotest.(check int) "serial" 90 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event
   | _ -> Alcotest.fail "Expected FocusIn event"
 
