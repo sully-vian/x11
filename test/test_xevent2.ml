@@ -262,7 +262,9 @@ let test_focus_in_ev () =
   match get_focus_in_ev () with
   | FocusIn ev ->
       Alcotest.(check int) "serial" 90 (Unsigned.ULong.to_int ev.serial);
-      Alcotest.(check bool) "send_event" false ev.send_event
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyNormal);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyNonlinear)
   | _ -> Alcotest.fail "Expected FocusIn event"
 
 let suite =

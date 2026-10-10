@@ -1,4 +1,5 @@
 open C.Types
+open Type_description
 
 type xid
 type colormap
@@ -13,21 +14,7 @@ type message_data =
   | Shorts of int array
   | Longs of Signed.long array
 
-type notifyMode =
-  | NotifyNormal
-  | NotifyGrab
-  | NotifyUngrab
-  | NotifyWhileGrabbed
-
-type notifyDetail =
-  | NotifyAncestor
-  | NotifyVirtual
-  | NotifyInferior
-  | NotifyNonlinear
-  | NotifyNonlinearVirtual
-  | NotifyPointer
-  | NotifyPointerRoot
-  | NotifyDetailNone
+include Enums
 
 type keyEvent = {
   serial : Unsigned.ulong;

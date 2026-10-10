@@ -59,6 +59,16 @@ let client_message_of_c ev : clientMessageEvent =
     data;
   }
 
+let focus_of_c ev : focusChangeEvent =
+  {
+    serial = getf ev xfocus_serial;
+    send_event = 0 <> getf ev xfocus_send_event;
+    display = getf ev xfocus_display;
+    window = getf ev xfocus_window;
+    mode = getf ev xfocus_mode;
+    detail = getf ev xfocus_detail;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -70,8 +80,8 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.MotionNotify -> failwith "Unsupported type MotionNotify"
   | Ev.EnterNotify -> failwith "Unsupported type EnterNotify"
   | Ev.LeaveNotify -> failwith "Unsupported type LeaveNotify"
-  | Ev.FocusIn -> failwith "Unsupported type FocusIn"
-  | Ev.FocusOut -> failwith "Unsupported type FocusOut"
+  | Ev.FocusIn -> FocusIn (focus_of_c (getf raw_ev xev_focus))
+  | Ev.FocusOut -> FocusOut (focus_of_c (getf raw_ev xev_focus))
   | Ev.KeymapNotify -> failwith "Unsupported type KeymapNotify"
   | Ev.Expose -> failwith "Unsupported type Expose"
   | Ev.GraphicsExpose -> failwith "Unsupported type GraphicsExpose"

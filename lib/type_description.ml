@@ -39,6 +39,27 @@ module Event_type = struct
     | Unknown of int64  (** extension events have dynamic codes *)
 end
 
+(* Variants backed by int X constants. Xevent re-exports them with [include]. *)
+module Enums = struct
+  type notifyMode =
+    | NotifyNormal
+    | NotifyGrab
+    | NotifyUngrab
+    | NotifyWhileGrabbed
+
+  type notifyDetail =
+    | NotifyAncestor
+    | NotifyVirtual
+    | NotifyInferior
+    | NotifyNonlinear
+    | NotifyNonlinearVirtual
+    | NotifyPointer
+    | NotifyPointerRoot
+    | NotifyDetailNone
+end
+
+open Enums
+
 module Types (F : Ctypes.TYPE) = struct
   open F
 
@@ -213,11 +234,12 @@ module Types (F : Ctypes.TYPE) = struct
   let xk_braceright = constant "XK_braceright" int
   let xk_asciitilde = constant "XK_asciitilde" int
 
-  (* X event codes are #defines, not a C enum: [~typedef:true] makes the
-     generated stubs use [sizeof(int)] instead of [sizeof(enum int)]. *)
+  (* X constants are #defines, not C enums: each enum gets its own typedef of
+     int (see the ctypes preamble in dune), and [~typedef:true] makes the
+     generated stubs use [sizeof(x11_…)] instead of [sizeof(enum x11_…)]. *)
   let event_type : Event_type.t typ =
     let c name = constant name int64_t in
-    enum "int" ~typedef:true
+    enum "x11_event_type" ~typedef:true
       ~unexpected:(fun n -> Event_type.Unknown n)
       Event_type.
         [
@@ -256,6 +278,30 @@ module Types (F : Ctypes.TYPE) = struct
           (MappingNotify, c "MappingNotify");
           (GenericEvent, c "GenericEvent");
         ]
+
+  let notify_mode : notifyMode typ =
+    let c name = constant name int64_t in
+    enum "x11_notify_mode" ~typedef:true
+      [
+        (NotifyNormal, c "NotifyNormal");
+        (NotifyGrab, c "NotifyGrab");
+        (NotifyUngrab, c "NotifyUngrab");
+        (NotifyWhileGrabbed, c "NotifyWhileGrabbed");
+      ]
+
+  let notify_detail : notifyDetail typ =
+    let c name = constant name int64_t in
+    enum "x11_notify_detail" ~typedef:true
+      [
+        (NotifyAncestor, c "NotifyAncestor");
+        (NotifyVirtual, c "NotifyVirtual");
+        (NotifyInferior, c "NotifyInferior");
+        (NotifyNonlinear, c "NotifyNonlinear");
+        (NotifyNonlinearVirtual, c "NotifyNonlinearVirtual");
+        (NotifyPointer, c "NotifyPointer");
+        (NotifyPointerRoot, c "NotifyPointerRoot");
+        (NotifyDetailNone, c "NotifyDetailNone");
+      ]
 
   type xany_event
 
@@ -332,6 +378,20 @@ module Types (F : Ctypes.TYPE) = struct
   let xc_data_l = field xclient_event "data.l" (array 5 long)
   let () = seal xclient_event
 
+  type xfocus_event
+
+  let xfocus_event : xfocus_event structure typ =
+    typedef (structure "xfocus_anonymous") "XFocusChangeEvent"
+
+  let xfocus_type = field xfocus_event "type" event_type
+  let xfocus_serial = field xfocus_event "serial" ulong
+  let xfocus_send_event = field xfocus_event "send_event" int
+  let xfocus_display = field xfocus_event "display" display
+  let xfocus_window = field xfocus_event "window" window
+  let xfocus_mode = field xfocus_event "mode" notify_mode
+  let xfocus_detail = field xfocus_event "detail" notify_detail
+  let () = seal xfocus_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -339,5 +399,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_key = field xevent_union "xkey" xkey_event
   let xev_button = field xevent_union "xbutton" xbutton_event
   let xev_client = field xevent_union "xclient" xclient_event
+  let xev_focus = field xevent_union "xfocus" xfocus_event
   let () = seal xevent_union
 end

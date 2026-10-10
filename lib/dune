@@ -8,8 +8,11 @@
  (c_library_flags (-lX11))
  (ctypes
   (external_library_name x11)
+  ; ctypes keys each enum on its C type name, so int-valued X constants get
+  ; distinct typedefs of int
   (headers
-   (include "X11/X.h" "X11/Xlib.h" "X11/Xutil.h"))
+   (preamble
+    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;"))
   (type_description
    (instance Types)
    (functor type_description))
