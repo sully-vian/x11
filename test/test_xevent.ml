@@ -120,6 +120,12 @@ external get_raw_unmap_notify_synthetic_ev : unit -> nativeint
 let get_unmap_notify_synthetic_ev () =
   Private.xevent_of_raw_address (get_raw_unmap_notify_synthetic_ev ())
 
+external get_raw_map_notify_override_ev : unit -> nativeint
+  = "get_raw_map_notify_override_ev"
+
+let get_map_notify_override_ev () =
+  Private.xevent_of_raw_address (get_raw_map_notify_override_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -240,6 +246,9 @@ let test_map_notify_ev () =
   match get_map_notify_ev () with
   | Map ev ->
       Alcotest.(check int) "serial" 170 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "event" 7001 (window_to_int ev.event);
+      Alcotest.(check int) "window" 7002 (window_to_int ev.window);
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Map"
 
@@ -377,6 +386,17 @@ let test_unmap_notify_synthetic_ev () =
       Alcotest.(check bool) "from_configure" true ev.from_configure
   | _ -> Alcotest.fail "Expected Unmap"
 
+(* Override-redirect window (popup menu, tooltip): a WM must not manage it *)
+let test_map_notify_override_ev () =
+  match get_map_notify_override_ev () with
+  | Map ev ->
+      Alcotest.(check int) "serial" 171 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "event" 1 (window_to_int ev.event);
+      Alcotest.(check int) "window" 7003 (window_to_int ev.window);
+      Alcotest.(check bool) "override_redirect" true ev.override_redirect
+  | _ -> Alcotest.fail "Expected Map"
+
 let suite =
   let open Alcotest in
   [
@@ -392,6 +412,7 @@ let suite =
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;
     test_case "UnmapNotify (synthetic)" `Quick test_unmap_notify_synthetic_ev;
     test_case "MapNotify" `Quick test_map_notify_ev;
+    test_case "MapNotify (override redirect)" `Quick test_map_notify_override_ev;
     test_case "MapRequest" `Quick test_map_request_ev;
     test_case "ConfigureRequest" `Quick test_configure_request_ev;
     test_case "ReparentNotify" `Quick test_reparent_notify_ev;

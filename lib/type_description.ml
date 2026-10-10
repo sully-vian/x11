@@ -487,6 +487,20 @@ module Types (F : Ctypes.TYPE) = struct
   let xunmap_from_configure = field xunmap_event "from_configure" int
   let () = seal xunmap_event
 
+  type xmap_event
+
+  let xmap_event : xmap_event structure typ =
+    typedef (structure "xmap_anonymous") "XMapEvent"
+
+  let xmap_type = field xmap_event "type" event_type
+  let xmap_serial = field xmap_event "serial" ulong
+  let xmap_send_event = field xmap_event "send_event" int
+  let xmap_display = field xmap_event "display" display
+  let xmap_event_window = field xmap_event "event" window
+  let xmap_window = field xmap_event "window" window
+  let xmap_override_redirect = field xmap_event "override_redirect" int
+  let () = seal xmap_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -503,5 +517,6 @@ module Types (F : Ctypes.TYPE) = struct
     field xevent_union "xdestroywindow" xdestroywindow_event
 
   let xev_unmap = field xevent_union "xunmap" xunmap_event
+  let xev_map = field xevent_union "xmap" xmap_event
   let () = seal xevent_union
 end
