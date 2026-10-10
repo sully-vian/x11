@@ -1,23 +1,94 @@
 open X11
 
 (* External C functions *)
-external get_key_press_ev : unit -> xEvent = "get_key_press_ev"
-external get_key_release_ev : unit -> xEvent = "get_key_release_ev"
-external get_button_press_ev : unit -> xEvent = "get_button_press_ev"
-external get_motion_notify_ev : unit -> xEvent = "get_motion_notify_ev"
-external get_expose_ev : unit -> xEvent = "get_expose_ev"
-external get_destroy_window_ev : unit -> xEvent = "get_destroy_window_ev"
-external get_unmap_notify_ev : unit -> xEvent = "get_unmap_notify_ev"
-external get_map_notify_ev : unit -> xEvent = "get_map_notify_ev"
-external get_map_request_ev : unit -> xEvent = "get_map_request_ev"
-external get_configure_request_ev : unit -> xEvent = "get_configure_request_ev"
-external get_reparent_notify_ev : unit -> xEvent = "get_reparent_notify_ev"
-external get_configure_notify_ev : unit -> xEvent = "get_configure_notify_ev"
-external get_property_notify_ev : unit -> xEvent = "get_property_notify_ev"
-external get_client_message_ev_b : unit -> xEvent = "get_client_message_ev_b"
-external get_client_message_ev_s : unit -> xEvent = "get_client_message_ev_s"
-external get_client_message_ev_l : unit -> xEvent = "get_client_message_ev_l"
-external get_focus_in_ev : unit -> xEvent = "get_focus_in_ev"
+external get_raw_key_press_ev : unit -> nativeint = "get_raw_key_press_ev"
+external get_raw_key_release_ev : unit -> nativeint = "get_raw_key_release_ev"
+external get_raw_button_press_ev : unit -> nativeint = "get_raw_button_press_ev"
+
+external get_raw_motion_notify_ev : unit -> nativeint
+  = "get_raw_motion_notify_ev"
+
+external get_raw_expose_ev : unit -> nativeint = "get_raw_expose_ev"
+
+external get_raw_destroy_window_ev : unit -> nativeint
+  = "get_raw_destroy_window_ev"
+
+external get_raw_unmap_notify_ev : unit -> nativeint = "get_raw_unmap_notify_ev"
+external get_raw_map_notify_ev : unit -> nativeint = "get_raw_map_notify_ev"
+external get_raw_map_request_ev : unit -> nativeint = "get_raw_map_request_ev"
+
+external get_raw_configure_request_ev : unit -> nativeint
+  = "get_raw_configure_request_ev"
+
+external get_raw_reparent_notify_ev : unit -> nativeint
+  = "get_raw_reparent_notify_ev"
+
+external get_raw_configure_notify_ev : unit -> nativeint
+  = "get_raw_configure_notify_ev"
+
+external get_raw_property_notify_ev : unit -> nativeint
+  = "get_raw_property_notify_ev"
+
+external get_raw_client_message_ev_b : unit -> nativeint
+  = "get_raw_client_message_ev_b"
+
+external get_raw_client_message_ev_s : unit -> nativeint
+  = "get_raw_client_message_ev_s"
+
+external get_raw_client_message_ev_l : unit -> nativeint
+  = "get_raw_client_message_ev_l"
+
+external get_raw_focus_in_ev : unit -> nativeint = "get_raw_focus_in_ev"
+
+(* Convert the raw C events through the ctypes view *)
+let get_key_press_ev () =
+  Private.xevent_of_raw_address (get_raw_key_press_ev ())
+
+let get_key_release_ev () =
+  Private.xevent_of_raw_address (get_raw_key_release_ev ())
+
+let get_button_press_ev () =
+  Private.xevent_of_raw_address (get_raw_button_press_ev ())
+
+let get_motion_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_motion_notify_ev ())
+
+let get_expose_ev () = Private.xevent_of_raw_address (get_raw_expose_ev ())
+
+let get_destroy_window_ev () =
+  Private.xevent_of_raw_address (get_raw_destroy_window_ev ())
+
+let get_unmap_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_unmap_notify_ev ())
+
+let get_map_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_map_notify_ev ())
+
+let get_map_request_ev () =
+  Private.xevent_of_raw_address (get_raw_map_request_ev ())
+
+let get_configure_request_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_request_ev ())
+
+let get_reparent_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_reparent_notify_ev ())
+
+let get_configure_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_notify_ev ())
+
+let get_property_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_property_notify_ev ())
+
+let get_client_message_ev_b () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_b ())
+
+let get_client_message_ev_s () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_s ())
+
+let get_client_message_ev_l () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_l ())
+
+let get_focus_in_ev () = Private.xevent_of_raw_address (get_raw_focus_in_ev ())
 
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't

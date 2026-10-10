@@ -1,7 +1,7 @@
 let () =
   Alcotest.run "X11 Core Bindings"
     [
-      (*("XEvent2", Test_xevent2.suite);*)
+      ("XEvent2", Test_xevent2.suite);
       ("XEvent", Test_xevent.suite);
       (*("XWindowAttributes", Test_xwindowattributes.suite);
       ("X11 X", Test_x.suite);

@@ -67,10 +67,36 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.ButtonRelease -> ButtonRelease (button_of_c (getf raw_ev xev_button))
   | Ev.ClientMessage ->
       ClientMessage (client_message_of_c (getf raw_ev xev_client))
+  | Ev.MotionNotify -> failwith "Unsupported type MotionNotify"
+  | Ev.EnterNotify -> failwith "Unsupported type EnterNotify"
+  | Ev.LeaveNotify -> failwith "Unsupported type LeaveNotify"
+  | Ev.FocusIn -> failwith "Unsupported type FocusIn"
+  | Ev.FocusOut -> failwith "Unsupported type FocusOut"
+  | Ev.KeymapNotify -> failwith "Unsupported type KeymapNotify"
+  | Ev.Expose -> failwith "Unsupported type Expose"
+  | Ev.GraphicsExpose -> failwith "Unsupported type GraphicsExpose"
+  | Ev.NoExpose -> failwith "Unsupported type NoExpose"
+  | Ev.VisibilityNotify -> failwith "Unsupported type VisibilityNotify"
+  | Ev.CreateNotify -> failwith "Unsupported type CreateNotify"
+  | Ev.DestroyNotify -> failwith "Unsupported type DestroyNotify"
+  | Ev.UnmapNotify -> failwith "Unsupported type UnmapNotify"
+  | Ev.MapNotify -> failwith "Unsupported type MapNotify"
+  | Ev.MapRequest -> failwith "Unsupported type MapRequest"
+  | Ev.ReparentNotify -> failwith "Unsupported type ReparentNotify"
+  | Ev.ConfigureNotify -> failwith "Unsupported type ConfigureNotify"
+  | Ev.ConfigureRequest -> failwith "Unsupported type ConfigureRequest"
+  | Ev.GravityNotify -> failwith "Unsupported type GravityNotify"
+  | Ev.ResizeRequest -> failwith "Unsupported type ResizeRequest"
+  | Ev.CirculateNotify -> failwith "Unsupported type CirculateNotify"
+  | Ev.CirculateRequest -> failwith "Unsupported type CirculateRequest"
+  | Ev.PropertyNotify -> failwith "Unsupported type PropertyNotify"
+  | Ev.SelectionClear -> failwith "Unsupported type SelectionClear"
+  | Ev.SelectionRequest -> failwith "Unsupported type SelectionRequest"
+  | Ev.SelectionNotify -> failwith "Unsupported type SelectionNotify"
+  | Ev.ColormapNotify -> failwith "Unsupported type ColormapNotify"
+  | Ev.MappingNotify -> failwith "Unsupported type MappingNotify"
+  | Ev.GenericEvent -> failwith "Unsupported type GenericEvent"
   | Ev.Unknown n -> failwith (Printf.sprintf "Unknown event type '%Ld'" n)
-  (* TODO: remove once every event type is handled, to get exhaustiveness
-     checking back *)
-  | _ -> failwith "Unsupported event type"
 
 let c_of_xevent (_ : xEvent) : xevent_union union = failwith "Not implemented"
 

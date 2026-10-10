@@ -728,3 +728,13 @@ type windowAttributes = {
 }
 
 val get_window_attributes : display -> window -> windowAttributes
+
+(**/**)
+
+(** Internal helpers exposed for the test suite. Not part of the stable API. *)
+module Private : sig
+  val xevent_of_raw_address : nativeint -> xEvent
+  (** Converts the [XEvent] at the given address through the ctypes view. *)
+end
+
+(**/**)

@@ -3,9 +3,16 @@
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-extern value Val_xevent(XEvent *event);
+/* The events are copied to static storage so their address stays valid after
+   the stub returns. Each call overwrites the previous event. */
+static XEvent stored_event;
 
-CAMLprim value get_key_press_ev(value unit) {
+static value raw_xevent(XEvent *event) {
+  stored_event = *event;
+  return caml_copy_nativeint((intnat)&stored_event);
+}
+
+CAMLprim value get_raw_key_press_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xkey = {
                       .type = KeyPress,
@@ -24,10 +31,10 @@ CAMLprim value get_key_press_ev(value unit) {
                       .keycode = 65,
                       .same_screen = True,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_key_release_ev(value unit) {
+CAMLprim value get_raw_key_release_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xkey = {
                       .type = KeyRelease,
@@ -46,10 +53,10 @@ CAMLprim value get_key_release_ev(value unit) {
                       .keycode = 65,
                       .same_screen = True,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_button_press_ev(value unit) {
+CAMLprim value get_raw_button_press_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xbutton = {
                       .type = ButtonPress,
@@ -69,10 +76,10 @@ CAMLprim value get_button_press_ev(value unit) {
                       .same_screen = True,
                   }};
 
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_motion_notify_ev(value unit) {
+CAMLprim value get_raw_motion_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xmotion = {
                       .type = MotionNotify,
@@ -91,10 +98,10 @@ CAMLprim value get_motion_notify_ev(value unit) {
                       .same_screen = True,
                   }};
 
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_expose_ev(value unit) {
+CAMLprim value get_raw_expose_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xexpose = {
                       .type = Expose,
@@ -109,10 +116,10 @@ CAMLprim value get_expose_ev(value unit) {
                       .count = 0,
                   }};
 
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_destroy_window_ev(value unit) {
+CAMLprim value get_raw_destroy_window_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xdestroywindow = {
                       .type = DestroyNotify,
@@ -122,10 +129,10 @@ CAMLprim value get_destroy_window_ev(value unit) {
                       .event = 5001,
                       .window = 5002,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_unmap_notify_ev(value unit) {
+CAMLprim value get_raw_unmap_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xunmap = {
                       .type = UnmapNotify,
@@ -136,10 +143,10 @@ CAMLprim value get_unmap_notify_ev(value unit) {
                       .window = 6002,
                       .from_configure = False,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_map_notify_ev(value unit) {
+CAMLprim value get_raw_map_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xmap = {
                       .type = MapNotify,
@@ -150,10 +157,10 @@ CAMLprim value get_map_notify_ev(value unit) {
                       .window = 7002,
                       .override_redirect = False,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_map_request_ev(value unit) {
+CAMLprim value get_raw_map_request_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xmaprequest = {
                       .type = MapRequest,
@@ -163,10 +170,10 @@ CAMLprim value get_map_request_ev(value unit) {
                       .parent = 8001,
                       .window = 8002,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_configure_request_ev(value unit) {
+CAMLprim value get_raw_configure_request_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xconfigurerequest = {
                       .type = ConfigureRequest,
@@ -184,10 +191,10 @@ CAMLprim value get_configure_request_ev(value unit) {
                       .detail = Above,
                       .value_mask = 15,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_reparent_notify_ev(value unit) {
+CAMLprim value get_raw_reparent_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xreparent = {
                       .type = ReparentNotify,
@@ -201,10 +208,10 @@ CAMLprim value get_reparent_notify_ev(value unit) {
                       .y = 20,
                       .override_redirect = False,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_configure_notify_ev(value unit) {
+CAMLprim value get_raw_configure_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xconfigure = {
                       .type = ConfigureNotify,
@@ -221,10 +228,10 @@ CAMLprim value get_configure_notify_ev(value unit) {
                       .above = 2203,
                       .override_redirect = True,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_property_notify_ev(value unit) {
+CAMLprim value get_raw_property_notify_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xproperty = {
                       .type = PropertyNotify,
@@ -236,10 +243,10 @@ CAMLprim value get_property_notify_ev(value unit) {
                       .time = 5000,
                       .state = PropertyNewValue,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_client_message_ev_b(value unit) {
+CAMLprim value get_raw_client_message_ev_b(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xclient = {
                       .type = ClientMessage,
@@ -254,10 +261,10 @@ CAMLprim value get_client_message_ev_b(value unit) {
   for (int i = 0; i < 20; i++) {
     event.xclient.data.b[i] = i + 65;
   }
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_client_message_ev_s(value unit) {
+CAMLprim value get_raw_client_message_ev_s(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xclient = {
                       .type = ClientMessage,
@@ -267,10 +274,10 @@ CAMLprim value get_client_message_ev_s(value unit) {
   for (int i = 0; i < 10; i++) {
     event.xclient.data.s[i] = i;
   }
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_client_message_ev_l(value unit) {
+CAMLprim value get_raw_client_message_ev_l(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xclient = {
                       .type = ClientMessage,
@@ -280,10 +287,10 @@ CAMLprim value get_client_message_ev_l(value unit) {
   for (long i = 0; i < 5; i++) {
     event.xclient.data.l[i] = i;
   }
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }
 
-CAMLprim value get_focus_in_ev(value unit) {
+CAMLprim value get_raw_focus_in_ev(value unit) {
   CAMLparam1(unit);
   XEvent event = {.xfocus = {
                       .type = FocusIn,
@@ -294,5 +301,5 @@ CAMLprim value get_focus_in_ev(value unit) {
                       .mode = NotifyNormal,
                       .detail = NotifyNonlinear,
                   }};
-  CAMLreturn(Val_xevent(&event));
+  CAMLreturn(raw_xevent(&event));
 }

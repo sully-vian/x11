@@ -59,6 +59,13 @@
   (run clang-format %{dep:test_xevent.c})))
 
 (rule
+ (with-stdout-to
+  test_xevent2.c.formatted
+  (run clang-format %{dep:test_xevent2.c})))
+
+(rule
  (alias fmt)
  (action
-  (diff test_xevent.c test_xevent.c.formatted)))
+  (progn
+   (diff test_xevent.c test_xevent.c.formatted)
+   (diff test_xevent2.c test_xevent2.c.formatted))))

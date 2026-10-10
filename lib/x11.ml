@@ -14,3 +14,8 @@ let create_simple_window display root (x, y) (width, height) border_width border
 
 let move_resize_window display window (x, y) (width, height) =
   move_resize_window_verbose display window x y width height
+
+module Private = struct
+  let xevent_of_raw_address address =
+    Ctypes.(!@(from_voidp Xevent2.xevent_typ (ptr_of_raw_address address)))
+end
