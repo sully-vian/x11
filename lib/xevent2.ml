@@ -59,6 +59,22 @@ let client_message_of_c ev : clientMessageEvent =
     data;
   }
 
+let motion_of_c ev : motionEvent =
+  {
+    serial = getf ev xmotion_serial;
+    send_event = 0 <> getf ev xmotion_send_event;
+    display = getf ev xmotion_display;
+    window = getf ev xmotion_window;
+    root = getf ev xmotion_root;
+    subwindow = getf ev xmotion_subwindow;
+    time = getf ev xmotion_time;
+    pos = (getf ev xmotion_x, getf ev xmotion_y);
+    pos_root = (getf ev xmotion_x_root, getf ev xmotion_y_root);
+    state = Unsigned.UInt.to_int (getf ev xmotion_state);
+    is_hint = getf ev xmotion_is_hint <> '\000';
+    same_screen = 0 <> getf ev xmotion_same_screen;
+  }
+
 let focus_of_c ev : focusChangeEvent =
   {
     serial = getf ev xfocus_serial;
@@ -95,7 +111,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.ButtonRelease -> ButtonRelease (button_of_c (getf raw_ev xev_button))
   | Ev.ClientMessage ->
       ClientMessage (client_message_of_c (getf raw_ev xev_client))
-  | Ev.MotionNotify -> failwith "Unsupported type MotionNotify"
+  | Ev.MotionNotify -> MotionNotify (motion_of_c (getf raw_ev xev_motion))
   | Ev.EnterNotify -> EnterNotify (crossing_of_c (getf raw_ev xev_crossing))
   | Ev.LeaveNotify -> LeaveNotify (crossing_of_c (getf raw_ev xev_crossing))
   | Ev.FocusIn -> FocusIn (focus_of_c (getf raw_ev xev_focus))

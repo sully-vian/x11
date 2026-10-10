@@ -345,3 +345,17 @@ CAMLprim value get_raw_leave_notify_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_motion_notify_hint_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xmotion = {
+                      .type = MotionNotify,
+                      .serial = 201,
+                      .x = 31,
+                      .y = 41,
+                      .state = Button1Mask,
+                      .is_hint = NotifyHint,
+                      .same_screen = True,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

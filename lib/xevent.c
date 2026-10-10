@@ -56,7 +56,7 @@ value Val_xevent(XEvent *event) {
     break;
 
   case MotionNotify:
-    v_record = caml_alloc(13, 0); // 13 fields
+    v_record = caml_alloc(12, 0); // 12 fields
     Store_field(v_record, off++, caml_copy_int64(event->xmotion.serial));
     Store_field(v_record, off++, Val_bool(event->xmotion.send_event));
     Store_field(v_record, off++, Val_ptr(event->xmotion.display));
@@ -70,6 +70,7 @@ value Val_xevent(XEvent *event) {
                              Val_int(event->xmotion.y_root));
     Store_field(v_record, off++, v_pos_root);
     Store_field(v_record, off++, Val_int(event->xmotion.state));
+    Store_field(v_record, off++, Val_bool(event->xmotion.is_hint));
     Store_field(v_record, off++, Val_bool(event->xmotion.same_screen));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);

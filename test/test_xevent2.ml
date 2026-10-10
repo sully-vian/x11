@@ -42,6 +42,9 @@ external get_raw_focus_in_ev : unit -> nativeint = "get_raw_focus_in_ev"
 external get_raw_enter_notify_ev : unit -> nativeint = "get_raw_enter_notify_ev"
 external get_raw_leave_notify_ev : unit -> nativeint = "get_raw_leave_notify_ev"
 
+external get_raw_motion_notify_hint_ev : unit -> nativeint
+  = "get_raw_motion_notify_hint_ev"
+
 (* Convert the raw C events through the ctypes view *)
 let get_key_press_ev () =
   Private.xevent_of_raw_address (get_raw_key_press_ev ())
@@ -97,6 +100,9 @@ let get_enter_notify_ev () =
 
 let get_leave_notify_ev () =
   Private.xevent_of_raw_address (get_raw_leave_notify_ev ())
+
+let get_motion_notify_hint_ev () =
+  Private.xevent_of_raw_address (get_raw_motion_notify_hint_ev ())
 
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
@@ -155,6 +161,17 @@ let test_motion_notify_ev () =
       Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
       Alcotest.(check (pair int int)) "root" (130, 240) ev.pos_root;
       Alcotest.(check int) "state" 2 ev.state;
+      Alcotest.(check bool) "is_hint" false ev.is_hint;
+      Alcotest.(check bool) "same_screen" true ev.same_screen
+  | _ -> Alcotest.fail "Expected MotionNotify event"
+
+let test_motion_notify_hint_ev () =
+  match get_motion_notify_hint_ev () with
+  | MotionNotify ev ->
+      Alcotest.(check int) "serial" 201 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (pair int int)) "pos" (31, 41) ev.pos;
+      Alcotest.(check int) "state" 256 ev.state;
+      Alcotest.(check bool) "is_hint" true ev.is_hint;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected MotionNotify event"
 
@@ -309,6 +326,7 @@ let suite =
     test_case "KeyRelease" `Quick test_key_release_ev;
     test_case "ButtonPress" `Quick test_button_press_ev;
     test_case "MotionNotify" `Quick test_motion_notify_ev;
+    test_case "MotionNotify (hint)" `Quick test_motion_notify_hint_ev;
     test_case "Expose" `Quick test_expose_ev;
     test_case "DestroyWindow" `Quick test_destroy_window_ev;
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;

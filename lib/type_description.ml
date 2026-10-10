@@ -421,6 +421,28 @@ module Types (F : Ctypes.TYPE) = struct
   let xcrossing_state = field xcrossing_event "state" uint
   let () = seal xcrossing_event
 
+  type xmotion_event
+
+  let xmotion_event : xmotion_event structure typ =
+    typedef (structure "xmotion_anonymous") "XMotionEvent"
+
+  let xmotion_type = field xmotion_event "type" event_type
+  let xmotion_serial = field xmotion_event "serial" ulong
+  let xmotion_send_event = field xmotion_event "send_event" int
+  let xmotion_display = field xmotion_event "display" display
+  let xmotion_window = field xmotion_event "window" window
+  let xmotion_root = field xmotion_event "root" window
+  let xmotion_subwindow = field xmotion_event "subwindow" window
+  let xmotion_time = field xmotion_event "time" time
+  let xmotion_x = field xmotion_event "x" int
+  let xmotion_y = field xmotion_event "y" int
+  let xmotion_x_root = field xmotion_event "x_root" int
+  let xmotion_y_root = field xmotion_event "y_root" int
+  let xmotion_state = field xmotion_event "state" uint
+  let xmotion_is_hint = field xmotion_event "is_hint" char
+  let xmotion_same_screen = field xmotion_event "same_screen" int
+  let () = seal xmotion_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -430,5 +452,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_client = field xevent_union "xclient" xclient_event
   let xev_focus = field xevent_union "xfocus" xfocus_event
   let xev_crossing = field xevent_union "xcrossing" xcrossing_event
+  let xev_motion = field xevent_union "xmotion" xmotion_event
   let () = seal xevent_union
 end

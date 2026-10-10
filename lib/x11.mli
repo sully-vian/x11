@@ -272,6 +272,7 @@ type motionEvent = {
   pos : int * int;
   pos_root : int * int;
   state : int;
+  is_hint : bool;
   same_screen : bool;
 }
 (** {{:https://man.archlinux.org/man/XMotionEvent.3.en} XMotionEvent} *)
