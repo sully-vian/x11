@@ -4,10 +4,6 @@ open Type_description
 type xid
 type colormap
 type drawable
-type circulationRequest = PlaceOnTop | PlaceOnBottom
-type propertyNotification = PropertyNewValue | PropertyDelete
-type colorMapNotification = ColormapUninstalled | ColormapInstalled
-type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 
 type message_data =
   | Bytes of char array

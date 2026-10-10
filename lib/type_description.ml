@@ -41,6 +41,11 @@ end
 
 (* Variants backed by int X constants. Xevent re-exports them with [include]. *)
 module Enums = struct
+  type circulationRequest = PlaceOnTop | PlaceOnBottom
+  type propertyNotification = PropertyNewValue | PropertyDelete
+  type colorMapNotification = ColormapUninstalled | ColormapInstalled
+  type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
+
   type notifyMode =
     | NotifyNormal
     | NotifyGrab
