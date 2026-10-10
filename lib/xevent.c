@@ -257,7 +257,7 @@ value Val_xevent(XEvent *event) {
 
   case EnterNotify:
   case LeaveNotify:
-    v_record = caml_alloc(11, 0); // 11 fields
+    v_record = caml_alloc(14, 0); // 14 fields
     Store_field(v_record, off++, caml_copy_int64(event->xcrossing.serial));
     Store_field(v_record, off++, Val_bool(event->xcrossing.send_event));
     Store_field(v_record, off++, Val_ptr(event->xcrossing.display));
@@ -271,7 +271,11 @@ value Val_xevent(XEvent *event) {
     v_pos_root = caml_tuple2(Val_int(event->xcrossing.x_root),
                              Val_int(event->xcrossing.y_root));
     Store_field(v_record, off++, v_pos_root);
-    /* TODO */
+    Store_field(v_record, off++, Val_int(event->xcrossing.mode));
+    Store_field(v_record, off++, Val_int(event->xcrossing.detail));
+    Store_field(v_record, off++, Val_bool(event->xcrossing.same_screen));
+    Store_field(v_record, off++, Val_bool(event->xcrossing.focus));
+    Store_field(v_record, off++, Val_int(event->xcrossing.state));
     v_event = caml_alloc(1, event->type);
     Store_field(v_event, 0, v_record);
     break;

@@ -397,6 +397,30 @@ module Types (F : Ctypes.TYPE) = struct
   let xfocus_detail = field xfocus_event "detail" notify_detail
   let () = seal xfocus_event
 
+  type xcrossing_event
+
+  let xcrossing_event : xcrossing_event structure typ =
+    typedef (structure "xcrossing_anonymous") "XCrossingEvent"
+
+  let xcrossing_type = field xcrossing_event "type" event_type
+  let xcrossing_serial = field xcrossing_event "serial" ulong
+  let xcrossing_send_event = field xcrossing_event "send_event" int
+  let xcrossing_display = field xcrossing_event "display" display
+  let xcrossing_window = field xcrossing_event "window" window
+  let xcrossing_root = field xcrossing_event "root" window
+  let xcrossing_subwindow = field xcrossing_event "subwindow" window
+  let xcrossing_time = field xcrossing_event "time" time
+  let xcrossing_x = field xcrossing_event "x" int
+  let xcrossing_y = field xcrossing_event "y" int
+  let xcrossing_x_root = field xcrossing_event "x_root" int
+  let xcrossing_y_root = field xcrossing_event "y_root" int
+  let xcrossing_mode = field xcrossing_event "mode" notify_mode
+  let xcrossing_detail = field xcrossing_event "detail" notify_detail
+  let xcrossing_same_screen = field xcrossing_event "same_screen" int
+  let xcrossing_focus = field xcrossing_event "focus" int
+  let xcrossing_state = field xcrossing_event "state" uint
+  let () = seal xcrossing_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -405,5 +429,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_button = field xevent_union "xbutton" xbutton_event
   let xev_client = field xevent_union "xclient" xclient_event
   let xev_focus = field xevent_union "xfocus" xfocus_event
+  let xev_crossing = field xevent_union "xcrossing" xcrossing_event
   let () = seal xevent_union
 end

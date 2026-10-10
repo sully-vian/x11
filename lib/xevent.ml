@@ -73,6 +73,9 @@ type crossingEvent = {
   pos_root : int * int;
   mode : notifyMode;
   detail : notifyDetail;
+  same_screen : bool;
+  focus : bool;
+  state : int;
 }
 
 type enterWindowEvent = crossingEvent

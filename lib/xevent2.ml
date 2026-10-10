@@ -69,6 +69,24 @@ let focus_of_c ev : focusChangeEvent =
     detail = getf ev xfocus_detail;
   }
 
+let crossing_of_c ev : crossingEvent =
+  {
+    serial = getf ev xcrossing_serial;
+    send_event = 0 <> getf ev xcrossing_send_event;
+    display = getf ev xcrossing_display;
+    window = getf ev xcrossing_window;
+    root = getf ev xcrossing_root;
+    subwindow = getf ev xcrossing_subwindow;
+    time = getf ev xcrossing_time;
+    pos = (getf ev xcrossing_x, getf ev xcrossing_y);
+    pos_root = (getf ev xcrossing_x_root, getf ev xcrossing_y_root);
+    mode = getf ev xcrossing_mode;
+    detail = getf ev xcrossing_detail;
+    same_screen = 0 <> getf ev xcrossing_same_screen;
+    focus = 0 <> getf ev xcrossing_focus;
+    state = Unsigned.UInt.to_int (getf ev xcrossing_state);
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -78,8 +96,8 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.ClientMessage ->
       ClientMessage (client_message_of_c (getf raw_ev xev_client))
   | Ev.MotionNotify -> failwith "Unsupported type MotionNotify"
-  | Ev.EnterNotify -> failwith "Unsupported type EnterNotify"
-  | Ev.LeaveNotify -> failwith "Unsupported type LeaveNotify"
+  | Ev.EnterNotify -> EnterNotify (crossing_of_c (getf raw_ev xev_crossing))
+  | Ev.LeaveNotify -> LeaveNotify (crossing_of_c (getf raw_ev xev_crossing))
   | Ev.FocusIn -> FocusIn (focus_of_c (getf raw_ev xev_focus))
   | Ev.FocusOut -> FocusOut (focus_of_c (getf raw_ev xev_focus))
   | Ev.KeymapNotify -> failwith "Unsupported type KeymapNotify"

@@ -290,6 +290,9 @@ type crossingEvent = {
   pos_root : int * int;
   mode : notifyMode;
   detail : notifyDetail;
+  same_screen : bool;
+  focus : bool;
+  state : int;
 }
 (** {{:https://man.archlinux.org/man/XCrossingEvent.3.en} XCrossingEvent} *)
 

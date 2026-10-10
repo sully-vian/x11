@@ -39,6 +39,8 @@ external get_raw_client_message_ev_l : unit -> nativeint
   = "get_raw_client_message_ev_l"
 
 external get_raw_focus_in_ev : unit -> nativeint = "get_raw_focus_in_ev"
+external get_raw_enter_notify_ev : unit -> nativeint = "get_raw_enter_notify_ev"
+external get_raw_leave_notify_ev : unit -> nativeint = "get_raw_leave_notify_ev"
 
 (* Convert the raw C events through the ctypes view *)
 let get_key_press_ev () =
@@ -89,6 +91,12 @@ let get_client_message_ev_l () =
   Private.xevent_of_raw_address (get_raw_client_message_ev_l ())
 
 let get_focus_in_ev () = Private.xevent_of_raw_address (get_raw_focus_in_ev ())
+
+let get_enter_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_enter_notify_ev ())
+
+let get_leave_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_leave_notify_ev ())
 
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
@@ -267,6 +275,33 @@ let test_focus_in_ev () =
       Alcotest.(check bool) "detail" true (ev.detail = NotifyNonlinear)
   | _ -> Alcotest.fail "Expected FocusIn event"
 
+let test_enter_notify_ev () =
+  match get_enter_notify_ev () with
+  | EnterNotify ev ->
+      Alcotest.(check int) "serial" 400 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check (pair int int)) "pos" (12, 34) ev.pos;
+      Alcotest.(check (pair int int)) "pos_root" (112, 134) ev.pos_root;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyGrab);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyInferior);
+      Alcotest.(check bool) "same_screen" true ev.same_screen;
+      Alcotest.(check bool) "focus" true ev.focus;
+      Alcotest.(check int) "state" 4 ev.state
+  | _ -> Alcotest.fail "Expected EnterNotify event"
+
+let test_leave_notify_ev () =
+  match get_leave_notify_ev () with
+  | LeaveNotify ev ->
+      Alcotest.(check int) "serial" 410 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (pair int int)) "pos" (56, 78) ev.pos;
+      Alcotest.(check (pair int int)) "pos_root" (156, 178) ev.pos_root;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyUngrab);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyNonlinearVirtual);
+      Alcotest.(check bool) "same_screen" false ev.same_screen;
+      Alcotest.(check bool) "focus" false ev.focus;
+      Alcotest.(check int) "state" 0 ev.state
+  | _ -> Alcotest.fail "Expected LeaveNotify event"
+
 let suite =
   let open Alcotest in
   [
@@ -287,4 +322,6 @@ let suite =
     test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;
     test_case "ClientMessage (longs)" `Quick test_client_meessage_ev_l;
     test_case "FocusIn" `Quick test_focus_in_ev;
+    test_case "EnterNotify" `Quick test_enter_notify_ev;
+    test_case "LeaveNotify" `Quick test_leave_notify_ev;
   ]
