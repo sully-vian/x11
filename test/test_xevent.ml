@@ -126,6 +126,12 @@ external get_raw_map_notify_override_ev : unit -> nativeint
 let get_map_notify_override_ev () =
   Private.xevent_of_raw_address (get_raw_map_notify_override_ev ())
 
+external get_raw_map_request_root_ev : unit -> nativeint
+  = "get_raw_map_request_root_ev"
+
+let get_map_request_root_ev () =
+  Private.xevent_of_raw_address (get_raw_map_request_root_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -255,7 +261,10 @@ let test_map_notify_ev () =
 let test_map_request_ev () =
   match get_map_request_ev () with
   | MapRequest ev ->
-      Alcotest.(check int) "serial" 180 (Unsigned.ULong.to_int ev.serial)
+      Alcotest.(check int) "serial" 180 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "parent" 8001 (window_to_int ev.parent);
+      Alcotest.(check int) "window" 8002 (window_to_int ev.window)
   | _ -> Alcotest.fail "Expected MapRequest"
 
 let test_configure_request_ev () =
@@ -397,6 +406,17 @@ let test_map_notify_override_ev () =
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected Map"
 
+(* Top-level window mapped by a client: the parent is the root window. The
+   window id has the high bits a real XID carries (resource-id-base). *)
+let test_map_request_root_ev () =
+  match get_map_request_root_ev () with
+  | MapRequest ev ->
+      Alcotest.(check int) "serial" 181 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
+      Alcotest.(check int) "window" 0x1e00007 (window_to_int ev.window)
+  | _ -> Alcotest.fail "Expected MapRequest"
+
 let suite =
   let open Alcotest in
   [
@@ -414,6 +434,7 @@ let suite =
     test_case "MapNotify" `Quick test_map_notify_ev;
     test_case "MapNotify (override redirect)" `Quick test_map_notify_override_ev;
     test_case "MapRequest" `Quick test_map_request_ev;
+    test_case "MapRequest (root parent)" `Quick test_map_request_root_ev;
     test_case "ConfigureRequest" `Quick test_configure_request_ev;
     test_case "ReparentNotify" `Quick test_reparent_notify_ev;
     test_case "ConfigureNotify" `Quick test_configure_notify_ev;

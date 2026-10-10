@@ -501,6 +501,19 @@ module Types (F : Ctypes.TYPE) = struct
   let xmap_override_redirect = field xmap_event "override_redirect" int
   let () = seal xmap_event
 
+  type xmaprequest_event
+
+  let xmaprequest_event : xmaprequest_event structure typ =
+    typedef (structure "xmaprequest_anonymous") "XMapRequestEvent"
+
+  let xmaprequest_type = field xmaprequest_event "type" event_type
+  let xmaprequest_serial = field xmaprequest_event "serial" ulong
+  let xmaprequest_send_event = field xmaprequest_event "send_event" int
+  let xmaprequest_display = field xmaprequest_event "display" display
+  let xmaprequest_parent = field xmaprequest_event "parent" window
+  let xmaprequest_window = field xmaprequest_event "window" window
+  let () = seal xmaprequest_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -518,5 +531,6 @@ module Types (F : Ctypes.TYPE) = struct
 
   let xev_unmap = field xevent_union "xunmap" xunmap_event
   let xev_map = field xevent_union "xmap" xmap_event
+  let xev_maprequest = field xevent_union "xmaprequest" xmaprequest_event
   let () = seal xevent_union
 end

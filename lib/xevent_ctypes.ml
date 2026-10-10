@@ -143,6 +143,15 @@ let map_of_c ev : mapEvent =
     override_redirect = 0 <> getf ev xmap_override_redirect;
   }
 
+let map_request_of_c ev : mapRequestEvent =
+  {
+    serial = getf ev xmaprequest_serial;
+    send_event = 0 <> getf ev xmaprequest_send_event;
+    display = getf ev xmaprequest_display;
+    parent = getf ev xmaprequest_parent;
+    window = getf ev xmaprequest_window;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -166,7 +175,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
       DestroyWindow (destroy_window_of_c (getf raw_ev xev_destroywindow))
   | Ev.UnmapNotify -> Unmap (unmap_of_c (getf raw_ev xev_unmap))
   | Ev.MapNotify -> Map (map_of_c (getf raw_ev xev_map))
-  | Ev.MapRequest -> failwith "Unsupported type MapRequest"
+  | Ev.MapRequest -> MapRequest (map_request_of_c (getf raw_ev xev_maprequest))
   | Ev.ReparentNotify -> failwith "Unsupported type ReparentNotify"
   | Ev.ConfigureNotify -> failwith "Unsupported type ConfigureNotify"
   | Ev.ConfigureRequest -> failwith "Unsupported type ConfigureRequest"
