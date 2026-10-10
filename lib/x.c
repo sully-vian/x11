@@ -1,4 +1,3 @@
-#include "ctypes_cstubs_internals.h"
 #include "utils.h"
 #include <X11/Xlib.h>
 #include <caml/alloc.h>
@@ -9,21 +8,7 @@
 
 #define caml_None Val_int(0) // None is 0
 
-extern value Val_xevent(XEvent *);
 extern value Val_xwindowattributes(XWindowAttributes *);
-
-CAMLprim value caml_XNextEvent(value v_display) {
-  CAMLparam1(v_display);
-  CAMLlocal1(v_event);
-
-  Display *display = CTYPES_ADDR_OF_FATPTR(v_display);
-  XEvent event;
-  XNextEvent(display, &event);
-
-  v_event = Val_xevent(&event);
-
-  CAMLreturn(v_event);
-}
 
 CAMLprim value caml_XGetWindowAttributes(value v_display, value v_window) {
   CAMLparam2(v_display, v_window);

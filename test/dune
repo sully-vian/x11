@@ -9,7 +9,6 @@
   alcotest
   test_xwindowattributes
   test_xevent
-  test_xevent2
   test_x
   test_compilation
   test_integration))
@@ -20,14 +19,6 @@
  (foreign_stubs
   (language c)
   (names test_xwindowattributes))
- (libraries x11 alcotest))
-
-(library
- (name test_xevent2)
- (modules test_xevent2)
- (foreign_stubs
-  (language c)
-  (names test_xevent2))
  (libraries x11 alcotest))
 
 (library
@@ -59,13 +50,6 @@
   (run clang-format %{dep:test_xevent.c})))
 
 (rule
- (with-stdout-to
-  test_xevent2.c.formatted
-  (run clang-format %{dep:test_xevent2.c})))
-
-(rule
  (alias fmt)
  (action
-  (progn
-   (diff test_xevent.c test_xevent.c.formatted)
-   (diff test_xevent2.c test_xevent2.c.formatted))))
+  (diff test_xevent.c test_xevent.c.formatted)))

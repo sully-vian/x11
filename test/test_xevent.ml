@@ -1,23 +1,108 @@
 open X11
 
 (* External C functions *)
-external get_key_press_ev : unit -> xEvent = "get_key_press_ev"
-external get_key_release_ev : unit -> xEvent = "get_key_release_ev"
-external get_button_press_ev : unit -> xEvent = "get_button_press_ev"
-external get_motion_notify_ev : unit -> xEvent = "get_motion_notify_ev"
-external get_expose_ev : unit -> xEvent = "get_expose_ev"
-external get_destroy_window_ev : unit -> xEvent = "get_destroy_window_ev"
-external get_unmap_notify_ev : unit -> xEvent = "get_unmap_notify_ev"
-external get_map_notify_ev : unit -> xEvent = "get_map_notify_ev"
-external get_map_request_ev : unit -> xEvent = "get_map_request_ev"
-external get_configure_request_ev : unit -> xEvent = "get_configure_request_ev"
-external get_reparent_notify_ev : unit -> xEvent = "get_reparent_notify_ev"
-external get_configure_notify_ev : unit -> xEvent = "get_configure_notify_ev"
-external get_property_notify_ev : unit -> xEvent = "get_property_notify_ev"
-external get_client_message_ev_b : unit -> xEvent = "get_client_message_ev_b"
-external get_client_message_ev_s : unit -> xEvent = "get_client_message_ev_s"
-external get_client_message_ev_l : unit -> xEvent = "get_client_message_ev_l"
-external get_focus_in_ev : unit -> xEvent = "get_focus_in_ev"
+external get_raw_key_press_ev : unit -> nativeint = "get_raw_key_press_ev"
+external get_raw_key_release_ev : unit -> nativeint = "get_raw_key_release_ev"
+external get_raw_button_press_ev : unit -> nativeint = "get_raw_button_press_ev"
+
+external get_raw_motion_notify_ev : unit -> nativeint
+  = "get_raw_motion_notify_ev"
+
+external get_raw_expose_ev : unit -> nativeint = "get_raw_expose_ev"
+
+external get_raw_destroy_window_ev : unit -> nativeint
+  = "get_raw_destroy_window_ev"
+
+external get_raw_unmap_notify_ev : unit -> nativeint = "get_raw_unmap_notify_ev"
+external get_raw_map_notify_ev : unit -> nativeint = "get_raw_map_notify_ev"
+external get_raw_map_request_ev : unit -> nativeint = "get_raw_map_request_ev"
+
+external get_raw_configure_request_ev : unit -> nativeint
+  = "get_raw_configure_request_ev"
+
+external get_raw_reparent_notify_ev : unit -> nativeint
+  = "get_raw_reparent_notify_ev"
+
+external get_raw_configure_notify_ev : unit -> nativeint
+  = "get_raw_configure_notify_ev"
+
+external get_raw_property_notify_ev : unit -> nativeint
+  = "get_raw_property_notify_ev"
+
+external get_raw_client_message_ev_b : unit -> nativeint
+  = "get_raw_client_message_ev_b"
+
+external get_raw_client_message_ev_s : unit -> nativeint
+  = "get_raw_client_message_ev_s"
+
+external get_raw_client_message_ev_l : unit -> nativeint
+  = "get_raw_client_message_ev_l"
+
+external get_raw_focus_in_ev : unit -> nativeint = "get_raw_focus_in_ev"
+external get_raw_enter_notify_ev : unit -> nativeint = "get_raw_enter_notify_ev"
+external get_raw_leave_notify_ev : unit -> nativeint = "get_raw_leave_notify_ev"
+
+external get_raw_motion_notify_hint_ev : unit -> nativeint
+  = "get_raw_motion_notify_hint_ev"
+
+(* Convert the raw C events through the ctypes view *)
+let get_key_press_ev () =
+  Private.xevent_of_raw_address (get_raw_key_press_ev ())
+
+let get_key_release_ev () =
+  Private.xevent_of_raw_address (get_raw_key_release_ev ())
+
+let get_button_press_ev () =
+  Private.xevent_of_raw_address (get_raw_button_press_ev ())
+
+let get_motion_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_motion_notify_ev ())
+
+let get_expose_ev () = Private.xevent_of_raw_address (get_raw_expose_ev ())
+
+let get_destroy_window_ev () =
+  Private.xevent_of_raw_address (get_raw_destroy_window_ev ())
+
+let get_unmap_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_unmap_notify_ev ())
+
+let get_map_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_map_notify_ev ())
+
+let get_map_request_ev () =
+  Private.xevent_of_raw_address (get_raw_map_request_ev ())
+
+let get_configure_request_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_request_ev ())
+
+let get_reparent_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_reparent_notify_ev ())
+
+let get_configure_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_notify_ev ())
+
+let get_property_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_property_notify_ev ())
+
+let get_client_message_ev_b () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_b ())
+
+let get_client_message_ev_s () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_s ())
+
+let get_client_message_ev_l () =
+  Private.xevent_of_raw_address (get_raw_client_message_ev_l ())
+
+let get_focus_in_ev () = Private.xevent_of_raw_address (get_raw_focus_in_ev ())
+
+let get_enter_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_enter_notify_ev ())
+
+let get_leave_notify_ev () =
+  Private.xevent_of_raw_address (get_raw_leave_notify_ev ())
+
+let get_motion_notify_hint_ev () =
+  Private.xevent_of_raw_address (get_raw_motion_notify_hint_ev ())
 
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
@@ -76,6 +161,17 @@ let test_motion_notify_ev () =
       Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
       Alcotest.(check (pair int int)) "root" (130, 240) ev.pos_root;
       Alcotest.(check int) "state" 2 ev.state;
+      Alcotest.(check bool) "is_hint" false ev.is_hint;
+      Alcotest.(check bool) "same_screen" true ev.same_screen
+  | _ -> Alcotest.fail "Expected MotionNotify event"
+
+let test_motion_notify_hint_ev () =
+  match get_motion_notify_hint_ev () with
+  | MotionNotify ev ->
+      Alcotest.(check int) "serial" 201 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (pair int int)) "pos" (31, 41) ev.pos;
+      Alcotest.(check int) "state" 256 ev.state;
+      Alcotest.(check bool) "is_hint" true ev.is_hint;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected MotionNotify event"
 
@@ -191,8 +287,37 @@ let test_focus_in_ev () =
   match get_focus_in_ev () with
   | FocusIn ev ->
       Alcotest.(check int) "serial" 90 (Unsigned.ULong.to_int ev.serial);
-      Alcotest.(check bool) "send_event" false ev.send_event
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyNormal);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyNonlinear)
   | _ -> Alcotest.fail "Expected FocusIn event"
+
+let test_enter_notify_ev () =
+  match get_enter_notify_ev () with
+  | EnterNotify ev ->
+      Alcotest.(check int) "serial" 400 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check (pair int int)) "pos" (12, 34) ev.pos;
+      Alcotest.(check (pair int int)) "pos_root" (112, 134) ev.pos_root;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyGrab);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyInferior);
+      Alcotest.(check bool) "same_screen" true ev.same_screen;
+      Alcotest.(check bool) "focus" true ev.focus;
+      Alcotest.(check int) "state" 4 ev.state
+  | _ -> Alcotest.fail "Expected EnterNotify event"
+
+let test_leave_notify_ev () =
+  match get_leave_notify_ev () with
+  | LeaveNotify ev ->
+      Alcotest.(check int) "serial" 410 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (pair int int)) "pos" (56, 78) ev.pos;
+      Alcotest.(check (pair int int)) "pos_root" (156, 178) ev.pos_root;
+      Alcotest.(check bool) "mode" true (ev.mode = NotifyUngrab);
+      Alcotest.(check bool) "detail" true (ev.detail = NotifyNonlinearVirtual);
+      Alcotest.(check bool) "same_screen" false ev.same_screen;
+      Alcotest.(check bool) "focus" false ev.focus;
+      Alcotest.(check int) "state" 0 ev.state
+  | _ -> Alcotest.fail "Expected LeaveNotify event"
 
 let suite =
   let open Alcotest in
@@ -201,6 +326,7 @@ let suite =
     test_case "KeyRelease" `Quick test_key_release_ev;
     test_case "ButtonPress" `Quick test_button_press_ev;
     test_case "MotionNotify" `Quick test_motion_notify_ev;
+    test_case "MotionNotify (hint)" `Quick test_motion_notify_hint_ev;
     test_case "Expose" `Quick test_expose_ev;
     test_case "DestroyWindow" `Quick test_destroy_window_ev;
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;
@@ -214,4 +340,6 @@ let suite =
     test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;
     test_case "ClientMessage (longs)" `Quick test_client_meessage_ev_l;
     test_case "FocusIn" `Quick test_focus_in_ev;
+    test_case "EnterNotify" `Quick test_enter_notify_ev;
+    test_case "LeaveNotify" `Quick test_leave_notify_ev;
   ]

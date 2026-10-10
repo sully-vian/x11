@@ -17,5 +17,6 @@ let move_resize_window display window (x, y) (width, height) =
 
 module Private = struct
   let xevent_of_raw_address address =
-    Ctypes.(!@(from_voidp Xevent2.xevent_typ (ptr_of_raw_address address)))
+    Ctypes.(
+      !@(from_voidp Xevent_ctypes.xevent_typ (ptr_of_raw_address address)))
 end

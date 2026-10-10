@@ -1,6 +1,3 @@
-module CI = Cstubs_internals
-module CS = Ctypes_static
-module CP = Ctypes_ptr
 open Xevent
 open C.Types
 open Mask
@@ -33,13 +30,11 @@ type windowAttributes = {
   screen : screen;
 }
 
-external next_event_raw : (Obj.t option, unit CS.typ) CP.Fat.t -> xEvent
-  = "caml_XNextEvent"
-
 let next_event : display -> xEvent =
  fun dpy ->
-  let (CI.CPointer dpy_unwrapped) = dpy in
-  next_event_raw dpy_unwrapped
+  let event = Ctypes.make xevent_union in
+  C.Functions.next_event_stub dpy (Ctypes.addr event);
+  Xevent_ctypes.xevent_of_c event
 
 external get_window_attributes : display -> window -> windowAttributes
   = "caml_XGetWindowAttributes"
