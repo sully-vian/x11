@@ -9,6 +9,7 @@ external get_raw_motion_notify_ev : unit -> nativeint
   = "get_raw_motion_notify_ev"
 
 external get_raw_expose_ev : unit -> nativeint = "get_raw_expose_ev"
+external get_raw_expose_last_ev : unit -> nativeint = "get_raw_expose_last_ev"
 
 external get_raw_destroy_window_ev : unit -> nativeint
   = "get_raw_destroy_window_ev"
@@ -59,6 +60,9 @@ let get_motion_notify_ev () =
   Private.xevent_of_raw_address (get_raw_motion_notify_ev ())
 
 let get_expose_ev () = Private.xevent_of_raw_address (get_raw_expose_ev ())
+
+let get_expose_last_ev () =
+  Private.xevent_of_raw_address (get_raw_expose_last_ev ())
 
 let get_destroy_window_ev () =
   Private.xevent_of_raw_address (get_raw_destroy_window_ev ())
@@ -182,7 +186,18 @@ let test_expose_ev () =
       Alcotest.(check bool) "send_event" true ev.send_event;
       (* NOTE: display and window are abstract types *)
       Alcotest.(check (pair int int)) "pos" (5, 15) ev.pos;
-      Alcotest.(check (pair int int)) "area" (800, 600) ev.size;
+      Alcotest.(check (pair int int)) "size" (800, 600) ev.size;
+      Alcotest.(check int) "count" 3 ev.count
+  | _ -> Alcotest.fail "Expected Expose event"
+
+(* Last event of an Expose series: count = 0, large multi-monitor geometry *)
+let test_expose_last_ev () =
+  match get_expose_last_ev () with
+  | Expose ev ->
+      Alcotest.(check int) "serial" 301 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check (pair int int)) "pos" (1920, 1080) ev.pos;
+      Alcotest.(check (pair int int)) "size" (3840, 2160) ev.size;
       Alcotest.(check int) "count" 0 ev.count
   | _ -> Alcotest.fail "Expected Expose event"
 
@@ -328,6 +343,7 @@ let suite =
     test_case "MotionNotify" `Quick test_motion_notify_ev;
     test_case "MotionNotify (hint)" `Quick test_motion_notify_hint_ev;
     test_case "Expose" `Quick test_expose_ev;
+    test_case "Expose (last in series)" `Quick test_expose_last_ev;
     test_case "DestroyWindow" `Quick test_destroy_window_ev;
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;
     test_case "MapNotify" `Quick test_map_notify_ev;

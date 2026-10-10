@@ -103,6 +103,17 @@ let crossing_of_c ev : crossingEvent =
     state = Unsigned.UInt.to_int (getf ev xcrossing_state);
   }
 
+let expose_of_c ev : exposeEvent =
+  {
+    serial = getf ev xexpose_serial;
+    send_event = 0 <> getf ev xexpose_send_event;
+    display = getf ev xexpose_display;
+    window = getf ev xexpose_window;
+    pos = (getf ev xexpose_x, getf ev xexpose_y);
+    size = (getf ev xexpose_width, getf ev xexpose_height);
+    count = getf ev xexpose_count;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -117,7 +128,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.FocusIn -> FocusIn (focus_of_c (getf raw_ev xev_focus))
   | Ev.FocusOut -> FocusOut (focus_of_c (getf raw_ev xev_focus))
   | Ev.KeymapNotify -> failwith "Unsupported type KeymapNotify"
-  | Ev.Expose -> failwith "Unsupported type Expose"
+  | Ev.Expose -> Expose (expose_of_c (getf raw_ev xev_expose))
   | Ev.GraphicsExpose -> failwith "Unsupported type GraphicsExpose"
   | Ev.NoExpose -> failwith "Unsupported type NoExpose"
   | Ev.VisibilityNotify -> failwith "Unsupported type VisibilityNotify"

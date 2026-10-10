@@ -443,6 +443,23 @@ module Types (F : Ctypes.TYPE) = struct
   let xmotion_same_screen = field xmotion_event "same_screen" int
   let () = seal xmotion_event
 
+  type xexpose_event
+
+  let xexpose_event : xexpose_event structure typ =
+    typedef (structure "xexpose_anonymous") "XExposeEvent"
+
+  let xexpose_type = field xexpose_event "type" event_type
+  let xexpose_serial = field xexpose_event "serial" ulong
+  let xexpose_send_event = field xexpose_event "send_event" int
+  let xexpose_display = field xexpose_event "display" display
+  let xexpose_window = field xexpose_event "window" window
+  let xexpose_x = field xexpose_event "x" int
+  let xexpose_y = field xexpose_event "y" int
+  let xexpose_width = field xexpose_event "width" int
+  let xexpose_height = field xexpose_event "height" int
+  let xexpose_count = field xexpose_event "count" int
+  let () = seal xexpose_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -453,5 +470,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_focus = field xevent_union "xfocus" xfocus_event
   let xev_crossing = field xevent_union "xcrossing" xcrossing_event
   let xev_motion = field xevent_union "xmotion" xmotion_event
+  let xev_expose = field xevent_union "xexpose" xexpose_event
   let () = seal xevent_union
 end
