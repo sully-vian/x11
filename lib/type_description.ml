@@ -1,5 +1,44 @@
 open Ctypes
 
+module Event_type = struct
+  type t =
+    | KeyPress
+    | KeyRelease
+    | ButtonPress
+    | ButtonRelease
+    | MotionNotify
+    | EnterNotify
+    | LeaveNotify
+    | FocusIn
+    | FocusOut
+    | KeymapNotify
+    | Expose
+    | GraphicsExpose
+    | NoExpose
+    | VisibilityNotify
+    | CreateNotify
+    | DestroyNotify
+    | UnmapNotify
+    | MapNotify
+    | MapRequest
+    | ReparentNotify
+    | ConfigureNotify
+    | ConfigureRequest
+    | GravityNotify
+    | ResizeRequest
+    | CirculateNotify
+    | CirculateRequest
+    | PropertyNotify
+    | SelectionClear
+    | SelectionRequest
+    | SelectionNotify
+    | ColormapNotify
+    | ClientMessage
+    | MappingNotify
+    | GenericEvent
+    | Unknown of int64  (** extension events have dynamic codes *)
+end
+
 module Types (F : Ctypes.TYPE) = struct
   open F
 
@@ -174,12 +213,56 @@ module Types (F : Ctypes.TYPE) = struct
   let xk_braceright = constant "XK_braceright" int
   let xk_asciitilde = constant "XK_asciitilde" int
 
+  (* X event codes are #defines, not a C enum: [~typedef:true] makes the
+     generated stubs use [sizeof(int)] instead of [sizeof(enum int)]. *)
+  let event_type : Event_type.t typ =
+    let c name = constant name int64_t in
+    enum "int" ~typedef:true
+      ~unexpected:(fun n -> Event_type.Unknown n)
+      Event_type.
+        [
+          (KeyPress, c "KeyPress");
+          (KeyRelease, c "KeyRelease");
+          (ButtonPress, c "ButtonPress");
+          (ButtonRelease, c "ButtonRelease");
+          (MotionNotify, c "MotionNotify");
+          (EnterNotify, c "EnterNotify");
+          (LeaveNotify, c "LeaveNotify");
+          (FocusIn, c "FocusIn");
+          (FocusOut, c "FocusOut");
+          (KeymapNotify, c "KeymapNotify");
+          (Expose, c "Expose");
+          (GraphicsExpose, c "GraphicsExpose");
+          (NoExpose, c "NoExpose");
+          (VisibilityNotify, c "VisibilityNotify");
+          (CreateNotify, c "CreateNotify");
+          (DestroyNotify, c "DestroyNotify");
+          (UnmapNotify, c "UnmapNotify");
+          (MapNotify, c "MapNotify");
+          (MapRequest, c "MapRequest");
+          (ReparentNotify, c "ReparentNotify");
+          (ConfigureNotify, c "ConfigureNotify");
+          (ConfigureRequest, c "ConfigureRequest");
+          (GravityNotify, c "GravityNotify");
+          (ResizeRequest, c "ResizeRequest");
+          (CirculateNotify, c "CirculateNotify");
+          (CirculateRequest, c "CirculateRequest");
+          (PropertyNotify, c "PropertyNotify");
+          (SelectionClear, c "SelectionClear");
+          (SelectionRequest, c "SelectionRequest");
+          (SelectionNotify, c "SelectionNotify");
+          (ColormapNotify, c "ColormapNotify");
+          (ClientMessage, c "ClientMessage");
+          (MappingNotify, c "MappingNotify");
+          (GenericEvent, c "GenericEvent");
+        ]
+
   type xany_event
 
   let xany_event : xany_event structure typ =
     typedef (structure "xany_anonymous") "XAnyEvent"
 
-  let xany_type = field xany_event "type" int
+  let xany_type = field xany_event "type" event_type
   let xany_serial = field xany_event "serial" ulong
   let xany_send_event = field xany_event "send_event" int
   let xany_display = field xany_event "display" display
