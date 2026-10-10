@@ -114,6 +114,12 @@ external get_raw_destroy_window_self_ev : unit -> nativeint
 let get_destroy_window_self_ev () =
   Private.xevent_of_raw_address (get_raw_destroy_window_self_ev ())
 
+external get_raw_unmap_notify_synthetic_ev : unit -> nativeint
+  = "get_raw_unmap_notify_synthetic_ev"
+
+let get_unmap_notify_synthetic_ev () =
+  Private.xevent_of_raw_address (get_raw_unmap_notify_synthetic_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -224,6 +230,9 @@ let test_unmap_notify_ev () =
   match get_unmap_notify_ev () with
   | Unmap ev ->
       Alcotest.(check int) "serial" 160 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "event" 6001 (window_to_int ev.event);
+      Alcotest.(check int) "window" 6002 (window_to_int ev.window);
       Alcotest.(check bool) "from_configure" false ev.from_configure
   | _ -> Alcotest.fail "Expected Unmap"
 
@@ -357,6 +366,17 @@ let test_destroy_window_self_ev () =
       Alcotest.(check int) "window" 5003 (window_to_int ev.window)
   | _ -> Alcotest.fail "Expected DestroyWindow"
 
+(* ICCCM withdrawal: the client sends a synthetic UnmapNotify to the root *)
+let test_unmap_notify_synthetic_ev () =
+  match get_unmap_notify_synthetic_ev () with
+  | Unmap ev ->
+      Alcotest.(check int) "serial" 161 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "event" 1 (window_to_int ev.event);
+      Alcotest.(check int) "window" 6003 (window_to_int ev.window);
+      Alcotest.(check bool) "from_configure" true ev.from_configure
+  | _ -> Alcotest.fail "Expected Unmap"
+
 let suite =
   let open Alcotest in
   [
@@ -370,6 +390,7 @@ let suite =
     test_case "DestroyWindow" `Quick test_destroy_window_ev;
     test_case "DestroyWindow (self)" `Quick test_destroy_window_self_ev;
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;
+    test_case "UnmapNotify (synthetic)" `Quick test_unmap_notify_synthetic_ev;
     test_case "MapNotify" `Quick test_map_notify_ev;
     test_case "MapRequest" `Quick test_map_request_ev;
     test_case "ConfigureRequest" `Quick test_configure_request_ev;

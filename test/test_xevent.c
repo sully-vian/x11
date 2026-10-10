@@ -389,3 +389,17 @@ CAMLprim value get_raw_destroy_window_self_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_unmap_notify_synthetic_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xunmap = {
+                      .type = UnmapNotify,
+                      .serial = 161,
+                      .send_event = True,
+                      .display = (Display *)0x6667,
+                      .event = 1,
+                      .window = 6003,
+                      .from_configure = True,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

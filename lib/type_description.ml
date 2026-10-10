@@ -473,6 +473,20 @@ module Types (F : Ctypes.TYPE) = struct
   let xdestroywindow_window = field xdestroywindow_event "window" window
   let () = seal xdestroywindow_event
 
+  type xunmap_event
+
+  let xunmap_event : xunmap_event structure typ =
+    typedef (structure "xunmap_anonymous") "XUnmapEvent"
+
+  let xunmap_type = field xunmap_event "type" event_type
+  let xunmap_serial = field xunmap_event "serial" ulong
+  let xunmap_send_event = field xunmap_event "send_event" int
+  let xunmap_display = field xunmap_event "display" display
+  let xunmap_event_window = field xunmap_event "event" window
+  let xunmap_window = field xunmap_event "window" window
+  let xunmap_from_configure = field xunmap_event "from_configure" int
+  let () = seal xunmap_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -488,5 +502,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_destroywindow =
     field xevent_union "xdestroywindow" xdestroywindow_event
 
+  let xev_unmap = field xevent_union "xunmap" xunmap_event
   let () = seal xevent_union
 end
