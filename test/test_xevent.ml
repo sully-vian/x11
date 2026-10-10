@@ -108,12 +108,22 @@ let get_leave_notify_ev () =
 let get_motion_notify_hint_ev () =
   Private.xevent_of_raw_address (get_raw_motion_notify_hint_ev ())
 
+external get_raw_destroy_window_self_ev : unit -> nativeint
+  = "get_raw_destroy_window_self_ev"
+
+let get_destroy_window_self_ev () =
+  Private.xevent_of_raw_address (get_raw_destroy_window_self_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
    underlying values, or we should use a custom equality function. For now,
    this helper allows manual verification if needed. *)
 let to_native : 'a -> nativeint = fun x -> Obj.magic x
+
+(* [window] is abstract in [X11] but is an [Unsigned.ULong.t] underneath (see
+   [Type_description.Types.window]), which lets the tests read XIDs back. *)
+let window_to_int (w : window) : int = Unsigned.ULong.to_int (Obj.magic w)
 
 let test_key_press_ev () =
   match get_key_press_ev () with
@@ -204,7 +214,10 @@ let test_expose_last_ev () =
 let test_destroy_window_ev () =
   match get_destroy_window_ev () with
   | DestroyWindow ev ->
-      Alcotest.(check int) "serial" 150 (Unsigned.ULong.to_int ev.serial)
+      Alcotest.(check int) "serial" 150 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "event" 5001 (window_to_int ev.event);
+      Alcotest.(check int) "window" 5002 (window_to_int ev.window)
   | _ -> Alcotest.fail "Expected DestroyWindow"
 
 let test_unmap_notify_ev () =
@@ -334,6 +347,16 @@ let test_leave_notify_ev () =
       Alcotest.(check int) "state" 0 ev.state
   | _ -> Alcotest.fail "Expected LeaveNotify event"
 
+(* StructureNotify selected on the destroyed window itself: event = window *)
+let test_destroy_window_self_ev () =
+  match get_destroy_window_self_ev () with
+  | DestroyWindow ev ->
+      Alcotest.(check int) "serial" 151 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "event" 5003 (window_to_int ev.event);
+      Alcotest.(check int) "window" 5003 (window_to_int ev.window)
+  | _ -> Alcotest.fail "Expected DestroyWindow"
+
 let suite =
   let open Alcotest in
   [
@@ -345,6 +368,7 @@ let suite =
     test_case "Expose" `Quick test_expose_ev;
     test_case "Expose (last in series)" `Quick test_expose_last_ev;
     test_case "DestroyWindow" `Quick test_destroy_window_ev;
+    test_case "DestroyWindow (self)" `Quick test_destroy_window_self_ev;
     test_case "UnmapNotify" `Quick test_unmap_notify_ev;
     test_case "MapNotify" `Quick test_map_notify_ev;
     test_case "MapRequest" `Quick test_map_request_ev;

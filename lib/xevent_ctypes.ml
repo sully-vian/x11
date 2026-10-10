@@ -114,6 +114,15 @@ let expose_of_c ev : exposeEvent =
     count = getf ev xexpose_count;
   }
 
+let destroy_window_of_c ev : destroyWindowEvent =
+  {
+    serial = getf ev xdestroywindow_serial;
+    send_event = 0 <> getf ev xdestroywindow_send_event;
+    display = getf ev xdestroywindow_display;
+    event = getf ev xdestroywindow_event_window;
+    window = getf ev xdestroywindow_window;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -133,7 +142,8 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.NoExpose -> failwith "Unsupported type NoExpose"
   | Ev.VisibilityNotify -> failwith "Unsupported type VisibilityNotify"
   | Ev.CreateNotify -> failwith "Unsupported type CreateNotify"
-  | Ev.DestroyNotify -> failwith "Unsupported type DestroyNotify"
+  | Ev.DestroyNotify ->
+      DestroyWindow (destroy_window_of_c (getf raw_ev xev_destroywindow))
   | Ev.UnmapNotify -> failwith "Unsupported type UnmapNotify"
   | Ev.MapNotify -> failwith "Unsupported type MapNotify"
   | Ev.MapRequest -> failwith "Unsupported type MapRequest"

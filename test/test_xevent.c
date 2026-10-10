@@ -376,3 +376,16 @@ CAMLprim value get_raw_motion_notify_hint_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_destroy_window_self_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xdestroywindow = {
+                      .type = DestroyNotify,
+                      .serial = 151,
+                      .send_event = True,
+                      .display = (Display *)0x5556,
+                      .event = 5003,
+                      .window = 5003,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

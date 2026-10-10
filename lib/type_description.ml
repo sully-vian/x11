@@ -460,6 +460,19 @@ module Types (F : Ctypes.TYPE) = struct
   let xexpose_count = field xexpose_event "count" int
   let () = seal xexpose_event
 
+  type xdestroywindow_event
+
+  let xdestroywindow_event : xdestroywindow_event structure typ =
+    typedef (structure "xdestroywindow_anonymous") "XDestroyWindowEvent"
+
+  let xdestroywindow_type = field xdestroywindow_event "type" event_type
+  let xdestroywindow_serial = field xdestroywindow_event "serial" ulong
+  let xdestroywindow_send_event = field xdestroywindow_event "send_event" int
+  let xdestroywindow_display = field xdestroywindow_event "display" display
+  let xdestroywindow_event_window = field xdestroywindow_event "event" window
+  let xdestroywindow_window = field xdestroywindow_event "window" window
+  let () = seal xdestroywindow_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -471,5 +484,9 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_crossing = field xevent_union "xcrossing" xcrossing_event
   let xev_motion = field xevent_union "xmotion" xmotion_event
   let xev_expose = field xevent_union "xexpose" xexpose_event
+
+  let xev_destroywindow =
+    field xevent_union "xdestroywindow" xdestroywindow_event
+
   let () = seal xevent_union
 end
