@@ -579,6 +579,29 @@ module Types (F : Ctypes.TYPE) = struct
 
   let () = seal xreparent_event
 
+  type xconfigure_event
+
+  let xconfigure_event : xconfigure_event structure typ =
+    typedef (structure "xconfigure_anonymous") "XConfigureEvent"
+
+  let xconfigure_type = field xconfigure_event "type" event_type
+  let xconfigure_serial = field xconfigure_event "serial" ulong
+  let xconfigure_send_event = field xconfigure_event "send_event" int
+  let xconfigure_display = field xconfigure_event "display" display
+  let xconfigure_event_window = field xconfigure_event "event" window
+  let xconfigure_window = field xconfigure_event "window" window
+  let xconfigure_x = field xconfigure_event "x" int
+  let xconfigure_y = field xconfigure_event "y" int
+  let xconfigure_width = field xconfigure_event "width" int
+  let xconfigure_height = field xconfigure_event "height" int
+  let xconfigure_border_width = field xconfigure_event "border_width" int
+  let xconfigure_above = field xconfigure_event "above" window
+
+  let xconfigure_override_redirect =
+    field xconfigure_event "override_redirect" int
+
+  let () = seal xconfigure_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -602,5 +625,6 @@ module Types (F : Ctypes.TYPE) = struct
     field xevent_union "xconfigurerequest" xconfigurerequest_event
 
   let xev_reparent = field xevent_union "xreparent" xreparent_event
+  let xev_configure = field xevent_union "xconfigure" xconfigure_event
   let () = seal xevent_union
 end

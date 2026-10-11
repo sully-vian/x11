@@ -144,6 +144,12 @@ external get_raw_reparent_notify_root_ev : unit -> nativeint
 let get_reparent_notify_root_ev () =
   Private.xevent_of_raw_address (get_raw_reparent_notify_root_ev ())
 
+external get_raw_configure_notify_synthetic_ev : unit -> nativeint
+  = "get_raw_configure_notify_synthetic_ev"
+
+let get_configure_notify_synthetic_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_notify_synthetic_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -311,9 +317,12 @@ let test_configure_notify_ev () =
   | ConfigureNotify ev ->
       Alcotest.(check int) "serial" 220 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "event" 2201 (window_to_int ev.event);
+      Alcotest.(check int) "window" 2202 (window_to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (100, 200) ev.pos;
       Alcotest.(check (pair int int)) "size" (1024, 768) ev.size;
       Alcotest.(check int) "border_width" 2 ev.border_width;
+      Alcotest.(check int) "above" 2203 (window_to_int ev.above);
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
@@ -471,6 +480,22 @@ let test_reparent_notify_root_ev () =
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected Reparent event"
 
+(* Synthetic ConfigureNotify a WM sends to a reparented client (ICCCM 4.1.5):
+   root coordinates, no sibling *)
+let test_configure_notify_synthetic_ev () =
+  match get_configure_notify_synthetic_ev () with
+  | ConfigureNotify ev ->
+      Alcotest.(check int) "serial" 221 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "event" 2204 (window_to_int ev.event);
+      Alcotest.(check int) "window" 2204 (window_to_int ev.window);
+      Alcotest.(check (pair int int)) "pos" (1925, 30) ev.pos;
+      Alcotest.(check (pair int int)) "size" (1280, 720) ev.size;
+      Alcotest.(check int) "border_width" 0 ev.border_width;
+      Alcotest.(check int) "above" 0 (window_to_int ev.above);
+      Alcotest.(check bool) "override_redirect" false ev.override_redirect
+  | _ -> Alcotest.fail "Expected ConfigureNotify event"
+
 let suite =
   let open Alcotest in
   [
@@ -495,6 +520,8 @@ let suite =
     test_case "ReparentNotify" `Quick test_reparent_notify_ev;
     test_case "ReparentNotify (to root)" `Quick test_reparent_notify_root_ev;
     test_case "ConfigureNotify" `Quick test_configure_notify_ev;
+    test_case "ConfigureNotify (synthetic)" `Quick
+      test_configure_notify_synthetic_ev;
     test_case "PropertyNotify" `Quick test_property_notify_ev;
     test_case "ClientMessage (bytes)" `Quick test_client_message_ev_b;
     test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;

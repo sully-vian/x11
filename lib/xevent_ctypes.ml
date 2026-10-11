@@ -179,6 +179,20 @@ let reparent_of_c ev : reparentEvent =
     override_redirect = 0 <> getf ev xreparent_override_redirect;
   }
 
+let configure_of_c ev : configureEvent =
+  {
+    serial = getf ev xconfigure_serial;
+    send_event = 0 <> getf ev xconfigure_send_event;
+    display = getf ev xconfigure_display;
+    event = getf ev xconfigure_event_window;
+    window = getf ev xconfigure_window;
+    pos = (getf ev xconfigure_x, getf ev xconfigure_y);
+    size = (getf ev xconfigure_width, getf ev xconfigure_height);
+    border_width = getf ev xconfigure_border_width;
+    above = getf ev xconfigure_above;
+    override_redirect = 0 <> getf ev xconfigure_override_redirect;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -204,7 +218,8 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.MapNotify -> Map (map_of_c (getf raw_ev xev_map))
   | Ev.MapRequest -> MapRequest (map_request_of_c (getf raw_ev xev_maprequest))
   | Ev.ReparentNotify -> Reparent (reparent_of_c (getf raw_ev xev_reparent))
-  | Ev.ConfigureNotify -> failwith "Unsupported type ConfigureNotify"
+  | Ev.ConfigureNotify ->
+      ConfigureNotify (configure_of_c (getf raw_ev xev_configure))
   | Ev.ConfigureRequest ->
       ConfigureRequest
         (configure_request_of_c (getf raw_ev xev_configurerequest))
