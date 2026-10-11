@@ -193,6 +193,17 @@ let configure_of_c ev : configureEvent =
     override_redirect = 0 <> getf ev xconfigure_override_redirect;
   }
 
+let property_of_c ev : propertyEvent =
+  {
+    serial = getf ev xproperty_serial;
+    send_event = 0 <> getf ev xproperty_send_event;
+    display = getf ev xproperty_display;
+    window = getf ev xproperty_window;
+    atom = getf ev xproperty_atom;
+    time = getf ev xproperty_time;
+    state = getf ev xproperty_state;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -227,7 +238,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.ResizeRequest -> failwith "Unsupported type ResizeRequest"
   | Ev.CirculateNotify -> failwith "Unsupported type CirculateNotify"
   | Ev.CirculateRequest -> failwith "Unsupported type CirculateRequest"
-  | Ev.PropertyNotify -> failwith "Unsupported type PropertyNotify"
+  | Ev.PropertyNotify -> Property (property_of_c (getf raw_ev xev_property))
   | Ev.SelectionClear -> failwith "Unsupported type SelectionClear"
   | Ev.SelectionRequest -> failwith "Unsupported type SelectionRequest"
   | Ev.SelectionNotify -> failwith "Unsupported type SelectionNotify"

@@ -488,3 +488,18 @@ CAMLprim value get_raw_configure_notify_synthetic_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_property_notify_delete_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xproperty = {
+                      .type = PropertyNotify,
+                      .serial = 281,
+                      .send_event = True,
+                      .display = (Display *)0x3334,
+                      .window = 2803,
+                      .atom = 2804,
+                      .time = 0xFFFFFFF0,
+                      .state = PropertyDelete,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

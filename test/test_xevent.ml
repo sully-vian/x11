@@ -150,6 +150,12 @@ external get_raw_configure_notify_synthetic_ev : unit -> nativeint
 let get_configure_notify_synthetic_ev () =
   Private.xevent_of_raw_address (get_raw_configure_notify_synthetic_ev ())
 
+external get_raw_property_notify_delete_ev : unit -> nativeint
+  = "get_raw_property_notify_delete_ev"
+
+let get_property_notify_delete_ev () =
+  Private.xevent_of_raw_address (get_raw_property_notify_delete_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -157,9 +163,12 @@ let get_configure_notify_synthetic_ev () =
    this helper allows manual verification if needed. *)
 let to_native : 'a -> nativeint = fun x -> Obj.magic x
 
-(* [window] is abstract in [X11] but is an [Unsigned.ULong.t] underneath (see
-   [Type_description.Types.window]), which lets the tests read XIDs back. *)
+(* [window], [atom] and [time] are abstract in [X11] but are [Unsigned.ULong.t]
+   underneath (see [Type_description.Types]), which lets the tests read them
+   back. *)
 let window_to_int (w : window) : int = Unsigned.ULong.to_int (Obj.magic w)
+let atom_to_int (a : atom) : int = Unsigned.ULong.to_int (Obj.magic a)
+let time_to_int (t : time) : int = Unsigned.ULong.to_int (Obj.magic t)
 
 let test_key_press_ev () =
   match get_key_press_ev () with
@@ -330,7 +339,11 @@ let test_property_notify_ev () =
   match get_property_notify_ev () with
   | Property ev ->
       Alcotest.(check int) "serial" 280 (Unsigned.ULong.to_int ev.serial);
-      Alcotest.(check bool) "send_event" false ev.send_event
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "window" 2801 (window_to_int ev.window);
+      Alcotest.(check int) "atom" 2802 (atom_to_int ev.atom);
+      Alcotest.(check int) "time" 5000 (time_to_int ev.time);
+      Alcotest.(check bool) "state" true (ev.state = PropertyNewValue)
   | _ -> Alcotest.fail "Expected Property event"
 
 let test_client_message_ev_b () =
@@ -496,6 +509,19 @@ let test_configure_notify_synthetic_ev () =
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
+(* Property deleted, with a server timestamp above 2^31: X times are unsigned
+   32-bit and wrap after ~49 days *)
+let test_property_notify_delete_ev () =
+  match get_property_notify_delete_ev () with
+  | Property ev ->
+      Alcotest.(check int) "serial" 281 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "window" 2803 (window_to_int ev.window);
+      Alcotest.(check int) "atom" 2804 (atom_to_int ev.atom);
+      Alcotest.(check int) "time" 0xFFFFFFF0 (time_to_int ev.time);
+      Alcotest.(check bool) "state" true (ev.state = PropertyDelete)
+  | _ -> Alcotest.fail "Expected Property event"
+
 let suite =
   let open Alcotest in
   [
@@ -523,6 +549,7 @@ let suite =
     test_case "ConfigureNotify (synthetic)" `Quick
       test_configure_notify_synthetic_ev;
     test_case "PropertyNotify" `Quick test_property_notify_ev;
+    test_case "PropertyNotify (delete)" `Quick test_property_notify_delete_ev;
     test_case "ClientMessage (bytes)" `Quick test_client_message_ev_b;
     test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;
     test_case "ClientMessage (longs)" `Quick test_client_meessage_ev_l;

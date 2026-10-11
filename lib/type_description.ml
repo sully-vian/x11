@@ -319,6 +319,14 @@ module Types (F : Ctypes.TYPE) = struct
         (Opposite, c "Opposite");
       ]
 
+  let property_state : propertyNotification typ =
+    let c name = constant name int64_t in
+    enum "x11_property_state" ~typedef:true
+      [
+        (PropertyNewValue, c "PropertyNewValue");
+        (PropertyDelete, c "PropertyDelete");
+      ]
+
   type xany_event
 
   let xany_event : xany_event structure typ =
@@ -602,6 +610,21 @@ module Types (F : Ctypes.TYPE) = struct
 
   let () = seal xconfigure_event
 
+  type xproperty_event
+
+  let xproperty_event : xproperty_event structure typ =
+    typedef (structure "xproperty_anonymous") "XPropertyEvent"
+
+  let xproperty_type = field xproperty_event "type" event_type
+  let xproperty_serial = field xproperty_event "serial" ulong
+  let xproperty_send_event = field xproperty_event "send_event" int
+  let xproperty_display = field xproperty_event "display" display
+  let xproperty_window = field xproperty_event "window" window
+  let xproperty_atom = field xproperty_event "atom" atom
+  let xproperty_time = field xproperty_event "time" time
+  let xproperty_state = field xproperty_event "state" property_state
+  let () = seal xproperty_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -626,5 +649,6 @@ module Types (F : Ctypes.TYPE) = struct
 
   let xev_reparent = field xevent_union "xreparent" xreparent_event
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
+  let xev_property = field xevent_union "xproperty" xproperty_event
   let () = seal xevent_union
 end
