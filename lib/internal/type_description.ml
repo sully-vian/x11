@@ -45,6 +45,26 @@ module Enums = struct
   type propertyNotification = PropertyNewValue | PropertyDelete
   type colorMapNotification = ColormapUninstalled | ColormapInstalled
   type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
+  type windowClass = CopyFromParent | InputOutput | InputOnly
+  type mapState = IsUnmapped | IsUnviewable | IsViewable
+  type backingStore = NotUseful | WhenMapped | Always
+
+  (* Bit and window gravity share X's constants, except for 0: ForgetGravity
+     for bit gravity, UnmapGravity for window gravity. Reading a bit gravity
+     never yields UnmapGravity, and a window gravity never ForgetGravity. *)
+  type gravity =
+    | ForgetGravity
+    | UnmapGravity
+    | NorthWestGravity
+    | NorthGravity
+    | NorthEastGravity
+    | WestGravity
+    | CenterGravity
+    | EastGravity
+    | SouthWestGravity
+    | SouthGravity
+    | SouthEastGravity
+    | StaticGravity
 
   type notifyMode =
     | NotifyNormal
@@ -135,9 +155,6 @@ module Types (F : Ctypes.TYPE) = struct
   let button3 = constant "Button3" int
   let button4 = constant "Button4" int
   let button5 = constant "Button5" int
-  let copyFromParent = constant "CopyFromParent" int
-  let inputOutput = constant "InputOutput" int
-  let inputOnly = constant "InputOnly" int
   let xk_BackSpace = constant "XK_BackSpace" int
   let xk_Tab = constant "XK_Tab" int
   let xk_Linefeed = constant "XK_Linefeed" int
@@ -332,6 +349,57 @@ module Types (F : Ctypes.TYPE) = struct
         (PropertyNewValue, c "PropertyNewValue");
         (PropertyDelete, c "PropertyDelete");
       ]
+
+  let window_class : windowClass typ =
+    let c name = constant name int64_t in
+    enum "x11_window_class" ~typedef:true
+      [
+        (CopyFromParent, c "CopyFromParent");
+        (InputOutput, c "InputOutput");
+        (InputOnly, c "InputOnly");
+      ]
+
+  let map_state : mapState typ =
+    let c name = constant name int64_t in
+    enum "x11_map_state" ~typedef:true
+      [
+        (IsUnmapped, c "IsUnmapped");
+        (IsUnviewable, c "IsUnviewable");
+        (IsViewable, c "IsViewable");
+      ]
+
+  let backing_store : backingStore typ =
+    let c name = constant name int64_t in
+    enum "x11_backing_store" ~typedef:true
+      [
+        (NotUseful, c "NotUseful");
+        (WhenMapped, c "WhenMapped");
+        (Always, c "Always");
+      ]
+
+  let directional_gravities =
+    let c name = constant name int64_t in
+    [
+      (NorthWestGravity, c "NorthWestGravity");
+      (NorthGravity, c "NorthGravity");
+      (NorthEastGravity, c "NorthEastGravity");
+      (WestGravity, c "WestGravity");
+      (CenterGravity, c "CenterGravity");
+      (EastGravity, c "EastGravity");
+      (SouthWestGravity, c "SouthWestGravity");
+      (SouthGravity, c "SouthGravity");
+      (SouthEastGravity, c "SouthEastGravity");
+      (StaticGravity, c "StaticGravity");
+    ]
+
+  let bit_gravity : gravity typ =
+    enum "x11_bit_gravity" ~typedef:true
+      ((ForgetGravity, constant "ForgetGravity" int64_t)
+      :: directional_gravities)
+
+  let win_gravity : gravity typ =
+    enum "x11_win_gravity" ~typedef:true
+      ((UnmapGravity, constant "UnmapGravity" int64_t) :: directional_gravities)
 
   type xany_event
 
@@ -671,16 +739,16 @@ module Types (F : Ctypes.TYPE) = struct
   let xwa_depth = field xwindowattributes "depth" int
   let xwa_visual = field xwindowattributes "visual" visual
   let xwa_root = field xwindowattributes "root" window
-  let xwa_class = field xwindowattributes "class" int
-  let xwa_bit_gravity = field xwindowattributes "bit_gravity" int
-  let xwa_win_gravity = field xwindowattributes "win_gravity" int
-  let xwa_backing_store = field xwindowattributes "backing_store" int
+  let xwa_class = field xwindowattributes "class" window_class
+  let xwa_bit_gravity = field xwindowattributes "bit_gravity" bit_gravity
+  let xwa_win_gravity = field xwindowattributes "win_gravity" win_gravity
+  let xwa_backing_store = field xwindowattributes "backing_store" backing_store
   let xwa_backing_planes = field xwindowattributes "backing_planes" ulong
   let xwa_backing_pixel = field xwindowattributes "backing_pixel" ulong
   let xwa_save_under = field xwindowattributes "save_under" int
   let xwa_colormap = field xwindowattributes "colormap" colormap
   let xwa_map_installed = field xwindowattributes "map_installed" int
-  let xwa_map_state = field xwindowattributes "map_state" int
+  let xwa_map_state = field xwindowattributes "map_state" map_state
   let xwa_all_event_masks = field xwindowattributes "all_event_masks" long
   let xwa_your_event_mask = field xwindowattributes "your_event_mask" long
 

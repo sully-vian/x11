@@ -194,11 +194,25 @@ val button3 : button
 val button4 : button
 val button5 : button
 
-type windowClass
+type windowClass = CopyFromParent | InputOutput | InputOnly
+type mapState = IsUnmapped | IsUnviewable | IsViewable
+type backingStore = NotUseful | WhenMapped | Always
 
-val copyFromParent : windowClass
-val inputOutput : windowClass
-val inputOnly : windowClass
+(** Bit and window gravity. [ForgetGravity] only occurs as a bit gravity and
+    [UnmapGravity] only as a window gravity: X uses 0 for both. *)
+type gravity =
+  | ForgetGravity
+  | UnmapGravity
+  | NorthWestGravity
+  | NorthGravity
+  | NorthEastGravity
+  | WestGravity
+  | CenterGravity
+  | EastGravity
+  | SouthWestGravity
+  | SouthGravity
+  | SouthEastGravity
+  | StaticGravity
 
 (** {1 Event Data Structures} *)
 
@@ -715,15 +729,15 @@ type windowAttributes = {
   visual : visual;
   root : window;
   c_class : windowClass;
-  bit_gravity : int;
-  win_gravity : int;
-  backing_store : int;
+  bit_gravity : gravity;
+  win_gravity : gravity;
+  backing_store : backingStore;
   backing_planes : int;
   backing_pixel : int;
   save_under : bool;
   colormap : colormap;
   map_installed : bool;
-  map_state : int;
+  map_state : mapState;
   all_event_masks : eventMask;
   your_event_mask : eventMask;
   do_not_propagate_mask : int;

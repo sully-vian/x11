@@ -1,6 +1,7 @@
 open X11_internal
 open C.Types
 open Xwindowattributes
+open Type_description.Enums
 open Mask
 
 (* External C functions *)
@@ -56,14 +57,14 @@ let test_xwa_basic () =
   Alcotest.(check int) "depth" 24 xwa.depth;
   Alcotest.(check int) "visual" 0x12345678 (address xwa.visual);
   Alcotest.(check int) "root" 1234 (Unsigned.ULong.to_int xwa.root);
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes" 0xFFFFFFFF xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0 xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check bool)
     "all_event_masks" true
     (structureNotifyMask ||| exposureMask = xwa.all_event_masks);
@@ -82,14 +83,14 @@ let test_xwa_zeroed () =
   Alcotest.(check (pair int int)) "size" (0, 0) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 0 xwa.depth;
-  Alcotest.(check bool) "c_class" true (copyFromParent = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 0 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 0 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = CopyFromParent);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = ForgetGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = UnmapGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes" 0 xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0 xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 0 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsUnmapped);
   Alcotest.(check bool)
     "all_event_masks" true
     (noEventMask = xwa.all_event_masks);
@@ -106,12 +107,12 @@ let test_xwa_negative_coords () =
   Alcotest.(check (pair int int)) "size" (1920, 1080) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check bool) "map_installed" true xwa.map_installed;
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
   ()
@@ -122,12 +123,12 @@ let test_xwa_huge_dimensions () =
   Alcotest.(check (pair int int)) "size" (2147483647, 2147483647) xwa.size;
   Alcotest.(check int) "border_width" 2147483647 xwa.border_width;
   Alcotest.(check int) "depth" 32 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check bool) "map_installed" true xwa.map_installed;
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
   ()
@@ -138,16 +139,16 @@ let test_xwa_input_only () =
   Alcotest.(check (pair int int)) "size" (100, 100) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 0 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOnly = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 0 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOnly);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = ForgetGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes" 0 xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0 xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
   (* Alcotest.(check int) "colormap" 0 xwa.colormap;*)
   Alcotest.(check bool) "map_installed" false xwa.map_installed;
-  Alcotest.(check int) "map_state" 0 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsUnmapped);
   Alcotest.(check bool)
     "all_event_masks" true
     (enterWindowMask ||| leaveWindowMask = xwa.all_event_masks);
@@ -163,14 +164,14 @@ let test_xwa_max_masks_planes () =
   Alcotest.(check (pair int int)) "size" (10, 10) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes max" (-1) xwa.backing_planes;
   Alcotest.(check int) "backing_pixel max" (-1) xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check bool) "map_installed" true xwa.map_installed;
   (*Alcotest.(check bool)
     "all_event_masks max" true
@@ -189,15 +190,15 @@ let test_xwa_bools_true () =
   Alcotest.(check (pair int int)) "size" (50, 50) xwa.size;
   Alcotest.(check int) "border_width" 1 xwa.border_width;
   Alcotest.(check int) "depth" 8 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes" 0xFF xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0xFF xwa.backing_pixel;
   Alcotest.(check bool) "save_under" true xwa.save_under;
   Alcotest.(check bool) "map_installed" true xwa.map_installed;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check int) "do_not_propagate_mask" 0 xwa.do_not_propagate_mask;
   Alcotest.(check bool) "override_redirect" true xwa.override_redirect;
   ()
@@ -208,14 +209,14 @@ let test_xwa_gravities_store () =
   Alcotest.(check (pair int int)) "size" (200, 200) xwa.size;
   Alcotest.(check int) "border_width" 5 xwa.border_width;
   Alcotest.(check int) "depth" 32 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 5 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 10 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 2 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = CenterGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = StaticGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = Always);
   Alcotest.(check int) "backing_planes" 0xFFFFFF xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0xABCDEF xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  Alcotest.(check int) "map_state" 2 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsViewable);
   Alcotest.(check bool) "map_installed" false xwa.map_installed;
   Alcotest.(check int) "do_not_propagate_mask" 0 xwa.do_not_propagate_mask;
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
@@ -227,13 +228,13 @@ let test_xwa_unviewable () =
   Alcotest.(check (pair int int)) "size" (1920, 1080) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 1 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = WhenMapped);
   Alcotest.(check bool) "save_under" false xwa.save_under;
   Alcotest.(check bool) "map_installed" true xwa.map_installed;
-  Alcotest.(check int) "map_state" 1 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsUnviewable);
   Alcotest.(check int) "do_not_propagate_mask" 0 xwa.do_not_propagate_mask;
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
   ()
@@ -244,10 +245,10 @@ let test_xwa_max_pointers () =
   Alcotest.(check (pair int int)) "size" (1, 1) xwa.size;
   Alcotest.(check int) "border_width" 0 xwa.border_width;
   Alcotest.(check int) "depth" 1 xwa.depth;
-  Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
-  Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
-  Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
-  Alcotest.(check int) "backing_store" 0 xwa.backing_store;
+  Alcotest.(check bool) "c_class" true (xwa.c_class = InputOutput);
+  Alcotest.(check bool) "bit_gravity" true (xwa.bit_gravity = NorthWestGravity);
+  Alcotest.(check bool) "win_gravity" true (xwa.win_gravity = NorthWestGravity);
+  Alcotest.(check bool) "backing_store" true (xwa.backing_store = NotUseful);
   Alcotest.(check int) "backing_planes" 0 xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0 xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
@@ -257,7 +258,7 @@ let test_xwa_max_pointers () =
   Alcotest.(check int) "visual" (-1) (address xwa.visual);
   Alcotest.(check int) "screen" (-1) (address xwa.screen);
   Alcotest.(check bool) "map_installed" false xwa.map_installed;
-  Alcotest.(check int) "map_state" 0 xwa.map_state;
+  Alcotest.(check bool) "map_state" true (xwa.map_state = IsUnmapped);
   Alcotest.(check bool)
     "all_event_masks" true
     (noEventMask = xwa.all_event_masks);

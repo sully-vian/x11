@@ -84,8 +84,10 @@ let test_root_window_attributes () =
           Alcotest.(check (pair int int)) "size" (1280, 1024) attributes.size;
           Alcotest.(check (pair int int)) "pos" (0, 0) attributes.pos;
           Alcotest.(check bool) "root" true (attributes.root = root);
-          Alcotest.(check bool) "c_class" true (attributes.c_class = inputOutput);
-          Alcotest.(check int) "map_state (IsViewable)" 2 attributes.map_state;
+          Alcotest.(check bool) "c_class" true (attributes.c_class = InputOutput);
+          Alcotest.(check bool)
+            "map_state" true
+            (attributes.map_state = IsViewable);
           close_display dpy)
 
 let () =
