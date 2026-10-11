@@ -4,33 +4,26 @@ X11 bindings for OCaml
 
 The goal is to provide a clean and type-safe OCaml interface to X11.
 
-## Testing internals
+## Library layout and testing
 
-`window`, `atom`, `time` and `display` are abstract in `x11.mli`, so tests
-written against the public API can't check the XIDs that make up most of an
-event (`event`, `window`, `parent`, ...). For now, `test/test_xevent.ml` reads
-them through `window_to_int`, `atom_to_int` and `time_to_int`, test-only
-`Obj.magic` helpers, like the existing `keycode` checks. They work but silently
-break if the representation changes.
+The code is split into two libraries:
 
-Planned fix: expose the internal modules, with their true types, through the
-hidden `Private` module of `x11.mli`, using module aliases so nothing has to be
-kept in sync:
+- `x11_internal` (`lib/internal/`) holds the whole implementation: ctypes
+  descriptions, C stubs, event types and their conversion. Nothing in it is
+  abstract. It's a private library (`(package x11)` without `public_name`):
+  dune installs it with the package, as `x11.__private__.x11_internal`, but
+  other projects can't depend on it or open its modules.
+- `x11` (`lib/`) is the public library. `x11.mli` re-exports what users need
+  and hides the representation of `window`, `atom`, `time`, `display`, ...
 
-```ocaml
-(**/**)
-module Private : sig
-  module Xevent = Xevent
-  module Xevent_ctypes = Xevent_ctypes
-  (* ... *)
-end
-(**/**)
-```
+Unit tests (`test/test_xevent.ml`) depend on `x11_internal`, so they see the
+real types (`window` is `Unsigned.ULong.t`, `display` a ctypes pointer) and can
+check every field without `Obj.magic`. Integration tests depend on `x11` and
+exercise the public API.
 
-Conversion tests then use `Private.Xevent_ctypes.xevent_of_c` and see `window`
-as `Unsigned.ULong.t`, while integration tests keep using the public API.
-`Private` carries no stability guarantee. If it becomes a liability, the
-stricter option is a separate internal library that the tests depend on.
+`x11.mli` must keep declaring its types without equations to the internal ones
+(`type window`, not `type window = X11_internal...`): an equation would make
+the internal representation part of the public API.
 
 Comparing windows in user code needs no helper: polymorphic `=`, `compare`
 and `Hashtbl` work on `window`, because `Unsigned.ULong.t` provides its own

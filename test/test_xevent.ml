@@ -1,4 +1,6 @@
-open X11
+open X11_internal
+open C.Types
+open Xevent
 
 (* External C functions *)
 external get_raw_key_press_ev : unit -> nativeint = "get_raw_key_press_ev"
@@ -47,140 +49,121 @@ external get_raw_motion_notify_hint_ev : unit -> nativeint
   = "get_raw_motion_notify_hint_ev"
 
 (* Convert the raw C events through the ctypes view *)
-let get_key_press_ev () =
-  Private.xevent_of_raw_address (get_raw_key_press_ev ())
+(* The C stubs return the address of a static [XEvent]: read it through the
+   same ctypes view as [next_event] *)
+let xevent_of_raw_address address =
+  Ctypes.(!@(from_voidp Xevent_ctypes.xevent_typ (ptr_of_raw_address address)))
 
-let get_key_release_ev () =
-  Private.xevent_of_raw_address (get_raw_key_release_ev ())
+let display_address display =
+  Nativeint.to_int (Ctypes.raw_address_of_ptr display)
 
-let get_button_press_ev () =
-  Private.xevent_of_raw_address (get_raw_button_press_ev ())
+let get_key_press_ev () = xevent_of_raw_address (get_raw_key_press_ev ())
+let get_key_release_ev () = xevent_of_raw_address (get_raw_key_release_ev ())
+let get_button_press_ev () = xevent_of_raw_address (get_raw_button_press_ev ())
 
 let get_motion_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_motion_notify_ev ())
+  xevent_of_raw_address (get_raw_motion_notify_ev ())
 
-let get_expose_ev () = Private.xevent_of_raw_address (get_raw_expose_ev ())
-
-let get_expose_last_ev () =
-  Private.xevent_of_raw_address (get_raw_expose_last_ev ())
+let get_expose_ev () = xevent_of_raw_address (get_raw_expose_ev ())
+let get_expose_last_ev () = xevent_of_raw_address (get_raw_expose_last_ev ())
 
 let get_destroy_window_ev () =
-  Private.xevent_of_raw_address (get_raw_destroy_window_ev ())
+  xevent_of_raw_address (get_raw_destroy_window_ev ())
 
-let get_unmap_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_unmap_notify_ev ())
-
-let get_map_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_map_notify_ev ())
-
-let get_map_request_ev () =
-  Private.xevent_of_raw_address (get_raw_map_request_ev ())
+let get_unmap_notify_ev () = xevent_of_raw_address (get_raw_unmap_notify_ev ())
+let get_map_notify_ev () = xevent_of_raw_address (get_raw_map_notify_ev ())
+let get_map_request_ev () = xevent_of_raw_address (get_raw_map_request_ev ())
 
 let get_configure_request_ev () =
-  Private.xevent_of_raw_address (get_raw_configure_request_ev ())
+  xevent_of_raw_address (get_raw_configure_request_ev ())
 
 let get_reparent_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_reparent_notify_ev ())
+  xevent_of_raw_address (get_raw_reparent_notify_ev ())
 
 let get_configure_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_configure_notify_ev ())
+  xevent_of_raw_address (get_raw_configure_notify_ev ())
 
 let get_property_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_property_notify_ev ())
+  xevent_of_raw_address (get_raw_property_notify_ev ())
 
 let get_client_message_ev_b () =
-  Private.xevent_of_raw_address (get_raw_client_message_ev_b ())
+  xevent_of_raw_address (get_raw_client_message_ev_b ())
 
 let get_client_message_ev_s () =
-  Private.xevent_of_raw_address (get_raw_client_message_ev_s ())
+  xevent_of_raw_address (get_raw_client_message_ev_s ())
 
 let get_client_message_ev_l () =
-  Private.xevent_of_raw_address (get_raw_client_message_ev_l ())
+  xevent_of_raw_address (get_raw_client_message_ev_l ())
 
-let get_focus_in_ev () = Private.xevent_of_raw_address (get_raw_focus_in_ev ())
-
-let get_enter_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_enter_notify_ev ())
-
-let get_leave_notify_ev () =
-  Private.xevent_of_raw_address (get_raw_leave_notify_ev ())
+let get_focus_in_ev () = xevent_of_raw_address (get_raw_focus_in_ev ())
+let get_enter_notify_ev () = xevent_of_raw_address (get_raw_enter_notify_ev ())
+let get_leave_notify_ev () = xevent_of_raw_address (get_raw_leave_notify_ev ())
 
 let get_motion_notify_hint_ev () =
-  Private.xevent_of_raw_address (get_raw_motion_notify_hint_ev ())
+  xevent_of_raw_address (get_raw_motion_notify_hint_ev ())
 
 external get_raw_destroy_window_self_ev : unit -> nativeint
   = "get_raw_destroy_window_self_ev"
 
 let get_destroy_window_self_ev () =
-  Private.xevent_of_raw_address (get_raw_destroy_window_self_ev ())
+  xevent_of_raw_address (get_raw_destroy_window_self_ev ())
 
 external get_raw_unmap_notify_synthetic_ev : unit -> nativeint
   = "get_raw_unmap_notify_synthetic_ev"
 
 let get_unmap_notify_synthetic_ev () =
-  Private.xevent_of_raw_address (get_raw_unmap_notify_synthetic_ev ())
+  xevent_of_raw_address (get_raw_unmap_notify_synthetic_ev ())
 
 external get_raw_map_notify_override_ev : unit -> nativeint
   = "get_raw_map_notify_override_ev"
 
 let get_map_notify_override_ev () =
-  Private.xevent_of_raw_address (get_raw_map_notify_override_ev ())
+  xevent_of_raw_address (get_raw_map_notify_override_ev ())
 
 external get_raw_map_request_root_ev : unit -> nativeint
   = "get_raw_map_request_root_ev"
 
 let get_map_request_root_ev () =
-  Private.xevent_of_raw_address (get_raw_map_request_root_ev ())
+  xevent_of_raw_address (get_raw_map_request_root_ev ())
 
 external get_raw_configure_request_restack_ev : unit -> nativeint
   = "get_raw_configure_request_restack_ev"
 
 let get_configure_request_restack_ev () =
-  Private.xevent_of_raw_address (get_raw_configure_request_restack_ev ())
+  xevent_of_raw_address (get_raw_configure_request_restack_ev ())
 
 external get_raw_reparent_notify_root_ev : unit -> nativeint
   = "get_raw_reparent_notify_root_ev"
 
 let get_reparent_notify_root_ev () =
-  Private.xevent_of_raw_address (get_raw_reparent_notify_root_ev ())
+  xevent_of_raw_address (get_raw_reparent_notify_root_ev ())
 
 external get_raw_configure_notify_synthetic_ev : unit -> nativeint
   = "get_raw_configure_notify_synthetic_ev"
 
 let get_configure_notify_synthetic_ev () =
-  Private.xevent_of_raw_address (get_raw_configure_notify_synthetic_ev ())
+  xevent_of_raw_address (get_raw_configure_notify_synthetic_ev ())
 
 external get_raw_property_notify_delete_ev : unit -> nativeint
   = "get_raw_property_notify_delete_ev"
 
 let get_property_notify_delete_ev () =
-  Private.xevent_of_raw_address (get_raw_property_notify_delete_ev ())
-
-(* Helper to convert between abstract types and nativeint for comparison.
-   NOTE: The display and window types are abstract in xevent.ml, so we can't
-   directly compare them. These bindings should be updated to expose the
-   underlying values, or we should use a custom equality function. For now,
-   this helper allows manual verification if needed. *)
-let to_native : 'a -> nativeint = fun x -> Obj.magic x
-
-(* [window], [atom] and [time] are abstract in [X11] but are [Unsigned.ULong.t]
-   underneath (see [Type_description.Types]), which lets the tests read them
-   back. *)
-let window_to_int (w : window) : int = Unsigned.ULong.to_int (Obj.magic w)
-let atom_to_int (a : atom) : int = Unsigned.ULong.to_int (Obj.magic a)
-let time_to_int (t : time) : int = Unsigned.ULong.to_int (Obj.magic t)
+  xevent_of_raw_address (get_raw_property_notify_delete_ev ())
 
 let test_key_press_ev () =
   match get_key_press_ev () with
   | KeyPress ev ->
       Alcotest.(check int) "serial" 42 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      (* NOTE: display and window are abstract types, cannot directly compare.
-         User should add concrete accessors to xevent.ml or use a custom testable. *)
+      Alcotest.(check int) "display" 0x1234 (display_address ev.display);
+      Alcotest.(check int) "window" 123 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "root" 456 (Unsigned.ULong.to_int ev.root);
+      Alcotest.(check int) "subwindow" 789 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check int) "time" 1000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
-      Alcotest.(check (pair int int)) "root" (100, 200) ev.pos_root;
+      Alcotest.(check (pair int int)) "pos_root" (100, 200) ev.pos_root;
       Alcotest.(check int) "state" 0 ev.state;
-      Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
+      Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected KeyPress event"
 
@@ -189,12 +172,15 @@ let test_key_release_ev () =
   | KeyRelease ev ->
       Alcotest.(check int) "serial" 42 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      (* NOTE: display and window are abstract types, cannot directly compare.
-         User should add concrete accessors to xevent.ml or use a custom testable. *)
+      Alcotest.(check int) "display" 0x1234 (display_address ev.display);
+      Alcotest.(check int) "window" 123 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "root" 456 (Unsigned.ULong.to_int ev.root);
+      Alcotest.(check int) "subwindow" 789 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check int) "time" 1000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
-      Alcotest.(check (pair int int)) "root" (100, 200) ev.pos_root;
+      Alcotest.(check (pair int int)) "pos_root" (100, 200) ev.pos_root;
       Alcotest.(check int) "state" 0 ev.state;
-      Alcotest.(check bool) "keycode" true (Obj.magic 65 = ev.keycode);
+      Alcotest.(check int) "keycode" 65 ev.keycode;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected KeyRelease event"
 
@@ -203,11 +189,15 @@ let test_button_press_ev () =
   | ButtonPress ev ->
       Alcotest.(check int) "serial" 100 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      (* NOTE: display, window, root, subwindow are abstract types *)
+      Alcotest.(check int) "display" 0x5678 (display_address ev.display);
+      Alcotest.(check int) "window" 111 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "root" 222 (Unsigned.ULong.to_int ev.root);
+      Alcotest.(check int) "subwindow" 333 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check int) "time" 2000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (50, 75) ev.pos;
-      Alcotest.(check (pair int int)) "root" (150, 250) ev.pos_root;
+      Alcotest.(check (pair int int)) "pos_root" (150, 250) ev.pos_root;
       Alcotest.(check int) "state" 1 ev.state;
-      Alcotest.(check bool) "button" true (button1 = ev.button);
+      Alcotest.(check int) "button" button1 ev.button;
       Alcotest.(check bool) "same_screen" true ev.same_screen
   | _ -> Alcotest.fail "Expected ButtonPress event"
 
@@ -216,9 +206,13 @@ let test_motion_notify_ev () =
   | MotionNotify ev ->
       Alcotest.(check int) "serial" 200 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      (* NOTE: display, window, root, subwindow are abstract types *)
+      Alcotest.(check int) "display" 0x9abc (display_address ev.display);
+      Alcotest.(check int) "window" 211 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "root" 212 (Unsigned.ULong.to_int ev.root);
+      Alcotest.(check int) "subwindow" 213 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check int) "time" 3000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
-      Alcotest.(check (pair int int)) "root" (130, 240) ev.pos_root;
+      Alcotest.(check (pair int int)) "pos_root" (130, 240) ev.pos_root;
       Alcotest.(check int) "state" 2 ev.state;
       Alcotest.(check bool) "is_hint" false ev.is_hint;
       Alcotest.(check bool) "same_screen" true ev.same_screen
@@ -239,7 +233,8 @@ let test_expose_ev () =
   | Expose ev ->
       Alcotest.(check int) "serial" 300 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      (* NOTE: display and window are abstract types *)
+      Alcotest.(check int) "display" 0xdef0 (display_address ev.display);
+      Alcotest.(check int) "window" 311 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (5, 15) ev.pos;
       Alcotest.(check (pair int int)) "size" (800, 600) ev.size;
       Alcotest.(check int) "count" 3 ev.count
@@ -261,8 +256,8 @@ let test_destroy_window_ev () =
   | DestroyWindow ev ->
       Alcotest.(check int) "serial" 150 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "event" 5001 (window_to_int ev.event);
-      Alcotest.(check int) "window" 5002 (window_to_int ev.window)
+      Alcotest.(check int) "event" 5001 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 5002 (Unsigned.ULong.to_int ev.window)
   | _ -> Alcotest.fail "Expected DestroyWindow"
 
 let test_unmap_notify_ev () =
@@ -270,8 +265,8 @@ let test_unmap_notify_ev () =
   | Unmap ev ->
       Alcotest.(check int) "serial" 160 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "event" 6001 (window_to_int ev.event);
-      Alcotest.(check int) "window" 6002 (window_to_int ev.window);
+      Alcotest.(check int) "event" 6001 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 6002 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check bool) "from_configure" false ev.from_configure
   | _ -> Alcotest.fail "Expected Unmap"
 
@@ -280,8 +275,8 @@ let test_map_notify_ev () =
   | Map ev ->
       Alcotest.(check int) "serial" 170 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "event" 7001 (window_to_int ev.event);
-      Alcotest.(check int) "window" 7002 (window_to_int ev.window);
+      Alcotest.(check int) "event" 7001 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 7002 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Map"
 
@@ -290,8 +285,8 @@ let test_map_request_ev () =
   | MapRequest ev ->
       Alcotest.(check int) "serial" 180 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "parent" 8001 (window_to_int ev.parent);
-      Alcotest.(check int) "window" 8002 (window_to_int ev.window)
+      Alcotest.(check int) "parent" 8001 (Unsigned.ULong.to_int ev.parent);
+      Alcotest.(check int) "window" 8002 (Unsigned.ULong.to_int ev.window)
   | _ -> Alcotest.fail "Expected MapRequest"
 
 let test_configure_request_ev () =
@@ -299,12 +294,12 @@ let test_configure_request_ev () =
   | ConfigureRequest ev ->
       Alcotest.(check int) "serial" 190 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "parent" 9001 (window_to_int ev.parent);
-      Alcotest.(check int) "window" 9002 (window_to_int ev.window);
+      Alcotest.(check int) "parent" 9001 (Unsigned.ULong.to_int ev.parent);
+      Alcotest.(check int) "window" 9002 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (100, 100) ev.pos;
       Alcotest.(check (pair int int)) "size" (800, 600) ev.size;
       Alcotest.(check int) "border_width" 1 ev.border_width;
-      Alcotest.(check int) "above" 9003 (window_to_int ev.above);
+      Alcotest.(check int) "above" 9003 (Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "detail" true (ev.detail = Above);
       Alcotest.(check int) "value_mask" 15 ev.value_mask
   | _ -> Alcotest.fail "Expected ConfigureRequest"
@@ -314,9 +309,9 @@ let test_reparent_notify_ev () =
   | Reparent ev ->
       Alcotest.(check int) "serial" 210 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "event" 2101 (window_to_int ev.event);
-      Alcotest.(check int) "window" 2102 (window_to_int ev.window);
-      Alcotest.(check int) "parent" 2103 (window_to_int ev.parent);
+      Alcotest.(check int) "event" 2101 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 2102 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "parent" 2103 (Unsigned.ULong.to_int ev.parent);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Reparent event"
@@ -326,12 +321,12 @@ let test_configure_notify_ev () =
   | ConfigureNotify ev ->
       Alcotest.(check int) "serial" 220 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "event" 2201 (window_to_int ev.event);
-      Alcotest.(check int) "window" 2202 (window_to_int ev.window);
+      Alcotest.(check int) "event" 2201 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 2202 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (100, 200) ev.pos;
       Alcotest.(check (pair int int)) "size" (1024, 768) ev.size;
       Alcotest.(check int) "border_width" 2 ev.border_width;
-      Alcotest.(check int) "above" 2203 (window_to_int ev.above);
+      Alcotest.(check int) "above" 2203 (Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
@@ -340,9 +335,9 @@ let test_property_notify_ev () =
   | Property ev ->
       Alcotest.(check int) "serial" 280 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
-      Alcotest.(check int) "window" 2801 (window_to_int ev.window);
-      Alcotest.(check int) "atom" 2802 (atom_to_int ev.atom);
-      Alcotest.(check int) "time" 5000 (time_to_int ev.time);
+      Alcotest.(check int) "window" 2801 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "atom" 2802 (Unsigned.ULong.to_int ev.atom);
+      Alcotest.(check int) "time" 5000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check bool) "state" true (ev.state = PropertyNewValue)
   | _ -> Alcotest.fail "Expected Property event"
 
@@ -425,8 +420,8 @@ let test_destroy_window_self_ev () =
   | DestroyWindow ev ->
       Alcotest.(check int) "serial" 151 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "event" 5003 (window_to_int ev.event);
-      Alcotest.(check int) "window" 5003 (window_to_int ev.window)
+      Alcotest.(check int) "event" 5003 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 5003 (Unsigned.ULong.to_int ev.window)
   | _ -> Alcotest.fail "Expected DestroyWindow"
 
 (* ICCCM withdrawal: the client sends a synthetic UnmapNotify to the root *)
@@ -435,8 +430,8 @@ let test_unmap_notify_synthetic_ev () =
   | Unmap ev ->
       Alcotest.(check int) "serial" 161 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "event" 1 (window_to_int ev.event);
-      Alcotest.(check int) "window" 6003 (window_to_int ev.window);
+      Alcotest.(check int) "event" 1 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 6003 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check bool) "from_configure" true ev.from_configure
   | _ -> Alcotest.fail "Expected Unmap"
 
@@ -446,8 +441,8 @@ let test_map_notify_override_ev () =
   | Map ev ->
       Alcotest.(check int) "serial" 171 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "event" 1 (window_to_int ev.event);
-      Alcotest.(check int) "window" 7003 (window_to_int ev.window);
+      Alcotest.(check int) "event" 1 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 7003 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected Map"
 
@@ -458,8 +453,8 @@ let test_map_request_root_ev () =
   | MapRequest ev ->
       Alcotest.(check int) "serial" 181 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
-      Alcotest.(check int) "window" 0x1e00007 (window_to_int ev.window)
+      Alcotest.(check int) "parent" 1 (Unsigned.ULong.to_int ev.parent);
+      Alcotest.(check int) "window" 0x1e00007 (Unsigned.ULong.to_int ev.window)
   | _ -> Alcotest.fail "Expected MapRequest"
 
 (* Client moving itself partly off-screen and restacking below a sibling *)
@@ -468,12 +463,12 @@ let test_configure_request_restack_ev () =
   | ConfigureRequest ev ->
       Alcotest.(check int) "serial" 191 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
-      Alcotest.(check int) "window" 9004 (window_to_int ev.window);
+      Alcotest.(check int) "parent" 1 (Unsigned.ULong.to_int ev.parent);
+      Alcotest.(check int) "window" 9004 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (-50, -20) ev.pos;
       Alcotest.(check (pair int int)) "size" (640, 480) ev.size;
       Alcotest.(check int) "border_width" 0 ev.border_width;
-      Alcotest.(check int) "above" 9005 (window_to_int ev.above);
+      Alcotest.(check int) "above" 9005 (Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "detail" true (ev.detail = Below);
       (* CWX | CWY | CWSibling | CWStackMode *)
       Alcotest.(check int) "value_mask" (1 + 2 + 32 + 64) ev.value_mask
@@ -486,9 +481,9 @@ let test_reparent_notify_root_ev () =
   | Reparent ev ->
       Alcotest.(check int) "serial" 211 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "event" 2104 (window_to_int ev.event);
-      Alcotest.(check int) "window" 2104 (window_to_int ev.window);
-      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
+      Alcotest.(check int) "event" 2104 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 2104 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "parent" 1 (Unsigned.ULong.to_int ev.parent);
       Alcotest.(check (pair int int)) "pos" (640, 480) ev.pos;
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected Reparent event"
@@ -500,12 +495,12 @@ let test_configure_notify_synthetic_ev () =
   | ConfigureNotify ev ->
       Alcotest.(check int) "serial" 221 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "event" 2204 (window_to_int ev.event);
-      Alcotest.(check int) "window" 2204 (window_to_int ev.window);
+      Alcotest.(check int) "event" 2204 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 2204 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check (pair int int)) "pos" (1925, 30) ev.pos;
       Alcotest.(check (pair int int)) "size" (1280, 720) ev.size;
       Alcotest.(check int) "border_width" 0 ev.border_width;
-      Alcotest.(check int) "above" 0 (window_to_int ev.above);
+      Alcotest.(check int) "above" 0 (Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
@@ -516,9 +511,9 @@ let test_property_notify_delete_ev () =
   | Property ev ->
       Alcotest.(check int) "serial" 281 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
-      Alcotest.(check int) "window" 2803 (window_to_int ev.window);
-      Alcotest.(check int) "atom" 2804 (atom_to_int ev.atom);
-      Alcotest.(check int) "time" 0xFFFFFFF0 (time_to_int ev.time);
+      Alcotest.(check int) "window" 2803 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check int) "atom" 2804 (Unsigned.ULong.to_int ev.atom);
+      Alcotest.(check int) "time" 0xFFFFFFF0 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check bool) "state" true (ev.state = PropertyDelete)
   | _ -> Alcotest.fail "Expected Property event"
 
