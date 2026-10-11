@@ -1,4 +1,7 @@
-open X11
+open X11_internal
+open C.Types
+open X
+open Mask
 
 (* External C functions *)
 external get_xwa_basic : unit -> windowAttributes = "get_xwa_basic"

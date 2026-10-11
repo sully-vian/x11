@@ -16,10 +16,11 @@ The code is split into two libraries:
 - `x11` (`lib/`) is the public library. `x11.mli` re-exports what users need
   and hides the representation of `window`, `atom`, `time`, `display`, ...
 
-Unit tests (`test/test_xevent.ml`) depend on `x11_internal`, so they see the
-real types (`window` is `Unsigned.ULong.t`, `display` a ctypes pointer) and can
-check every field without `Obj.magic`. Integration tests depend on `x11` and
-exercise the public API.
+Unit tests live in `test/internal/` and depend on `x11_internal`, so they see
+the real types (`window` is `Unsigned.ULong.t`, `display` a ctypes pointer) and
+can check every field without `Obj.magic`. They need no X server:
+`dune test test/internal`. Tests in `test/` depend on `x11` and exercise the
+public API, some of them against an X server (or Xvfb).
 
 `x11.mli` must keep declaring its types without equations to the internal ones
 (`type window`, not `type window = X11_internal...`): an equation would make
