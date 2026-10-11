@@ -167,6 +167,18 @@ let configure_request_of_c ev : configureRequestEvent =
     value_mask = Unsigned.ULong.to_int (getf ev xconfigurerequest_value_mask);
   }
 
+let reparent_of_c ev : reparentEvent =
+  {
+    serial = getf ev xreparent_serial;
+    send_event = 0 <> getf ev xreparent_send_event;
+    display = getf ev xreparent_display;
+    event = getf ev xreparent_event_window;
+    window = getf ev xreparent_window;
+    parent = getf ev xreparent_parent;
+    pos = (getf ev xreparent_x, getf ev xreparent_y);
+    override_redirect = 0 <> getf ev xreparent_override_redirect;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -191,7 +203,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.UnmapNotify -> Unmap (unmap_of_c (getf raw_ev xev_unmap))
   | Ev.MapNotify -> Map (map_of_c (getf raw_ev xev_map))
   | Ev.MapRequest -> MapRequest (map_request_of_c (getf raw_ev xev_maprequest))
-  | Ev.ReparentNotify -> failwith "Unsupported type ReparentNotify"
+  | Ev.ReparentNotify -> Reparent (reparent_of_c (getf raw_ev xev_reparent))
   | Ev.ConfigureNotify -> failwith "Unsupported type ConfigureNotify"
   | Ev.ConfigureRequest ->
       ConfigureRequest

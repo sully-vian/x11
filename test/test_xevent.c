@@ -451,3 +451,20 @@ CAMLprim value get_raw_configure_request_restack_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_reparent_notify_root_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xreparent = {
+                      .type = ReparentNotify,
+                      .serial = 211,
+                      .send_event = True,
+                      .display = (Display *)0x1112,
+                      .event = 2104,
+                      .window = 2104,
+                      .parent = 1,
+                      .x = 640,
+                      .y = 480,
+                      .override_redirect = True,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

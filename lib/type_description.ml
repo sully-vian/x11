@@ -559,6 +559,26 @@ module Types (F : Ctypes.TYPE) = struct
 
   let () = seal xconfigurerequest_event
 
+  type xreparent_event
+
+  let xreparent_event : xreparent_event structure typ =
+    typedef (structure "xreparent_anonymous") "XReparentEvent"
+
+  let xreparent_type = field xreparent_event "type" event_type
+  let xreparent_serial = field xreparent_event "serial" ulong
+  let xreparent_send_event = field xreparent_event "send_event" int
+  let xreparent_display = field xreparent_event "display" display
+  let xreparent_event_window = field xreparent_event "event" window
+  let xreparent_window = field xreparent_event "window" window
+  let xreparent_parent = field xreparent_event "parent" window
+  let xreparent_x = field xreparent_event "x" int
+  let xreparent_y = field xreparent_event "y" int
+
+  let xreparent_override_redirect =
+    field xreparent_event "override_redirect" int
+
+  let () = seal xreparent_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -581,5 +601,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_configurerequest =
     field xevent_union "xconfigurerequest" xconfigurerequest_event
 
+  let xev_reparent = field xevent_union "xreparent" xreparent_event
   let () = seal xevent_union
 end

@@ -138,6 +138,12 @@ external get_raw_configure_request_restack_ev : unit -> nativeint
 let get_configure_request_restack_ev () =
   Private.xevent_of_raw_address (get_raw_configure_request_restack_ev ())
 
+external get_raw_reparent_notify_root_ev : unit -> nativeint
+  = "get_raw_reparent_notify_root_ev"
+
+let get_reparent_notify_root_ev () =
+  Private.xevent_of_raw_address (get_raw_reparent_notify_root_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -293,6 +299,9 @@ let test_reparent_notify_ev () =
   | Reparent ev ->
       Alcotest.(check int) "serial" 210 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "event" 2101 (window_to_int ev.event);
+      Alcotest.(check int) "window" 2102 (window_to_int ev.window);
+      Alcotest.(check int) "parent" 2103 (window_to_int ev.parent);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected Reparent event"
@@ -448,6 +457,20 @@ let test_configure_request_restack_ev () =
       Alcotest.(check int) "value_mask" (1 + 2 + 32 + 64) ev.value_mask
   | _ -> Alcotest.fail "Expected ConfigureRequest"
 
+(* Window handed back to the root (e.g. the WM releasing it), reported to the
+   window itself. Also covers the [true] values of the boolean fields. *)
+let test_reparent_notify_root_ev () =
+  match get_reparent_notify_root_ev () with
+  | Reparent ev ->
+      Alcotest.(check int) "serial" 211 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "event" 2104 (window_to_int ev.event);
+      Alcotest.(check int) "window" 2104 (window_to_int ev.window);
+      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
+      Alcotest.(check (pair int int)) "pos" (640, 480) ev.pos;
+      Alcotest.(check bool) "override_redirect" true ev.override_redirect
+  | _ -> Alcotest.fail "Expected Reparent event"
+
 let suite =
   let open Alcotest in
   [
@@ -470,6 +493,7 @@ let suite =
     test_case "ConfigureRequest (restack)" `Quick
       test_configure_request_restack_ev;
     test_case "ReparentNotify" `Quick test_reparent_notify_ev;
+    test_case "ReparentNotify (to root)" `Quick test_reparent_notify_root_ev;
     test_case "ConfigureNotify" `Quick test_configure_notify_ev;
     test_case "PropertyNotify" `Quick test_property_notify_ev;
     test_case "ClientMessage (bytes)" `Quick test_client_message_ev_b;
