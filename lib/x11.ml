@@ -3,6 +3,7 @@ include X
 include C.Functions
 include C.Types
 include Xevent
+include Xwindowattributes
 include Mask
 
 type grabMode = int

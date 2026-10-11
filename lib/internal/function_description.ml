@@ -53,4 +53,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   let next_event_stub =
     foreign "XNextEvent" (display @-> ptr xevent_union @-> returning void)
+
+  (* Returns a zero Status on failure *)
+  let get_window_attributes_stub =
+    foreign "XGetWindowAttributes"
+      (display @-> window @-> ptr xwindowattributes @-> returning int)
 end

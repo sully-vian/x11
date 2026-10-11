@@ -1,32 +1,52 @@
 open X11_internal
 open C.Types
-open X
+open Xwindowattributes
 open Mask
 
 (* External C functions *)
-external get_xwa_basic : unit -> windowAttributes = "get_xwa_basic"
-external get_xwa_zeroed : unit -> windowAttributes = "get_xwa_zeroed"
+external get_xwa_basic_raw : unit -> nativeint = "get_xwa_basic"
+external get_xwa_zeroed_raw : unit -> nativeint = "get_xwa_zeroed"
 
-external get_xwa_negative_coords : unit -> windowAttributes
+external get_xwa_negative_coords_raw : unit -> nativeint
   = "get_xwa_negative_coords"
 
-external get_xwa_huge_dimensions : unit -> windowAttributes
+external get_xwa_huge_dimensions_raw : unit -> nativeint
   = "get_xwa_huge_dimensions"
 
-external get_xwa_input_only : unit -> windowAttributes = "get_xwa_input_only"
+external get_xwa_input_only_raw : unit -> nativeint = "get_xwa_input_only"
 
-external get_xwa_max_masks_planes : unit -> windowAttributes
+external get_xwa_max_masks_planes_raw : unit -> nativeint
   = "get_xwa_max_masks_planes"
 
-external get_xwa_bools_true : unit -> windowAttributes = "get_xwa_bools_true"
+external get_xwa_bools_true_raw : unit -> nativeint = "get_xwa_bools_true"
 
-external get_xwa_gravities_store : unit -> windowAttributes
+external get_xwa_gravities_store_raw : unit -> nativeint
   = "get_xwa_gravities_store"
 
-external get_xwa_unviewable : unit -> windowAttributes = "get_xwa_unviewable"
+external get_xwa_unviewable_raw : unit -> nativeint = "get_xwa_unviewable"
+external get_xwa_max_pointers_raw : unit -> nativeint = "get_xwa_max_pointers"
 
-external get_xwa_max_pointers : unit -> windowAttributes
-  = "get_xwa_max_pointers"
+(* The C stubs return the address of a static [XWindowAttributes]: read it
+   through the same converter as [get_window_attributes] *)
+let address ptr = Nativeint.to_int (Ctypes.raw_address_of_ptr ptr)
+
+let of_raw_address raw =
+  Ctypes.(!@(from_voidp xwindowattributes (ptr_of_raw_address raw)))
+  |> Xwindowattributes_ctypes.window_attributes_of_c
+
+let get_xwa_basic () = of_raw_address (get_xwa_basic_raw ())
+let get_xwa_zeroed () = of_raw_address (get_xwa_zeroed_raw ())
+let get_xwa_negative_coords () = of_raw_address (get_xwa_negative_coords_raw ())
+let get_xwa_huge_dimensions () = of_raw_address (get_xwa_huge_dimensions_raw ())
+let get_xwa_input_only () = of_raw_address (get_xwa_input_only_raw ())
+
+let get_xwa_max_masks_planes () =
+  of_raw_address (get_xwa_max_masks_planes_raw ())
+
+let get_xwa_bools_true () = of_raw_address (get_xwa_bools_true_raw ())
+let get_xwa_gravities_store () = of_raw_address (get_xwa_gravities_store_raw ())
+let get_xwa_unviewable () = of_raw_address (get_xwa_unviewable_raw ())
+let get_xwa_max_pointers () = of_raw_address (get_xwa_max_pointers_raw ())
 
 let test_xwa_basic () =
   let xwa = get_xwa_basic () in
@@ -34,6 +54,8 @@ let test_xwa_basic () =
   Alcotest.(check (pair int int)) "size" (800, 600) xwa.size;
   Alcotest.(check int) "border_width" 2 xwa.border_width;
   Alcotest.(check int) "depth" 24 xwa.depth;
+  Alcotest.(check int) "visual" 0x12345678 (address xwa.visual);
+  Alcotest.(check int) "root" 1234 (Unsigned.ULong.to_int xwa.root);
   Alcotest.(check bool) "c_class" true (inputOutput = xwa.c_class);
   Alcotest.(check int) "bit_gravity" 1 xwa.bit_gravity;
   Alcotest.(check int) "win_gravity" 1 xwa.win_gravity;
@@ -50,6 +72,8 @@ let test_xwa_basic () =
     (structureNotifyMask = xwa.your_event_mask);
   Alcotest.(check int) "do_not_propagate_mask" 0 xwa.do_not_propagate_mask;
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
+  Alcotest.(check int) "colormap" 5678 (Unsigned.ULong.to_int xwa.colormap);
+  Alcotest.(check int) "screen" 0x87654321 (address xwa.screen);
   ()
 
 let test_xwa_zeroed () =
@@ -227,7 +251,11 @@ let test_xwa_max_pointers () =
   Alcotest.(check int) "backing_planes" 0 xwa.backing_planes;
   Alcotest.(check int) "backing_pixel" 0 xwa.backing_pixel;
   Alcotest.(check bool) "save_under" false xwa.save_under;
-  (*Alcotest.(check int) "colormap max" max_int xwa.colormap;*)
+  (* all-ones: unsigned XIDs and pointers must come back unchanged *)
+  Alcotest.(check bool) "root" true (Unsigned.ULong.max_int = xwa.root);
+  Alcotest.(check bool) "colormap" true (Unsigned.ULong.max_int = xwa.colormap);
+  Alcotest.(check int) "visual" (-1) (address xwa.visual);
+  Alcotest.(check int) "screen" (-1) (address xwa.screen);
   Alcotest.(check bool) "map_installed" false xwa.map_installed;
   Alcotest.(check int) "map_state" 0 xwa.map_state;
   Alcotest.(check bool)

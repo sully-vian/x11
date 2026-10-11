@@ -12,18 +12,15 @@
   (run %{test} --show-errors))
  (libraries x11_internal ctypes alcotest))
 
-; Disabled: built so it keeps compiling, but not run by `dune test`.
-
-(executable
+(test
  (name test_xwindowattributes)
  (modules test_xwindowattributes)
  (foreign_stubs
   (language c)
   (names test_xwindowattributes))
- ; the stubs call Val_xwindowattributes from x11_internal's C archive, which
- ; nothing on the OCaml side references: force it into the link
- (link_flags (-linkall))
- (libraries x11_internal alcotest))
+ (action
+  (run %{test} --show-errors))
+ (libraries x11_internal ctypes alcotest))
 
 (rule
  (with-stdout-to

@@ -1,8 +1,16 @@
 #include <X11/Xlib.h>
+#include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/mlvalues.h>
 
-extern value Val_xwindowattributes(XWindowAttributes *attributes);
+/* The attributes are copied to static storage so their address stays valid
+   after the stub returns. Each call overwrites the previous one. */
+static XWindowAttributes stored_attributes;
+
+static value raw_xwa(XWindowAttributes *attributes) {
+  stored_attributes = *attributes;
+  return caml_copy_nativeint((intnat)&stored_attributes);
+}
 
 // 1. Basic: A typical mapped InputOutput window with standard attributes
 CAMLprim value get_xwa_basic(value unit) {
@@ -31,7 +39,7 @@ CAMLprim value get_xwa_basic(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0x87654321};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 2. Zeroed: All fields zeroed out, pointers set to NULL (Testing null
@@ -61,7 +69,7 @@ CAMLprim value get_xwa_zeroed(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 3. Negative Coordinates: Placed out-of-bounds (Testing signed ints for
@@ -91,7 +99,7 @@ CAMLprim value get_xwa_negative_coords(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0x1234};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 4. Large Dimensions: Extremely large dimensions (Testing signed int
@@ -121,7 +129,7 @@ CAMLprim value get_xwa_huge_dimensions(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0x1234};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 5. Input Only: Invisible windows used for catching events (Depth 0, No
@@ -152,7 +160,7 @@ CAMLprim value get_xwa_input_only(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = True,
                             .screen = (Screen *)0x8888};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 6. Max Masks: Unsigned long limits for planes and masks
@@ -181,7 +189,7 @@ CAMLprim value get_xwa_max_masks_planes(value unit) {
                             .do_not_propagate_mask = ~0L,
                             .override_redirect = False,
                             .screen = (Screen *)0x1111};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 7. Bools True: Testing OCaml Bool mapping for all boolean fields
@@ -210,7 +218,7 @@ CAMLprim value get_xwa_bools_true(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = True, // Bool #3
                             .screen = (Screen *)0x2222};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 8. Odd Gravities & Backing Store (Testing enum variants)
@@ -239,7 +247,7 @@ CAMLprim value get_xwa_gravities_store(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0x3333};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 9. Unviewable State: A mapped window obscured by others
@@ -268,7 +276,7 @@ CAMLprim value get_xwa_unviewable(value unit) {
                             .do_not_propagate_mask = 0,
                             .override_redirect = False,
                             .screen = (Screen *)0x4444};
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }
 
 // 10. Max Pointer Values: Testing memory address upper limits
@@ -299,5 +307,5 @@ CAMLprim value get_xwa_max_pointers(value unit) {
       .override_redirect = False,
       .screen = (Screen *)~0UL // Max pointer bounds
   };
-  CAMLreturn(Val_xwindowattributes(&attr));
+  CAMLreturn(raw_xwa(&attr));
 }

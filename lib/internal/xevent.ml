@@ -2,7 +2,6 @@ open C.Types
 open Type_description
 
 type xid
-type colormap
 type drawable
 
 type message_data =

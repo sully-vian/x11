@@ -72,10 +72,31 @@ let test_xdotool () =
       check_key dpy "Scroll_Lock" xk_Scroll_Lock;
       close_display dpy
 
+let test_root_window_attributes () =
+  match open_display (Some display_name) with
+  | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
+  | Some dpy -> (
+      let root = default_root_window dpy in
+      match get_window_attributes dpy root with
+      | None -> Alcotest.fail "Expected attributes for the root window"
+      | Some attributes ->
+          (* Xvfb's default screen *)
+          Alcotest.(check (pair int int)) "size" (1280, 1024) attributes.size;
+          Alcotest.(check (pair int int)) "pos" (0, 0) attributes.pos;
+          Alcotest.(check bool) "root" true (attributes.root = root);
+          Alcotest.(check bool) "c_class" true (attributes.c_class = inputOutput);
+          Alcotest.(check int) "map_state (IsViewable)" 2 attributes.map_state;
+          close_display dpy)
+
 let () =
   let open Alcotest in
   run "X11 Integration"
     [
       ( "xdotool",
         [ test_case "xdotool" `Quick (fun () -> with_xvfb test_xdotool) ] );
+      ( "window attributes",
+        [
+          test_case "root" `Quick (fun () ->
+              with_xvfb test_root_window_attributes);
+        ] );
     ]

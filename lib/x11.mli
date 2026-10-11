@@ -731,4 +731,8 @@ type windowAttributes = {
   screen : screen;
 }
 
-val get_window_attributes : display -> window -> windowAttributes
+val get_window_attributes : display -> window -> windowAttributes option
+(** {{:https://man.archlinux.org/man/XGetWindowAttributes.3.en}
+     XGetWindowAttributes}. [None] if the request fails. Note that with Xlib's
+    default error handler, a [BadWindow] error exits the program before this
+    returns. *)

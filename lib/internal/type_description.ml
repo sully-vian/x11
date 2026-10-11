@@ -72,6 +72,9 @@ module Types (F : Ctypes.TYPE) = struct
   type atom = Unsigned.ULong.t
   type window = Unsigned.ULong.t
   type time = Unsigned.ULong.t
+  type colormap = Unsigned.ULong.t
+  type visual = unit ptr
+  type screen = unit ptr
   type keysym = int
   type keycode = int
   type button = int
@@ -80,6 +83,9 @@ module Types (F : Ctypes.TYPE) = struct
   let atom = ulong
   let window = ulong
   let time = ulong
+  let colormap = ulong
+  let visual = ptr void
+  let screen = ptr void
   let keysym = int
   let keycode = int
   let button = int
@@ -651,4 +657,37 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
   let xev_property = field xevent_union "xproperty" xproperty_event
   let () = seal xevent_union
+
+  type xwindowattributes
+
+  let xwindowattributes : xwindowattributes structure typ =
+    typedef (structure "xwindowattributes_anonymous") "XWindowAttributes"
+
+  let xwa_x = field xwindowattributes "x" int
+  let xwa_y = field xwindowattributes "y" int
+  let xwa_width = field xwindowattributes "width" int
+  let xwa_height = field xwindowattributes "height" int
+  let xwa_border_width = field xwindowattributes "border_width" int
+  let xwa_depth = field xwindowattributes "depth" int
+  let xwa_visual = field xwindowattributes "visual" visual
+  let xwa_root = field xwindowattributes "root" window
+  let xwa_class = field xwindowattributes "class" int
+  let xwa_bit_gravity = field xwindowattributes "bit_gravity" int
+  let xwa_win_gravity = field xwindowattributes "win_gravity" int
+  let xwa_backing_store = field xwindowattributes "backing_store" int
+  let xwa_backing_planes = field xwindowattributes "backing_planes" ulong
+  let xwa_backing_pixel = field xwindowattributes "backing_pixel" ulong
+  let xwa_save_under = field xwindowattributes "save_under" int
+  let xwa_colormap = field xwindowattributes "colormap" colormap
+  let xwa_map_installed = field xwindowattributes "map_installed" int
+  let xwa_map_state = field xwindowattributes "map_state" int
+  let xwa_all_event_masks = field xwindowattributes "all_event_masks" long
+  let xwa_your_event_mask = field xwindowattributes "your_event_mask" long
+
+  let xwa_do_not_propagate_mask =
+    field xwindowattributes "do_not_propagate_mask" long
+
+  let xwa_override_redirect = field xwindowattributes "override_redirect" int
+  let xwa_screen = field xwindowattributes "screen" screen
+  let () = seal xwindowattributes
 end
