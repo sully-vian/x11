@@ -72,6 +72,10 @@ let test_xdotool () =
       check_key dpy "Scroll_Lock" xk_Scroll_Lock;
       close_display dpy
 
-let suite =
+let () =
   let open Alcotest in
-  [ test_case "xdotool" `Quick (fun () -> with_xvfb test_xdotool) ]
+  run "X11 Integration"
+    [
+      ( "xdotool",
+        [ test_case "xdotool" `Quick (fun () -> with_xvfb test_xdotool) ] );
+    ]

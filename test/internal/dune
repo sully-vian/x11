@@ -1,27 +1,28 @@
-; Unit tests of the implementation. They use the private x11_internal library,
-; where types aren't abstract, and need no X server: `dune test test/internal`
+; Unit tests of the implementation, one executable per suite. They use the
+; private x11_internal library, where types aren't abstract, and need no X
+; server: `dune test test/internal`
 
 (test
- (name test_internal)
- (action
-  (run %{test} --show-errors))
- (modules test_internal)
- (libraries alcotest test_xevent test_xwindowattributes))
-
-(library
  (name test_xevent)
  (modules test_xevent)
  (foreign_stubs
   (language c)
   (names test_xevent))
+ (action
+  (run %{test} --show-errors))
  (libraries x11_internal ctypes alcotest))
 
-(library
+; Disabled: built so it keeps compiling, but not run by `dune test`.
+
+(executable
  (name test_xwindowattributes)
  (modules test_xwindowattributes)
  (foreign_stubs
   (language c)
   (names test_xwindowattributes))
+ ; the stubs call Val_xwindowattributes from x11_internal's C archive, which
+ ; nothing on the OCaml side references: force it into the link
+ (link_flags (-linkall))
  (libraries x11_internal alcotest))
 
 (rule

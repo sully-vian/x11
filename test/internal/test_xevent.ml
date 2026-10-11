@@ -517,38 +517,46 @@ let test_property_notify_delete_ev () =
       Alcotest.(check bool) "state" true (ev.state = PropertyDelete)
   | _ -> Alcotest.fail "Expected Property event"
 
-let suite =
+let () =
   let open Alcotest in
-  [
-    test_case "KeyPress" `Quick test_key_press_ev;
-    test_case "KeyRelease" `Quick test_key_release_ev;
-    test_case "ButtonPress" `Quick test_button_press_ev;
-    test_case "MotionNotify" `Quick test_motion_notify_ev;
-    test_case "MotionNotify (hint)" `Quick test_motion_notify_hint_ev;
-    test_case "Expose" `Quick test_expose_ev;
-    test_case "Expose (last in series)" `Quick test_expose_last_ev;
-    test_case "DestroyWindow" `Quick test_destroy_window_ev;
-    test_case "DestroyWindow (self)" `Quick test_destroy_window_self_ev;
-    test_case "UnmapNotify" `Quick test_unmap_notify_ev;
-    test_case "UnmapNotify (synthetic)" `Quick test_unmap_notify_synthetic_ev;
-    test_case "MapNotify" `Quick test_map_notify_ev;
-    test_case "MapNotify (override redirect)" `Quick test_map_notify_override_ev;
-    test_case "MapRequest" `Quick test_map_request_ev;
-    test_case "MapRequest (root parent)" `Quick test_map_request_root_ev;
-    test_case "ConfigureRequest" `Quick test_configure_request_ev;
-    test_case "ConfigureRequest (restack)" `Quick
-      test_configure_request_restack_ev;
-    test_case "ReparentNotify" `Quick test_reparent_notify_ev;
-    test_case "ReparentNotify (to root)" `Quick test_reparent_notify_root_ev;
-    test_case "ConfigureNotify" `Quick test_configure_notify_ev;
-    test_case "ConfigureNotify (synthetic)" `Quick
-      test_configure_notify_synthetic_ev;
-    test_case "PropertyNotify" `Quick test_property_notify_ev;
-    test_case "PropertyNotify (delete)" `Quick test_property_notify_delete_ev;
-    test_case "ClientMessage (bytes)" `Quick test_client_message_ev_b;
-    test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;
-    test_case "ClientMessage (longs)" `Quick test_client_meessage_ev_l;
-    test_case "FocusIn" `Quick test_focus_in_ev;
-    test_case "EnterNotify" `Quick test_enter_notify_ev;
-    test_case "LeaveNotify" `Quick test_leave_notify_ev;
-  ]
+  run "X11 XEvent"
+    [
+      ( "XEvent",
+        [
+          test_case "KeyPress" `Quick test_key_press_ev;
+          test_case "KeyRelease" `Quick test_key_release_ev;
+          test_case "ButtonPress" `Quick test_button_press_ev;
+          test_case "MotionNotify" `Quick test_motion_notify_ev;
+          test_case "MotionNotify (hint)" `Quick test_motion_notify_hint_ev;
+          test_case "Expose" `Quick test_expose_ev;
+          test_case "Expose (last in series)" `Quick test_expose_last_ev;
+          test_case "DestroyWindow" `Quick test_destroy_window_ev;
+          test_case "DestroyWindow (self)" `Quick test_destroy_window_self_ev;
+          test_case "UnmapNotify" `Quick test_unmap_notify_ev;
+          test_case "UnmapNotify (synthetic)" `Quick
+            test_unmap_notify_synthetic_ev;
+          test_case "MapNotify" `Quick test_map_notify_ev;
+          test_case "MapNotify (override redirect)" `Quick
+            test_map_notify_override_ev;
+          test_case "MapRequest" `Quick test_map_request_ev;
+          test_case "MapRequest (root parent)" `Quick test_map_request_root_ev;
+          test_case "ConfigureRequest" `Quick test_configure_request_ev;
+          test_case "ConfigureRequest (restack)" `Quick
+            test_configure_request_restack_ev;
+          test_case "ReparentNotify" `Quick test_reparent_notify_ev;
+          test_case "ReparentNotify (to root)" `Quick
+            test_reparent_notify_root_ev;
+          test_case "ConfigureNotify" `Quick test_configure_notify_ev;
+          test_case "ConfigureNotify (synthetic)" `Quick
+            test_configure_notify_synthetic_ev;
+          test_case "PropertyNotify" `Quick test_property_notify_ev;
+          test_case "PropertyNotify (delete)" `Quick
+            test_property_notify_delete_ev;
+          test_case "ClientMessage (bytes)" `Quick test_client_message_ev_b;
+          test_case "ClientMessage (shorts)" `Quick test_client_meessage_ev_s;
+          test_case "ClientMessage (longs)" `Quick test_client_meessage_ev_l;
+          test_case "FocusIn" `Quick test_focus_in_ev;
+          test_case "EnterNotify" `Quick test_enter_notify_ev;
+          test_case "LeaveNotify" `Quick test_leave_notify_ev;
+        ] );
+    ]

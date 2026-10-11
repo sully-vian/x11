@@ -10,9 +10,13 @@ let test_keyMask_or () =
   let _ : keyMask = shiftMask ||| lockMask ||| controlMask in
   ()
 
-let suite =
+let () =
   let open Alcotest in
-  [
-    test_case "eventMask OR" `Quick test_eventMask_or;
-    test_case "keyMask OR" `Quick test_keyMask_or;
-  ]
+  run "X11 compilation"
+    [
+      ( "masks",
+        [
+          test_case "eventMask OR" `Quick test_eventMask_or;
+          test_case "keyMask OR" `Quick test_keyMask_or;
+        ] );
+    ]

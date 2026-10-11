@@ -240,17 +240,21 @@ let test_xwa_max_pointers () =
   Alcotest.(check bool) "override_redirect" false xwa.override_redirect;
   ()
 
-let suite =
+let () =
   let open Alcotest in
-  [
-    test_case "basic" `Quick test_xwa_basic;
-    test_case "zeroed" `Quick test_xwa_zeroed;
-    test_case "negative_coords" `Quick test_xwa_negative_coords;
-    test_case "huge_dimensions" `Quick test_xwa_huge_dimensions;
-    test_case "input_only" `Quick test_xwa_input_only;
-    test_case "max_masks_planes" `Quick test_xwa_max_masks_planes;
-    test_case "bools_true" `Quick test_xwa_bools_true;
-    test_case "gravities_store" `Quick test_xwa_gravities_store;
-    test_case "unviewable" `Quick test_xwa_unviewable;
-    test_case "max_pointers" `Quick test_xwa_max_pointers;
-  ]
+  run "X11 XWindowAttributes"
+    [
+      ( "XWindowAttributes",
+        [
+          test_case "basic" `Quick test_xwa_basic;
+          test_case "zeroed" `Quick test_xwa_zeroed;
+          test_case "negative_coords" `Quick test_xwa_negative_coords;
+          test_case "huge_dimensions" `Quick test_xwa_huge_dimensions;
+          test_case "input_only" `Quick test_xwa_input_only;
+          test_case "max_masks_planes" `Quick test_xwa_max_masks_planes;
+          test_case "bools_true" `Quick test_xwa_bools_true;
+          test_case "gravities_store" `Quick test_xwa_gravities_store;
+          test_case "unviewable" `Quick test_xwa_unviewable;
+          test_case "max_pointers" `Quick test_xwa_max_pointers;
+        ] );
+    ]

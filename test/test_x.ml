@@ -10,9 +10,13 @@ let test_open_display_fail () =
   | None -> ()
   | Some _ -> Alcotest.fail "Expected None"
 
-let suite =
+let () =
   let open Alcotest in
-  [
-    test_case "open_display (ok)" `Quick test_open_display_ok;
-    test_case "open_display (fail)" `Quick test_open_display_fail;
-  ]
+  run "X11 X"
+    [
+      ( "display",
+        [
+          test_case "open_display (ok)" `Quick test_open_display_ok;
+          test_case "open_display (fail)" `Quick test_open_display_fail;
+        ] );
+    ]
