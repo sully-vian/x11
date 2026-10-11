@@ -308,6 +308,17 @@ module Types (F : Ctypes.TYPE) = struct
         (NotifyDetailNone, c "NotifyDetailNone");
       ]
 
+  let stack_mode : windowStackingMethod typ =
+    let c name = constant name int64_t in
+    enum "x11_stack_mode" ~typedef:true
+      [
+        (Above, c "Above");
+        (Below, c "Below");
+        (TopIf, c "TopIf");
+        (BottomIf, c "BottomIf");
+        (Opposite, c "Opposite");
+      ]
+
   type xany_event
 
   let xany_event : xany_event structure typ =
@@ -514,6 +525,40 @@ module Types (F : Ctypes.TYPE) = struct
   let xmaprequest_window = field xmaprequest_event "window" window
   let () = seal xmaprequest_event
 
+  type xconfigurerequest_event
+
+  let xconfigurerequest_event : xconfigurerequest_event structure typ =
+    typedef (structure "xconfigurerequest_anonymous") "XConfigureRequestEvent"
+
+  let xconfigurerequest_type = field xconfigurerequest_event "type" event_type
+  let xconfigurerequest_serial = field xconfigurerequest_event "serial" ulong
+
+  let xconfigurerequest_send_event =
+    field xconfigurerequest_event "send_event" int
+
+  let xconfigurerequest_display =
+    field xconfigurerequest_event "display" display
+
+  let xconfigurerequest_parent = field xconfigurerequest_event "parent" window
+  let xconfigurerequest_window = field xconfigurerequest_event "window" window
+  let xconfigurerequest_x = field xconfigurerequest_event "x" int
+  let xconfigurerequest_y = field xconfigurerequest_event "y" int
+  let xconfigurerequest_width = field xconfigurerequest_event "width" int
+  let xconfigurerequest_height = field xconfigurerequest_event "height" int
+
+  let xconfigurerequest_border_width =
+    field xconfigurerequest_event "border_width" int
+
+  let xconfigurerequest_above = field xconfigurerequest_event "above" window
+
+  let xconfigurerequest_detail =
+    field xconfigurerequest_event "detail" stack_mode
+
+  let xconfigurerequest_value_mask =
+    field xconfigurerequest_event "value_mask" ulong
+
+  let () = seal xconfigurerequest_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -532,5 +577,9 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_unmap = field xevent_union "xunmap" xunmap_event
   let xev_map = field xevent_union "xmap" xmap_event
   let xev_maprequest = field xevent_union "xmaprequest" xmaprequest_event
+
+  let xev_configurerequest =
+    field xevent_union "xconfigurerequest" xconfigurerequest_event
+
   let () = seal xevent_union
 end

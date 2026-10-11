@@ -430,3 +430,24 @@ CAMLprim value get_raw_map_request_root_ev(value unit) {
                   }};
   CAMLreturn(raw_xevent(&event));
 }
+
+CAMLprim value get_raw_configure_request_restack_ev(value unit) {
+  CAMLparam1(unit);
+  XEvent event = {.xconfigurerequest = {
+                      .type = ConfigureRequest,
+                      .serial = 191,
+                      .send_event = True,
+                      .display = (Display *)0x999a,
+                      .parent = 1,
+                      .window = 9004,
+                      .x = -50,
+                      .y = -20,
+                      .width = 640,
+                      .height = 480,
+                      .border_width = 0,
+                      .above = 9005,
+                      .detail = Below,
+                      .value_mask = CWX | CWY | CWSibling | CWStackMode,
+                  }};
+  CAMLreturn(raw_xevent(&event));
+}

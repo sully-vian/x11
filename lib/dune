@@ -12,7 +12,7 @@
   ; distinct typedefs of int
   (headers
    (preamble
-    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;"))
+    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;\ntypedef int x11_stack_mode;"))
   (type_description
    (instance Types)
    (functor type_description))

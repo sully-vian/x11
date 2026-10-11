@@ -132,6 +132,12 @@ external get_raw_map_request_root_ev : unit -> nativeint
 let get_map_request_root_ev () =
   Private.xevent_of_raw_address (get_raw_map_request_root_ev ())
 
+external get_raw_configure_request_restack_ev : unit -> nativeint
+  = "get_raw_configure_request_restack_ev"
+
+let get_configure_request_restack_ev () =
+  Private.xevent_of_raw_address (get_raw_configure_request_restack_ev ())
+
 (* Helper to convert between abstract types and nativeint for comparison.
    NOTE: The display and window types are abstract in xevent.ml, so we can't
    directly compare them. These bindings should be updated to expose the
@@ -271,7 +277,15 @@ let test_configure_request_ev () =
   match get_configure_request_ev () with
   | ConfigureRequest ev ->
       Alcotest.(check int) "serial" 190 (Unsigned.ULong.to_int ev.serial);
-      Alcotest.(check (pair int int)) "size" (800, 600) ev.size
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "parent" 9001 (window_to_int ev.parent);
+      Alcotest.(check int) "window" 9002 (window_to_int ev.window);
+      Alcotest.(check (pair int int)) "pos" (100, 100) ev.pos;
+      Alcotest.(check (pair int int)) "size" (800, 600) ev.size;
+      Alcotest.(check int) "border_width" 1 ev.border_width;
+      Alcotest.(check int) "above" 9003 (window_to_int ev.above);
+      Alcotest.(check bool) "detail" true (ev.detail = Above);
+      Alcotest.(check int) "value_mask" 15 ev.value_mask
   | _ -> Alcotest.fail "Expected ConfigureRequest"
 
 let test_reparent_notify_ev () =
@@ -417,6 +431,23 @@ let test_map_request_root_ev () =
       Alcotest.(check int) "window" 0x1e00007 (window_to_int ev.window)
   | _ -> Alcotest.fail "Expected MapRequest"
 
+(* Client moving itself partly off-screen and restacking below a sibling *)
+let test_configure_request_restack_ev () =
+  match get_configure_request_restack_ev () with
+  | ConfigureRequest ev ->
+      Alcotest.(check int) "serial" 191 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "parent" 1 (window_to_int ev.parent);
+      Alcotest.(check int) "window" 9004 (window_to_int ev.window);
+      Alcotest.(check (pair int int)) "pos" (-50, -20) ev.pos;
+      Alcotest.(check (pair int int)) "size" (640, 480) ev.size;
+      Alcotest.(check int) "border_width" 0 ev.border_width;
+      Alcotest.(check int) "above" 9005 (window_to_int ev.above);
+      Alcotest.(check bool) "detail" true (ev.detail = Below);
+      (* CWX | CWY | CWSibling | CWStackMode *)
+      Alcotest.(check int) "value_mask" (1 + 2 + 32 + 64) ev.value_mask
+  | _ -> Alcotest.fail "Expected ConfigureRequest"
+
 let suite =
   let open Alcotest in
   [
@@ -436,6 +467,8 @@ let suite =
     test_case "MapRequest" `Quick test_map_request_ev;
     test_case "MapRequest (root parent)" `Quick test_map_request_root_ev;
     test_case "ConfigureRequest" `Quick test_configure_request_ev;
+    test_case "ConfigureRequest (restack)" `Quick
+      test_configure_request_restack_ev;
     test_case "ReparentNotify" `Quick test_reparent_notify_ev;
     test_case "ConfigureNotify" `Quick test_configure_notify_ev;
     test_case "PropertyNotify" `Quick test_property_notify_ev;

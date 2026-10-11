@@ -152,6 +152,21 @@ let map_request_of_c ev : mapRequestEvent =
     window = getf ev xmaprequest_window;
   }
 
+let configure_request_of_c ev : configureRequestEvent =
+  {
+    serial = getf ev xconfigurerequest_serial;
+    send_event = 0 <> getf ev xconfigurerequest_send_event;
+    display = getf ev xconfigurerequest_display;
+    parent = getf ev xconfigurerequest_parent;
+    window = getf ev xconfigurerequest_window;
+    pos = (getf ev xconfigurerequest_x, getf ev xconfigurerequest_y);
+    size = (getf ev xconfigurerequest_width, getf ev xconfigurerequest_height);
+    border_width = getf ev xconfigurerequest_border_width;
+    above = getf ev xconfigurerequest_above;
+    detail = getf ev xconfigurerequest_detail;
+    value_mask = Unsigned.ULong.to_int (getf ev xconfigurerequest_value_mask);
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -178,7 +193,9 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.MapRequest -> MapRequest (map_request_of_c (getf raw_ev xev_maprequest))
   | Ev.ReparentNotify -> failwith "Unsupported type ReparentNotify"
   | Ev.ConfigureNotify -> failwith "Unsupported type ConfigureNotify"
-  | Ev.ConfigureRequest -> failwith "Unsupported type ConfigureRequest"
+  | Ev.ConfigureRequest ->
+      ConfigureRequest
+        (configure_request_of_c (getf raw_ev xev_configurerequest))
   | Ev.GravityNotify -> failwith "Unsupported type GravityNotify"
   | Ev.ResizeRequest -> failwith "Unsupported type ResizeRequest"
   | Ev.CirculateNotify -> failwith "Unsupported type CirculateNotify"
