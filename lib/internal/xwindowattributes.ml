@@ -21,7 +21,7 @@ type windowAttributes = {
   map_state : mapState;
   all_event_masks : eventMask;
   your_event_mask : eventMask;
-  do_not_propagate_mask : int;
+  do_not_propagate_mask : eventMask;
   override_redirect : bool;
   screen : screen;
 }
