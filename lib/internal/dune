@@ -1,0 +1,41 @@
+(library
+ (name x11_internal)
+ ; private library: installed with the x11 package (as
+ ; x11.__private__.x11_internal) but not usable by other projects
+ (package x11)
+ (libraries ctypes ctypes.stubs)
+ (foreign_stubs
+  (language c)
+  (names utils xwindowattributes x))
+ (c_library_flags (-lX11))
+ (ctypes
+  (external_library_name x11)
+  ; ctypes keys each enum on its C type name, so int-valued X constants get
+  ; distinct typedefs of int
+  (headers
+   (preamble
+    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;\ntypedef int x11_stack_mode;\ntypedef int x11_property_state;"))
+  (type_description
+   (instance Types)
+   (functor type_description))
+  (function_description
+   (instance Functions)
+   (functor function_description))
+  (generated_entry_point C)))
+
+(rule
+ (with-stdout-to
+  xwindowattributes.c.formatted
+  (run clang-format %{dep:xwindowattributes.c})))
+
+(rule
+ (with-stdout-to
+  x.c.formatted
+  (run clang-format %{dep:x.c})))
+
+(rule
+ (alias fmt)
+ (action
+  (progn
+   (diff xwindowattributes.c xwindowattributes.c.formatted)
+   (diff x.c x.c.formatted))))

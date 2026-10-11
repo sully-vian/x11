@@ -1,3 +1,4 @@
+open X11_internal
 include X
 include C.Functions
 include C.Types
