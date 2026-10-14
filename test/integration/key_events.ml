@@ -28,7 +28,7 @@ let check_key dpy key_str expected_keysym =
         (Printf.sprintf "Expected KeyRelease event for '%s'" key_str)
 
 let test_xdotool () =
-  match open_display (Some display_name) with
+  match open_display None with
   | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
   | Some dpy ->
       let root = default_root_window dpy in

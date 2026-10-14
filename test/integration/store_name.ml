@@ -13,7 +13,7 @@ let windows_named name =
   String.split_on_char '\n' ids |> List.filter (( <> ) "") |> List.length
 
 let test_store_name () =
-  match open_display (Some display_name) with
+  match open_display None with
   | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
   | Some dpy ->
       let root = default_root_window dpy in
@@ -27,7 +27,7 @@ let test_store_name () =
 
 (* The name is stored as given: searching for a longer one finds nothing *)
 let test_store_name_other () =
-  match open_display (Some display_name) with
+  match open_display None with
   | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
   | Some dpy ->
       let root = default_root_window dpy in
