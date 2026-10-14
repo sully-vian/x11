@@ -719,6 +719,21 @@ module Types (F : Ctypes.TYPE) = struct
 
   let () = seal xconfigure_event
 
+  type xgravity_event
+
+  let xgravity_event : xgravity_event structure typ =
+    typedef (structure "xgravity_anonymous") "XGravityEvent"
+
+  let xgravity_type = field xgravity_event "type" event_type
+  let xgravity_serial = field xgravity_event "serial" ulong
+  let xgravity_send_event = field xgravity_event "send_event" int
+  let xgravity_display = field xgravity_event "display" display
+  let xgravity_event_window = field xgravity_event "event" window
+  let xgravity_window = field xgravity_event "window" window
+  let xgravity_x = field xgravity_event "x" int
+  let xgravity_y = field xgravity_event "y" int
+  let () = seal xgravity_event
+
   type xproperty_event
 
   let xproperty_event : xproperty_event structure typ =
@@ -774,6 +789,7 @@ module Types (F : Ctypes.TYPE) = struct
 
   let xev_reparent = field xevent_union "xreparent" xreparent_event
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
+  let xev_gravity = field xevent_union "xgravity" xgravity_event
   let xev_property = field xevent_union "xproperty" xproperty_event
   let xev_mapping = field xevent_union "xmapping" xmapping_event
   let () = seal xevent_union

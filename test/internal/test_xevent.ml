@@ -174,6 +174,18 @@ external get_raw_create_notify_override_ev : unit -> nativeint
 let get_create_notify_override_ev () =
   xevent_of_raw_address (get_raw_create_notify_override_ev ())
 
+external get_raw_gravity_notify_ev : unit -> nativeint
+  = "get_raw_gravity_notify_ev"
+
+let get_gravity_notify_ev () =
+  xevent_of_raw_address (get_raw_gravity_notify_ev ())
+
+external get_raw_gravity_notify_self_ev : unit -> nativeint
+  = "get_raw_gravity_notify_self_ev"
+
+let get_gravity_notify_self_ev () =
+  xevent_of_raw_address (get_raw_gravity_notify_self_ev ())
+
 let test_key_press_ev () =
   match get_key_press_ev () with
   | KeyPress ev ->
@@ -598,6 +610,32 @@ let test_create_notify_override_ev () =
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected CreateWindow event"
 
+(* A child moved by its win_gravity when its parent was resized, seen on the
+   parent with SubstructureNotifyMask *)
+let test_gravity_notify_ev () =
+  match get_gravity_notify_ev () with
+  | GravityNotify ev ->
+      Alcotest.(check int) "serial" 360 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" false ev.send_event;
+      Alcotest.(check int) "display" 0x3339 (display_address ev.display);
+      Alcotest.(check int) "event" 3601 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 3602 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check (pair int int)) "pos" (120, 80) ev.pos
+  | _ -> Alcotest.fail "Expected GravityNotify event"
+
+(* Seen on the moved window itself (StructureNotifyMask), pushed partly off
+   the left edge *)
+let test_gravity_notify_self_ev () =
+  match get_gravity_notify_self_ev () with
+  | GravityNotify ev ->
+      Alcotest.(check int) "serial" 361 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check int) "display" 0x333A (display_address ev.display);
+      Alcotest.(check int) "event" 3603 (Unsigned.ULong.to_int ev.event);
+      Alcotest.(check int) "window" 3603 (Unsigned.ULong.to_int ev.window);
+      Alcotest.(check (pair int int)) "pos" (-40, 1050) ev.pos
+  | _ -> Alcotest.fail "Expected GravityNotify event"
+
 let () =
   let open Alcotest in
   run "X11 XEvent"
@@ -633,6 +671,8 @@ let () =
           test_case "ConfigureNotify" `Quick test_configure_notify_ev;
           test_case "ConfigureNotify (synthetic)" `Quick
             test_configure_notify_synthetic_ev;
+          test_case "GravityNotify" `Quick test_gravity_notify_ev;
+          test_case "GravityNotify (self)" `Quick test_gravity_notify_self_ev;
           test_case "PropertyNotify" `Quick test_property_notify_ev;
           test_case "PropertyNotify (delete)" `Quick
             test_property_notify_delete_ev;

@@ -206,6 +206,16 @@ let configure_of_c ev : configureEvent =
     override_redirect = 0 <> getf ev xconfigure_override_redirect;
   }
 
+let gravity_of_c ev : gravityEvent =
+  {
+    serial = getf ev xgravity_serial;
+    send_event = 0 <> getf ev xgravity_send_event;
+    display = getf ev xgravity_display;
+    event = getf ev xgravity_event_window;
+    window = getf ev xgravity_window;
+    pos = (getf ev xgravity_x, getf ev xgravity_y);
+  }
+
 let property_of_c ev : propertyEvent =
   {
     serial = getf ev xproperty_serial;
@@ -259,7 +269,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.ConfigureRequest ->
       ConfigureRequest
         (configure_request_of_c (getf raw_ev xev_configurerequest))
-  | Ev.GravityNotify -> failwith "Unsupported type GravityNotify"
+  | Ev.GravityNotify -> GravityNotify (gravity_of_c (getf raw_ev xev_gravity))
   | Ev.ResizeRequest -> failwith "Unsupported type ResizeRequest"
   | Ev.CirculateNotify -> failwith "Unsupported type CirculateNotify"
   | Ev.CirculateRequest -> failwith "Unsupported type CirculateRequest"
