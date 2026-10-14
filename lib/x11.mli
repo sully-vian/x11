@@ -180,11 +180,7 @@ val mod3Mask : keyMask
 val mod4Mask : keyMask
 val mod5Mask : keyMask
 
-type grabMode
-
-val grabModeSync : grabMode
-val grabModeAsync : grabMode
-
+type grabMode = GrabModeSync | GrabModeAsync
 type button
 
 val anyButton : button

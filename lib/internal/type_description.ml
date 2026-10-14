@@ -48,6 +48,7 @@ module Enums = struct
   type windowClass = CopyFromParent | InputOutput | InputOnly
   type mapState = IsUnmapped | IsUnviewable | IsViewable
   type backingStore = NotUseful | WhenMapped | Always
+  type grabMode = GrabModeSync | GrabModeAsync
 
   (* Bit and window gravity share X's constants, except for 0: ForgetGravity
      for bit gravity, UnmapGravity for window gravity. Reading a bit gravity
@@ -110,7 +111,6 @@ module Types (F : Ctypes.TYPE) = struct
   let keycode = int
   let button = int
   let eventMask = int
-  let grabMode = int
   let cursor = int
   let keyMask = int
   let noEventMask = constant "NoEventMask" int
@@ -147,8 +147,6 @@ module Types (F : Ctypes.TYPE) = struct
   let mod3Mask = constant "Mod3Mask" int
   let mod4Mask = constant "Mod4Mask" int
   let mod5Mask = constant "Mod5Mask" int
-  let grabModeSync = constant "GrabModeSync" int
-  let grabModeAsync = constant "GrabModeAsync" int
   let anyButton = constant "AnyButton" int
   let button1 = constant "Button1" int
   let button2 = constant "Button2" int
@@ -376,6 +374,11 @@ module Types (F : Ctypes.TYPE) = struct
         (WhenMapped, c "WhenMapped");
         (Always, c "Always");
       ]
+
+  let grab_mode : grabMode typ =
+    let c name = constant name int64_t in
+    enum "x11_grab_mode" ~typedef:true
+      [ (GrabModeSync, c "GrabModeSync"); (GrabModeAsync, c "GrabModeAsync") ]
 
   let directional_gravities =
     let c name = constant name int64_t in

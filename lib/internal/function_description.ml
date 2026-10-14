@@ -44,12 +44,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let grab_button =
     foreign "XGrabButton"
       (display @-> button @-> keyMask @-> window @-> bool @-> eventMask
-     @-> grabMode @-> grabMode @-> ulong_opt @-> int_opt @-> returning void)
+     @-> grab_mode @-> grab_mode @-> ulong_opt @-> int_opt @-> returning void)
 
   let grab_key =
     foreign "XGrabKey"
-      (display @-> keycode @-> keyMask @-> window @-> bool @-> grabMode
-     @-> grabMode @-> returning void)
+      (display @-> keycode @-> keyMask @-> window @-> bool @-> grab_mode
+     @-> grab_mode @-> returning void)
 
   let next_event_stub =
     foreign "XNextEvent" (display @-> ptr xevent_union @-> returning void)

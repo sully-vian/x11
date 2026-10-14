@@ -6,7 +6,6 @@ include Xevent
 include Xwindowattributes
 include Mask
 
-type grabMode = int
 type cursor = int
 
 let create_simple_window display root (x, y) (width, height) border_width border
