@@ -1,9 +1,9 @@
 ; Tests of the public API (x11 library), one executable per suite.
-; test_x needs a running X server ($DISPLAY), test_integration needs Xvfb and
-; xdotool (it starts its own Xvfb on :99).
+; test_x needs a running X server ($DISPLAY). Tests against Xvfb are in
+; integration/.
 
 (tests
- (names test_compilation test_x test_integration)
+ (names test_compilation test_x)
  (action
   (run %{test} --show-errors))
- (libraries x11 alcotest unix))
+ (libraries x11 alcotest))
