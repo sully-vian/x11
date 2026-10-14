@@ -114,6 +114,19 @@ let expose_of_c ev : exposeEvent =
     count = getf ev xexpose_count;
   }
 
+let create_window_of_c ev : createWindowEvent =
+  {
+    serial = getf ev xcreatewindow_serial;
+    send_event = 0 <> getf ev xcreatewindow_send_event;
+    display = getf ev xcreatewindow_display;
+    parent = getf ev xcreatewindow_parent;
+    window = getf ev xcreatewindow_window;
+    pos = (getf ev xcreatewindow_x, getf ev xcreatewindow_y);
+    size = (getf ev xcreatewindow_width, getf ev xcreatewindow_height);
+    border_width = getf ev xcreatewindow_border_width;
+    override_redirect = 0 <> getf ev xcreatewindow_override_redirect;
+  }
+
 let destroy_window_of_c ev : destroyWindowEvent =
   {
     serial = getf ev xdestroywindow_serial;
@@ -233,7 +246,8 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.GraphicsExpose -> failwith "Unsupported type GraphicsExpose"
   | Ev.NoExpose -> failwith "Unsupported type NoExpose"
   | Ev.VisibilityNotify -> failwith "Unsupported type VisibilityNotify"
-  | Ev.CreateNotify -> failwith "Unsupported type CreateNotify"
+  | Ev.CreateNotify ->
+      CreateWindow (create_window_of_c (getf raw_ev xev_createwindow))
   | Ev.DestroyNotify ->
       DestroyWindow (destroy_window_of_c (getf raw_ev xev_destroywindow))
   | Ev.UnmapNotify -> Unmap (unmap_of_c (getf raw_ev xev_unmap))

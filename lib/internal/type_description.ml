@@ -566,6 +566,28 @@ module Types (F : Ctypes.TYPE) = struct
   let xexpose_count = field xexpose_event "count" int
   let () = seal xexpose_event
 
+  type xcreatewindow_event
+
+  let xcreatewindow_event : xcreatewindow_event structure typ =
+    typedef (structure "xcreatewindow_anonymous") "XCreateWindowEvent"
+
+  let xcreatewindow_type = field xcreatewindow_event "type" event_type
+  let xcreatewindow_serial = field xcreatewindow_event "serial" ulong
+  let xcreatewindow_send_event = field xcreatewindow_event "send_event" int
+  let xcreatewindow_display = field xcreatewindow_event "display" display
+  let xcreatewindow_parent = field xcreatewindow_event "parent" window
+  let xcreatewindow_window = field xcreatewindow_event "window" window
+  let xcreatewindow_x = field xcreatewindow_event "x" int
+  let xcreatewindow_y = field xcreatewindow_event "y" int
+  let xcreatewindow_width = field xcreatewindow_event "width" int
+  let xcreatewindow_height = field xcreatewindow_event "height" int
+  let xcreatewindow_border_width = field xcreatewindow_event "border_width" int
+
+  let xcreatewindow_override_redirect =
+    field xcreatewindow_event "override_redirect" int
+
+  let () = seal xcreatewindow_event
+
   type xdestroywindow_event
 
   let xdestroywindow_event : xdestroywindow_event structure typ =
@@ -738,6 +760,7 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_crossing = field xevent_union "xcrossing" xcrossing_event
   let xev_motion = field xevent_union "xmotion" xmotion_event
   let xev_expose = field xevent_union "xexpose" xexpose_event
+  let xev_createwindow = field xevent_union "xcreatewindow" xcreatewindow_event
 
   let xev_destroywindow =
     field xevent_union "xdestroywindow" xdestroywindow_event
