@@ -1,3 +1,3 @@
 (executables
- (names event_loop)
+ (names event_loop click_windows)
  (libraries x11))
