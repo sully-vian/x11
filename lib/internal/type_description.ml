@@ -390,6 +390,11 @@ module Types (F : Ctypes.TYPE) = struct
         (MappingPointer, c "MappingPointer");
       ]
 
+  let circulation_place : circulationRequest typ =
+    let c name = constant name int64_t in
+    enum "x11_circulation_place" ~typedef:true
+      [ (PlaceOnTop, c "PlaceOnTop"); (PlaceOnBottom, c "PlaceOnBottom") ]
+
   let directional_gravities =
     let c name = constant name int64_t in
     [
@@ -734,6 +739,20 @@ module Types (F : Ctypes.TYPE) = struct
   let xgravity_y = field xgravity_event "y" int
   let () = seal xgravity_event
 
+  type xcirculate_event
+
+  let xcirculate_event : xcirculate_event structure typ =
+    typedef (structure "xcirculate_anonymous") "XCirculateEvent"
+
+  let xcirculate_type = field xcirculate_event "type" event_type
+  let xcirculate_serial = field xcirculate_event "serial" ulong
+  let xcirculate_send_event = field xcirculate_event "send_event" int
+  let xcirculate_display = field xcirculate_event "display" display
+  let xcirculate_event_window = field xcirculate_event "event" window
+  let xcirculate_window = field xcirculate_event "window" window
+  let xcirculate_place = field xcirculate_event "place" circulation_place
+  let () = seal xcirculate_event
+
   type xproperty_event
 
   let xproperty_event : xproperty_event structure typ =
@@ -790,6 +809,7 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_reparent = field xevent_union "xreparent" xreparent_event
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
   let xev_gravity = field xevent_union "xgravity" xgravity_event
+  let xev_circulate = field xevent_union "xcirculate" xcirculate_event
   let xev_property = field xevent_union "xproperty" xproperty_event
   let xev_mapping = field xevent_union "xmapping" xmapping_event
   let () = seal xevent_union

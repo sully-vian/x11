@@ -11,7 +11,7 @@
   ; distinct typedefs of int
   (headers
    (preamble
-    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;\ntypedef int x11_stack_mode;\ntypedef int x11_property_state;\ntypedef int x11_window_class;\ntypedef int x11_map_state;\ntypedef int x11_backing_store;\ntypedef int x11_bit_gravity;\ntypedef int x11_win_gravity;\ntypedef int x11_grab_mode;\ntypedef int x11_mapping_request;"))
+    "#include <X11/X.h>\n#include <X11/Xlib.h>\n#include <X11/Xutil.h>\ntypedef int x11_event_type;\ntypedef int x11_notify_mode;\ntypedef int x11_notify_detail;\ntypedef int x11_stack_mode;\ntypedef int x11_property_state;\ntypedef int x11_window_class;\ntypedef int x11_map_state;\ntypedef int x11_backing_store;\ntypedef int x11_bit_gravity;\ntypedef int x11_win_gravity;\ntypedef int x11_grab_mode;\ntypedef int x11_mapping_request;\ntypedef int x11_circulation_place;"))
   (type_description
    (instance Types)
    (functor type_description))
