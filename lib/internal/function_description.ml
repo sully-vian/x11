@@ -20,6 +20,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   let map_window = foreign "XMapWindow" (display @-> window @-> returning void)
 
+  let store_name =
+    foreign "XStoreName" (display @-> window @-> string @-> returning void)
+
   let create_simple_window_verbose =
     foreign "XCreateSimpleWindow"
       (display @-> window @-> int @-> int @-> int @-> int @-> int @-> int

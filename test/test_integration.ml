@@ -2,7 +2,7 @@ open X11
 
 let display_name = ":99"
 
-let with_xvfb f =
+let with_xvfb f () =
   Unix.putenv "DISPLAY" display_name;
   let pid =
     Unix.create_process "Xvfb" [| "Xvfb"; display_name |] Unix.stdin Unix.stdout
@@ -90,15 +90,31 @@ let test_root_window_attributes () =
             (attributes.map_state = IsViewable);
           close_display dpy)
 
+let test_store_name () =
+  match open_display (Some display_name) with
+  | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
+  | Some dpy ->
+      let root = default_root_window dpy in
+      let win = create_simple_window dpy root (0, 0) (100, 100) 0 0 0 in
+      store_name dpy win "x11 store_name test";
+      flush dpy;
+      let ic =
+        Unix.open_process_in "xdotool search --name '^x11 store_name test$'"
+      in
+      let ids = In_channel.input_all ic in
+      ignore (Unix.close_process_in ic);
+      Alcotest.(check int)
+        "windows with that name" 1
+        (List.length (String.split_on_char '\n' (String.trim ids)));
+      close_display dpy
+
 let () =
   let open Alcotest in
   run "X11 Integration"
     [
-      ( "xdotool",
-        [ test_case "xdotool" `Quick (fun () -> with_xvfb test_xdotool) ] );
+      ("xdotool", [ test_case "xdotool" `Quick (with_xvfb test_xdotool) ]);
       ( "window attributes",
-        [
-          test_case "root" `Quick (fun () ->
-              with_xvfb test_root_window_attributes);
-        ] );
+        [ test_case "root" `Quick (with_xvfb test_root_window_attributes) ] );
+      ( "window name",
+        [ test_case "store_name" `Quick (with_xvfb test_store_name) ] );
     ]

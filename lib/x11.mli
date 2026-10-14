@@ -668,6 +668,10 @@ val set_window_background : display -> window -> int -> unit
 val map_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XMapWindow.3.en} XMapWindow} *)
 
+val store_name : display -> window -> string -> unit
+(** {{:https://man.archlinux.org/man/XStoreName.3.en} XStoreName}: sets the
+    window's [WM_NAME], the title window managers and tools like xdotool show *)
+
 val create_simple_window :
   display -> window -> int * int -> int * int -> int -> int -> int -> window
 (** {{:https://man.archlinux.org/man/XCreateWindow.3.en} XCreateSimpleWindow} *)
