@@ -322,7 +322,7 @@ type mappingEvent = {
   send_event : bool;
   display : display;
   window : window;
-  request : int;
+  request : mappingRequest;
   first_keycode : int;
   count : int;
 }

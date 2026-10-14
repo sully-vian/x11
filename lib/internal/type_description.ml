@@ -49,6 +49,7 @@ module Enums = struct
   type mapState = IsUnmapped | IsUnviewable | IsViewable
   type backingStore = NotUseful | WhenMapped | Always
   type grabMode = GrabModeSync | GrabModeAsync
+  type mappingRequest = MappingModifier | MappingKeyboard | MappingPointer
 
   (* Bit and window gravity share X's constants, except for 0: ForgetGravity
      for bit gravity, UnmapGravity for window gravity. Reading a bit gravity
@@ -380,6 +381,15 @@ module Types (F : Ctypes.TYPE) = struct
     enum "x11_grab_mode" ~typedef:true
       [ (GrabModeSync, c "GrabModeSync"); (GrabModeAsync, c "GrabModeAsync") ]
 
+  let mapping_request : mappingRequest typ =
+    let c name = constant name int64_t in
+    enum "x11_mapping_request" ~typedef:true
+      [
+        (MappingModifier, c "MappingModifier");
+        (MappingKeyboard, c "MappingKeyboard");
+        (MappingPointer, c "MappingPointer");
+      ]
+
   let directional_gravities =
     let c name = constant name int64_t in
     [
@@ -702,6 +712,21 @@ module Types (F : Ctypes.TYPE) = struct
   let xproperty_state = field xproperty_event "state" property_state
   let () = seal xproperty_event
 
+  type xmapping_event
+
+  let xmapping_event : xmapping_event structure typ =
+    typedef (structure "xmapping_anonymous") "XMappingEvent"
+
+  let xmapping_type = field xmapping_event "type" event_type
+  let xmapping_serial = field xmapping_event "serial" ulong
+  let xmapping_send_event = field xmapping_event "send_event" int
+  let xmapping_display = field xmapping_event "display" display
+  let xmapping_window = field xmapping_event "window" window
+  let xmapping_request = field xmapping_event "request" mapping_request
+  let xmapping_first_keycode = field xmapping_event "first_keycode" int
+  let xmapping_count = field xmapping_event "count" int
+  let () = seal xmapping_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"
@@ -727,6 +752,7 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_reparent = field xevent_union "xreparent" xreparent_event
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
   let xev_property = field xevent_union "xproperty" xproperty_event
+  let xev_mapping = field xevent_union "xmapping" xmapping_event
   let () = seal xevent_union
 
   type xwindowattributes

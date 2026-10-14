@@ -204,6 +204,17 @@ let property_of_c ev : propertyEvent =
     state = getf ev xproperty_state;
   }
 
+let mapping_of_c ev : mappingEvent =
+  {
+    serial = getf ev xmapping_serial;
+    send_event = 0 <> getf ev xmapping_send_event;
+    display = getf ev xmapping_display;
+    window = getf ev xmapping_window;
+    request = getf ev xmapping_request;
+    first_keycode = getf ev xmapping_first_keycode;
+    count = getf ev xmapping_count;
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))
@@ -243,7 +254,7 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.SelectionRequest -> failwith "Unsupported type SelectionRequest"
   | Ev.SelectionNotify -> failwith "Unsupported type SelectionNotify"
   | Ev.ColormapNotify -> failwith "Unsupported type ColormapNotify"
-  | Ev.MappingNotify -> failwith "Unsupported type MappingNotify"
+  | Ev.MappingNotify -> Mapping (mapping_of_c (getf raw_ev xev_mapping))
   | Ev.GenericEvent -> failwith "Unsupported type GenericEvent"
   | Ev.Unknown n -> failwith (Printf.sprintf "Unknown event type '%Ld'" n)
 

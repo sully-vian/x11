@@ -561,12 +561,15 @@ type clientMessageEvent = {
   data : message_data;
 }
 
+(** What a [MappingNotify] reports as changed *)
+type mappingRequest = MappingModifier | MappingKeyboard | MappingPointer
+
 type mappingEvent = {
   serial : Unsigned.ulong;
   send_event : bool;
   display : display;
   window : window;
-  request : int;
+  request : mappingRequest;
   first_keycode : int;
   count : int;
 }
