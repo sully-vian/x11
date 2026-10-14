@@ -3,16 +3,6 @@
 ; server: `dune test test/internal`
 
 (test
- (name test_xevent)
- (modules test_xevent)
- (foreign_stubs
-  (language c)
-  (names test_xevent))
- (action
-  (run %{test} --show-errors))
- (libraries x11_internal ctypes alcotest))
-
-(test
  (name test_xwindowattributes)
  (modules test_xwindowattributes)
  (foreign_stubs
@@ -21,13 +11,3 @@
  (action
   (run %{test} --show-errors))
  (libraries x11_internal ctypes alcotest))
-
-(rule
- (with-stdout-to
-  test_xevent.c.formatted
-  (run clang-format %{dep:test_xevent.c})))
-
-(rule
- (alias fmt)
- (action
-  (diff test_xevent.c test_xevent.c.formatted)))

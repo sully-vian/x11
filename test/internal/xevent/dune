@@ -1,0 +1,39 @@
+; XEvent conversion tests: one module (and C file of fixtures) per XEvent
+; struct, each exporting a `suite` that main.ml runs
+
+(test
+ (name main)
+ (foreign_stubs
+  (language c)
+  (names
+   raw_xevent
+   xkey
+   xbutton
+   xmotion
+   xcrossing
+   xfocus
+   xexpose
+   xcreatewindow
+   xdestroywindow
+   xunmap
+   xmap
+   xmaprequest
+   xreparent
+   xconfigure
+   xconfigurerequest
+   xgravity
+   xcirculate
+   xproperty
+   xclient
+   xmapping))
+ (action
+  (run %{test} --show-errors))
+ (libraries x11_internal ctypes alcotest))
+
+(rule
+ (alias fmt)
+ (deps
+  (glob_files *.c)
+  (glob_files *.h))
+ (action
+  (run clang-format --dry-run --Werror %{deps})))
