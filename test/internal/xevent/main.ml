@@ -19,6 +19,7 @@ let () =
       Xconfigurerequest.suite;
       Xgravity.suite;
       Xcirculate.suite;
+      Xcirculaterequest.suite;
       Xproperty.suite;
       Xclient.suite;
       Xmapping.suite;

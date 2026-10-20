@@ -42,6 +42,6 @@ for long:
   GC has `graphics_exposures` on, which is the default.
 
 Still unported: `KeymapNotify`, `VisibilityNotify`, `ResizeRequest`,
-`CirculateRequest`, `SelectionClear`, `SelectionRequest`, `SelectionNotify`,
-`ColormapNotify`, `GenericEvent`. Extension events (e.g. XRandR) arrive as
-`Unknown` and also raise.
+`SelectionClear`, `SelectionRequest`, `SelectionNotify`, `ColormapNotify`,
+`GenericEvent`. Extension events (e.g. XRandR) arrive as `Unknown` and also
+raise.

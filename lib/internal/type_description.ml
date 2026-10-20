@@ -753,6 +753,28 @@ module Types (F : Ctypes.TYPE) = struct
   let xcirculate_place = field xcirculate_event "place" circulation_place
   let () = seal xcirculate_event
 
+  type xcirculaterequest_event
+
+  let xcirculaterequest_event : xcirculaterequest_event structure typ =
+    typedef (structure "xcirculaterequest_anonymous") "XCirculateRequestEvent"
+
+  let xcirculaterequest_type = field xcirculaterequest_event "type" event_type
+  let xcirculaterequest_serial = field xcirculaterequest_event "serial" ulong
+
+  let xcirculaterequest_send_event =
+    field xcirculaterequest_event "send_event" int
+
+  let xcirculaterequest_display =
+    field xcirculaterequest_event "display" display
+
+  let xcirculaterequest_parent = field xcirculaterequest_event "parent" window
+  let xcirculaterequest_window = field xcirculaterequest_event "window" window
+
+  let xcirculaterequest_place =
+    field xcirculaterequest_event "place" circulation_place
+
+  let () = seal xcirculaterequest_event
+
   type xproperty_event
 
   let xproperty_event : xproperty_event structure typ =
@@ -810,6 +832,10 @@ module Types (F : Ctypes.TYPE) = struct
   let xev_configure = field xevent_union "xconfigure" xconfigure_event
   let xev_gravity = field xevent_union "xgravity" xgravity_event
   let xev_circulate = field xevent_union "xcirculate" xcirculate_event
+
+  let xev_circulaterequest =
+    field xevent_union "xcirculaterequest" xcirculaterequest_event
+
   let xev_property = field xevent_union "xproperty" xproperty_event
   let xev_mapping = field xevent_union "xmapping" xmapping_event
   let () = seal xevent_union

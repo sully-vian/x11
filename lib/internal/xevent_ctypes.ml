@@ -226,6 +226,16 @@ let circulate_of_c ev : circulateEvent =
     place = getf ev xcirculate_place;
   }
 
+let circulate_request_of_c ev : circulateRequestEvent =
+  {
+    serial = getf ev xcirculaterequest_serial;
+    send_event = 0 <> getf ev xcirculaterequest_send_event;
+    display = getf ev xcirculaterequest_display;
+    parent = getf ev xcirculaterequest_parent;
+    window = getf ev xcirculaterequest_window;
+    place = getf ev xcirculaterequest_place;
+  }
+
 let property_of_c ev : propertyEvent =
   {
     serial = getf ev xproperty_serial;
@@ -282,7 +292,9 @@ let xevent_of_c (raw_ev : xevent_union union) =
   | Ev.GravityNotify -> GravityNotify (gravity_of_c (getf raw_ev xev_gravity))
   | Ev.ResizeRequest -> failwith "Unsupported type ResizeRequest"
   | Ev.CirculateNotify -> Circulate (circulate_of_c (getf raw_ev xev_circulate))
-  | Ev.CirculateRequest -> failwith "Unsupported type CirculateRequest"
+  | Ev.CirculateRequest ->
+      CirculateRequest
+        (circulate_request_of_c (getf raw_ev xev_circulaterequest))
   | Ev.PropertyNotify -> Property (property_of_c (getf raw_ev xev_property))
   | Ev.SelectionClear -> failwith "Unsupported type SelectionClear"
   | Ev.SelectionRequest -> failwith "Unsupported type SelectionRequest"

@@ -23,6 +23,7 @@
    xconfigurerequest
    xgravity
    xcirculate
+   xcirculaterequest
    xproperty
    xclient
    xmapping))
