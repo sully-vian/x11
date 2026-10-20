@@ -665,6 +665,10 @@ val set_window_background : display -> window -> int -> unit
 (** {{:https://man.archlinux.org/man/XSetWindowBackground.3.en}
      XSetWindowBackground} *)
 
+val destroy_window : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XDestroyWindow.3.en} XDestroyWindow}:
+    destroys the window and its subwindows *)
+
 val map_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XMapWindow.3.en} XMapWindow} *)
 

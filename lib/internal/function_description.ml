@@ -18,6 +18,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
     foreign "XSetWindowBackground"
       (display @-> window @-> int @-> returning void)
 
+  let destroy_window =
+    foreign "XDestroyWindow" (display @-> window @-> returning void)
+
   let map_window = foreign "XMapWindow" (display @-> window @-> returning void)
 
   (* Returns None (atom 0) only when only_if_exists is set and the atom doesn't
