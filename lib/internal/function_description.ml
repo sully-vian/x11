@@ -20,6 +20,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   let map_window = foreign "XMapWindow" (display @-> window @-> returning void)
 
+  (* Returns None (atom 0) only when only_if_exists is set and the atom doesn't
+     exist yet *)
+  let intern_atom =
+    foreign "XInternAtom" (display @-> string @-> bool @-> returning ulong_opt)
+
   let store_name =
     foreign "XStoreName" (display @-> window @-> string @-> returning void)
 

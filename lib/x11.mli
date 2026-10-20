@@ -668,6 +668,11 @@ val set_window_background : display -> window -> int -> unit
 val map_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XMapWindow.3.en} XMapWindow} *)
 
+val intern_atom : display -> string -> bool -> atom option
+(** {{:https://man.archlinux.org/man/XInternAtom.3.en} XInternAtom}: the atom
+    named [name], created unless [only_if_exists] is set, in which case a
+    missing atom gives [None] *)
+
 val store_name : display -> window -> string -> unit
 (** {{:https://man.archlinux.org/man/XStoreName.3.en} XStoreName}: sets the
     window's [WM_NAME], the title window managers and tools like xdotool show *)
