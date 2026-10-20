@@ -7,4 +7,5 @@ let () =
       Get_window_attributes.suite;
       Store_name.suite;
       Intern_atom.suite;
+      Set_wm_protocols.suite;
     ]

@@ -16,3 +16,12 @@ let get_window_attributes : display -> window -> windowAttributes option =
     = 0
   then None
   else Some (Xwindowattributes_ctypes.window_attributes_of_c attributes)
+
+(* Its only failure is not being able to intern WM_PROTOCOLS *)
+let set_wm_protocols : display -> window -> atom list -> unit =
+ fun dpy window protocols ->
+  let protocols = Ctypes.CArray.of_list atom protocols in
+  ignore
+    (C.Functions.set_wm_protocols_stub dpy window
+       (Ctypes.CArray.start protocols)
+       (Ctypes.CArray.length protocols))

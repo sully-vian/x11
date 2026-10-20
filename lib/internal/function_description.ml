@@ -25,6 +25,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let intern_atom =
     foreign "XInternAtom" (display @-> string @-> bool @-> returning ulong_opt)
 
+  (* Returns a zero Status on failure *)
+  let set_wm_protocols_stub =
+    foreign "XSetWMProtocols"
+      (display @-> window @-> ptr atom @-> int @-> returning int)
+
   let store_name =
     foreign "XStoreName" (display @-> window @-> string @-> returning void)
 

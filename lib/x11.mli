@@ -673,6 +673,11 @@ val intern_atom : display -> string -> bool -> atom option
     named [name], created unless [only_if_exists] is set, in which case a
     missing atom gives [None] *)
 
+val set_wm_protocols : display -> window -> atom list -> unit
+(** {{:https://man.archlinux.org/man/XSetWMProtocols.3.en} XSetWMProtocols}:
+    replaces the window's [WM_PROTOCOLS], the protocols it takes part in, such
+    as [WM_DELETE_WINDOW] *)
+
 val store_name : display -> window -> string -> unit
 (** {{:https://man.archlinux.org/man/XStoreName.3.en} XStoreName}: sets the
     window's [WM_NAME], the title window managers and tools like xdotool show *)
