@@ -647,6 +647,11 @@ type xEvent =
   | Generic of genericEvent
   | GenericCookie of genericEventCookie
 
+val atom_of_long : Signed.long -> atom
+(** Reads a [Longs] item of a [ClientMessage] as an atom, such as the protocol
+    of a [WM_PROTOCOLS] message. Its [message_type] says which items are atoms.
+*)
+
 (** {1 Core Functions} *)
 
 val open_display : string option -> display option

@@ -11,3 +11,10 @@
  (action
   (run %{test} --show-errors))
  (libraries x11_internal ctypes alcotest))
+
+(test
+ (name test_atom)
+ (modules test_atom)
+ (action
+  (run %{test} --show-errors))
+ (libraries x11_internal ctypes alcotest))

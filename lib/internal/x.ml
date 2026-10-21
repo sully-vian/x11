@@ -25,3 +25,8 @@ let set_wm_protocols : display -> window -> atom list -> unit =
     (C.Functions.set_wm_protocols_stub dpy window
        (Ctypes.CArray.start protocols)
        (Ctypes.CArray.length protocols))
+
+(* Atoms are XIDs, whose top three bits are zero: reading the long as unsigned
+   gives the same value *)
+let atom_of_long : Signed.long -> atom =
+ fun l -> Unsigned.ULong.of_int64 (Signed.Long.to_int64 l)
