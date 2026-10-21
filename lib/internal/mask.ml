@@ -1,7 +1,7 @@
 type 'a mask = int
-type event_tag
-type key_tag
-type eventMask = event_tag mask
-type keyMask = key_tag mask
+type eventMask = [ `Event ] mask
+type keyMask = [ `Key | `Any ] mask
+type stateMask = [ `Key | `Button ] mask
 
 let ( ||| ) = ( lor )
+let ( &&& ) m flags = m land flags <> 0

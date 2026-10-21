@@ -131,54 +131,80 @@ val xk_asciitilde : keysym
 (** {1 Masks and Modifiers} *)
 
 type 'a mask
+(** A set of X flags. ['a] lists the kinds of flags it may hold: a constant such
+    as [shiftMask : [> `Key ] mask] fits any mask type that allows [`Key] flags,
+    and nothing else.
+
+    The X protocol gives each mask field its own set type, listing the bits
+    valid there: grab modifiers are a [SETofKEYMASK] or [AnyModifier], an event
+    state a [SETofKEYBUTMASK]. These sets overlap, so a flag is often valid in
+    several fields. A tag stands for a group of flags the protocol always allows
+    or refuses together, a mask type lists the tags its field accepts, and the
+    open type of a constant lets it fit every one of them. Using a flag where X
+    would answer [BadValue] is then a type error. *)
 
 val ( ||| ) : 'a mask -> 'a mask -> 'a mask
 
+val ( &&& ) : 'a mask -> 'a mask -> bool
+(** [m &&& flags] is [true] when [m] holds at least one of [flags], like C's
+    [m & flags]: [ev.state &&& controlMask] tests whether Control was held *)
+
 (** {2 Event Masks} *)
 
-type event_tag
-type eventMask = event_tag mask
+type eventMask = [ `Event ] mask
 
-val noEventMask : eventMask
-val keyPressMask : eventMask
-val keyReleaseMask : eventMask
-val buttonPressMask : eventMask
-val buttonReleaseMask : eventMask
-val enterWindowMask : eventMask
-val leaveWindowMask : eventMask
-val pointerMotionMask : eventMask
-val pointerMotionHintMask : eventMask
-val button1MotionMask : eventMask
-val button2MotionMask : eventMask
-val button3MotionMask : eventMask
-val button4MotionMask : eventMask
-val button5MotionMask : eventMask
-val buttonMotionMask : eventMask
-val keymapStateMask : eventMask
-val exposureMask : eventMask
-val visibilityChangeMask : eventMask
-val structureNotifyMask : eventMask
-val resizeRedirectMask : eventMask
-val substructureNotifyMask : eventMask
-val substructureRedirectMask : eventMask
-val focusChangeMask : eventMask
-val propertyChangeMask : eventMask
-val colormapChangeMask : eventMask
-val ownerGrabButtonMask : eventMask
+val noEventMask : [> `Event ] mask
+val keyPressMask : [> `Event ] mask
+val keyReleaseMask : [> `Event ] mask
+val buttonPressMask : [> `Event ] mask
+val buttonReleaseMask : [> `Event ] mask
+val enterWindowMask : [> `Event ] mask
+val leaveWindowMask : [> `Event ] mask
+val pointerMotionMask : [> `Event ] mask
+val pointerMotionHintMask : [> `Event ] mask
+val button1MotionMask : [> `Event ] mask
+val button2MotionMask : [> `Event ] mask
+val button3MotionMask : [> `Event ] mask
+val button4MotionMask : [> `Event ] mask
+val button5MotionMask : [> `Event ] mask
+val buttonMotionMask : [> `Event ] mask
+val keymapStateMask : [> `Event ] mask
+val exposureMask : [> `Event ] mask
+val visibilityChangeMask : [> `Event ] mask
+val structureNotifyMask : [> `Event ] mask
+val resizeRedirectMask : [> `Event ] mask
+val substructureNotifyMask : [> `Event ] mask
+val substructureRedirectMask : [> `Event ] mask
+val focusChangeMask : [> `Event ] mask
+val propertyChangeMask : [> `Event ] mask
+val colormapChangeMask : [> `Event ] mask
+val ownerGrabButtonMask : [> `Event ] mask
 
-(** {2 Key Masks} *)
+(** {2 Key and Button Masks} *)
 
-type key_tag
-type keyMask = key_tag mask
+type keyMask = [ `Key | `Any ] mask
+(** The modifiers of a key or button grab: [SETofKEYMASK or AnyModifier] *)
 
-val shiftMask : keyMask
-val lockMask : keyMask
-val controlMask : keyMask
-val mod1Mask : keyMask
-val mod2Mask : keyMask
-val mod3Mask : keyMask
-val mod4Mask : keyMask
-val mod5Mask : keyMask
+type stateMask = [ `Key | `Button ] mask
+(** The modifiers and pointer buttons held during an input event:
+    [SETofKEYBUTMASK] *)
+
+val shiftMask : [> `Key ] mask
+val lockMask : [> `Key ] mask
+val controlMask : [> `Key ] mask
+val mod1Mask : [> `Key ] mask
+val mod2Mask : [> `Key ] mask
+val mod3Mask : [> `Key ] mask
+val mod4Mask : [> `Key ] mask
+val mod5Mask : [> `Key ] mask
+val button1Mask : [> `Button ] mask
+val button2Mask : [> `Button ] mask
+val button3Mask : [> `Button ] mask
+val button4Mask : [> `Button ] mask
+val button5Mask : [> `Button ] mask
+
+val anyModifier : [> `Any ] mask
+(** Any combination of modifiers, including none: grabs only *)
 
 type grabMode = GrabModeSync | GrabModeAsync
 type button
@@ -243,7 +269,7 @@ type keyEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : stateMask;
   keycode : keycode;
   same_screen : bool;
 }
@@ -259,7 +285,7 @@ type buttonEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : stateMask;
   button : button;
   same_screen : bool;
 }
@@ -281,7 +307,7 @@ type motionEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : stateMask;
   is_hint : bool;
   same_screen : bool;
 }
@@ -303,7 +329,7 @@ type crossingEvent = {
   detail : notifyDetail;
   same_screen : bool;
   focus : bool;
-  state : int;
+  state : stateMask;
 }
 (** {{:https://man.archlinux.org/man/XCrossingEvent.3.en} XCrossingEvent} *)
 

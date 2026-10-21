@@ -21,7 +21,7 @@ type keyEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : Mask.stateMask;
   keycode : keycode;
   same_screen : bool;
 }
@@ -36,7 +36,7 @@ type buttonEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : Mask.stateMask;
   button : button;
   same_screen : bool;
 }
@@ -54,7 +54,7 @@ type motionEvent = {
   time : time;
   pos : int * int;
   pos_root : int * int;
-  state : int;
+  state : Mask.stateMask;
   is_hint : bool;
   same_screen : bool;
 }
@@ -75,7 +75,7 @@ type crossingEvent = {
   detail : notifyDetail;
   same_screen : bool;
   focus : bool;
-  state : int;
+  state : Mask.stateMask;
 }
 
 type enterWindowEvent = crossingEvent

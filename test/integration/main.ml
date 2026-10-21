@@ -4,6 +4,7 @@ let () =
   Alcotest.run "X11 Integration"
     [
       Key_events.suite;
+      Event_state.suite;
       Get_window_attributes.suite;
       Store_name.suite;
       Intern_atom.suite;

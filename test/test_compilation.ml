@@ -7,7 +7,11 @@ let test_eventMask_or () =
   ()
 
 let test_keyMask_or () =
-  let _ : keyMask = shiftMask ||| lockMask ||| controlMask in
+  let _ : keyMask = shiftMask ||| lockMask ||| controlMask ||| anyModifier in
+  ()
+
+let test_stateMask_or () =
+  let _ : stateMask = shiftMask ||| controlMask ||| button1Mask in
   ()
 
 let () =
@@ -18,5 +22,6 @@ let () =
         [
           test_case "eventMask OR" `Quick test_eventMask_or;
           test_case "keyMask OR" `Quick test_keyMask_or;
+          test_case "stateMask OR" `Quick test_stateMask_or;
         ] );
     ]
