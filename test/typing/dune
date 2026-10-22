@@ -1,0 +1,6 @@
+; Type contracts of the public API, as cram tests: each one type-checks code
+; against the x11 interface, and records the compiler's error when it must
+; not compile. After a deliberate change, `dune promote` updates them.
+
+(cram
+ (deps %{project_root}/lib/.x11.objs/byte/x11.cmi))
