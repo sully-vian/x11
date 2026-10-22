@@ -151,24 +151,38 @@ val ( &&& ) : 'a mask -> 'a mask -> bool
 
 (** {2 Event Masks} *)
 
-type eventMask = [ `Event ] mask
+(* Each tag is named after the protocol sets its flags belong to, besides
+   SETofEVENT which holds them all *)
 
-val noEventMask : [> `Event ] mask
-val keyPressMask : [> `Event ] mask
-val keyReleaseMask : [> `Event ] mask
-val buttonPressMask : [> `Event ] mask
-val buttonReleaseMask : [> `Event ] mask
-val enterWindowMask : [> `Event ] mask
-val leaveWindowMask : [> `Event ] mask
-val pointerMotionMask : [> `Event ] mask
-val pointerMotionHintMask : [> `Event ] mask
-val button1MotionMask : [> `Event ] mask
-val button2MotionMask : [> `Event ] mask
-val button3MotionMask : [> `Event ] mask
-val button4MotionMask : [> `Event ] mask
-val button5MotionMask : [> `Event ] mask
-val buttonMotionMask : [> `Event ] mask
-val keymapStateMask : [> `Event ] mask
+type eventMask =
+  [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
+(** The events a client selects: [SETofEVENT] *)
+
+type pointerEventMask = [ `PointerEvent | `PointerDeviceEvent ] mask
+(** The events a pointer grab reports: [SETofPOINTEREVENT] *)
+
+type deviceEventMask = [ `DeviceEvent | `PointerDeviceEvent ] mask
+(** The events a window can keep from propagating: [SETofDEVICEEVENT] *)
+
+val noEventMask :
+  [< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
+(** The empty set, which fits every event mask type *)
+
+val keyPressMask : [> `DeviceEvent ] mask
+val keyReleaseMask : [> `DeviceEvent ] mask
+val buttonPressMask : [> `PointerDeviceEvent ] mask
+val buttonReleaseMask : [> `PointerDeviceEvent ] mask
+val enterWindowMask : [> `PointerEvent ] mask
+val leaveWindowMask : [> `PointerEvent ] mask
+val pointerMotionMask : [> `PointerDeviceEvent ] mask
+val pointerMotionHintMask : [> `PointerEvent ] mask
+val button1MotionMask : [> `PointerDeviceEvent ] mask
+val button2MotionMask : [> `PointerDeviceEvent ] mask
+val button3MotionMask : [> `PointerDeviceEvent ] mask
+val button4MotionMask : [> `PointerDeviceEvent ] mask
+val button5MotionMask : [> `PointerDeviceEvent ] mask
+val buttonMotionMask : [> `PointerDeviceEvent ] mask
+val keymapStateMask : [> `PointerEvent ] mask
 val exposureMask : [> `Event ] mask
 val visibilityChangeMask : [> `Event ] mask
 val structureNotifyMask : [> `Event ] mask
@@ -744,7 +758,7 @@ val grab_button :
   keyMask ->
   window ->
   bool ->
-  eventMask ->
+  pointerEventMask ->
   grabMode ->
   grabMode ->
   window option ->
@@ -788,7 +802,7 @@ type windowAttributes = {
   map_state : mapState;
   all_event_masks : eventMask;
   your_event_mask : eventMask;
-  do_not_propagate_mask : eventMask;
+  do_not_propagate_mask : deviceEventMask;
   override_redirect : bool;
   screen : screen;
 }
