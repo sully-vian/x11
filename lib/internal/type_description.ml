@@ -114,6 +114,7 @@ module Types (F : Ctypes.TYPE) = struct
   let eventMask = int
   let cursor = int
   let keyMask = int
+  let currentTime = constant "CurrentTime" time
   let noEventMask = constant "NoEventMask" int
   let keyPressMask = constant "KeyPressMask" int
   let keyReleaseMask = constant "KeyReleaseMask" int

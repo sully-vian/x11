@@ -6,6 +6,11 @@ type keycode
 type display
 type window
 type time
+
+val currentTime : time
+(** Stands for the server's current time in requests that take a timestamp, such
+    as XSetInputFocus. It is never a real time, so events never carry it *)
+
 type drawable
 type atom
 type colormap
