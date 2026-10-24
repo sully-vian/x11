@@ -752,6 +752,11 @@ val select_input : display -> window -> eventMask -> unit
 val keysym_to_keycode : display -> keysym -> keycode
 (** {{:https://man.archlinux.org/man/XKeysymToKeycode.3.en} XKeysymToKeycode} *)
 
+val string_to_keysym : string -> keysym option
+(** {{:https://man.archlinux.org/man/XStringToKeysym.3} XStringToKeysym}: the
+    keysym named [name] (as in [XK_name], e.g. ["space"], not [" "]), [None] if
+    there is no such keysym *)
+
 val grab_button :
   display ->
   button ->

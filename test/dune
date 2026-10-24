@@ -3,7 +3,7 @@
 ; integration/.
 
 (tests
- (names test_mask test_x)
+ (names test_mask test_keysym test_x)
  (action
   (run %{test} --show-errors))
  (libraries x11 alcotest))

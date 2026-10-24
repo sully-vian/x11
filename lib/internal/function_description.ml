@@ -57,6 +57,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let keysym_to_keycode =
     foreign "XKeysymToKeycode" (display @-> keysym @-> returning keycode)
 
+  (* Returns NoSymbol (0) for an unknown name *)
+  let string_to_keysym = foreign "XStringToKeysym" (string @-> returning int_opt)
+
   let grab_button =
     foreign "XGrabButton"
       (display @-> button @-> keyMask @-> window @-> bool @-> eventMask
