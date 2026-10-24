@@ -18,7 +18,9 @@ let test_configure_notify_ev () =
       Alcotest.(check (pair int int)) "pos" (100, 200) ev.pos;
       Alcotest.(check (pair int int)) "size" (1024, 768) ev.size;
       Alcotest.(check int) "border_width" 2 ev.border_width;
-      Alcotest.(check int) "above" 2203 (Unsigned.ULong.to_int ev.above);
+      Alcotest.(check (option int))
+        "above" (Some 2203)
+        (Option.map Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "override_redirect" true ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 
@@ -34,7 +36,9 @@ let test_configure_notify_synthetic_ev () =
       Alcotest.(check (pair int int)) "pos" (1925, 30) ev.pos;
       Alcotest.(check (pair int int)) "size" (1280, 720) ev.size;
       Alcotest.(check int) "border_width" 0 ev.border_width;
-      Alcotest.(check int) "above" 0 (Unsigned.ULong.to_int ev.above);
+      Alcotest.(check (option int))
+        "above" None
+        (Option.map Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "override_redirect" false ev.override_redirect
   | _ -> Alcotest.fail "Expected ConfigureNotify event"
 

@@ -13,7 +13,9 @@ let test_key_press_ev () =
       Alcotest.(check int) "display" 0x1234 (display_address ev.display);
       Alcotest.(check int) "window" 123 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check int) "root" 456 (Unsigned.ULong.to_int ev.root);
-      Alcotest.(check int) "subwindow" 789 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check (option int))
+        "subwindow" (Some 789)
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check int) "time" 1000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (100, 200) ev.pos_root;
@@ -30,7 +32,9 @@ let test_key_release_ev () =
       Alcotest.(check int) "display" 0x1234 (display_address ev.display);
       Alcotest.(check int) "window" 123 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check int) "root" 456 (Unsigned.ULong.to_int ev.root);
-      Alcotest.(check int) "subwindow" 789 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check (option int))
+        "subwindow" (Some 789)
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check int) "time" 1000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (10, 20) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (100, 200) ev.pos_root;

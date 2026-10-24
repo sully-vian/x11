@@ -10,6 +10,9 @@ let test_enter_notify_ev () =
   | EnterNotify ev ->
       Alcotest.(check int) "serial" 400 (Unsigned.ULong.to_int ev.serial);
       Alcotest.(check bool) "send_event" true ev.send_event;
+      Alcotest.(check (option int))
+        "subwindow" (Some 4003)
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check (pair int int)) "pos" (12, 34) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (112, 134) ev.pos_root;
       Alcotest.(check bool) "mode" true (ev.mode = NotifyGrab);
@@ -23,6 +26,9 @@ let test_leave_notify_ev () =
   match xevent_of_raw_address (get_raw_leave_notify_ev ()) with
   | LeaveNotify ev ->
       Alcotest.(check int) "serial" 410 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (option int))
+        "subwindow" None
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check (pair int int)) "pos" (56, 78) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (156, 178) ev.pos_root;
       Alcotest.(check bool) "mode" true (ev.mode = NotifyUngrab);

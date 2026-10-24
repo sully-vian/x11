@@ -806,7 +806,6 @@ module Types (F : Ctypes.TYPE) = struct
   let xmapping_serial = field xmapping_event "serial" ulong
   let xmapping_send_event = field xmapping_event "send_event" int
   let xmapping_display = field xmapping_event "display" display
-  let xmapping_window = field xmapping_event "window" window
   let xmapping_request = field xmapping_event "request" mapping_request
   let xmapping_first_keycode = field xmapping_event "first_keycode" int
   let xmapping_count = field xmapping_event "count" int

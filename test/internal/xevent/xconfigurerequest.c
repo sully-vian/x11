@@ -14,9 +14,11 @@ CAMLprim value get_raw_configure_request_ev(value unit) {
                       .width = 800,
                       .height = 600,
                       .border_width = 1,
-                      .above = 9003,
+                      /* No CWSibling or CWStackMode: the server reports None
+                         and Above */
+                      .above = None,
                       .detail = Above,
-                      .value_mask = 15,
+                      .value_mask = CWX | CWY | CWWidth | CWHeight,
                   }};
   CAMLreturn(raw_xevent(&event));
 }

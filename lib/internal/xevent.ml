@@ -17,7 +17,7 @@ type keyEvent = {
   display : display;
   window : window;
   root : window;
-  subwindow : window;
+  subwindow : window option;
   time : time;
   pos : int * int;
   pos_root : int * int;
@@ -32,7 +32,7 @@ type buttonEvent = {
   display : display;
   window : window;
   root : window;
-  subwindow : window;
+  subwindow : window option;
   time : time;
   pos : int * int;
   pos_root : int * int;
@@ -50,7 +50,7 @@ type motionEvent = {
   display : display;
   window : window;
   root : window;
-  subwindow : window;
+  subwindow : window option;
   time : time;
   pos : int * int;
   pos_root : int * int;
@@ -67,7 +67,7 @@ type crossingEvent = {
   display : display;
   window : window;
   root : window;
-  subwindow : window;
+  subwindow : window option;
   time : time;
   pos : int * int;
   pos_root : int * int;
@@ -203,7 +203,7 @@ type configureEvent = {
   pos : int * int;
   size : int * int;
   border_width : int;
-  above : window;
+  above : window option;
   override_redirect : bool;
 }
 
@@ -233,7 +233,7 @@ type configureRequestEvent = {
   pos : int * int;
   size : int * int;
   border_width : int;
-  above : window;
+  above : window option;
   detail : windowStackingMethod;
   value_mask : int;
 }
@@ -321,7 +321,6 @@ type mappingEvent = {
   serial : Unsigned.ulong;
   send_event : bool;
   display : display;
-  window : window;
   request : mappingRequest;
   first_keycode : int;
   count : int;

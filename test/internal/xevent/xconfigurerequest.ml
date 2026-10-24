@@ -18,7 +18,9 @@ let test_configure_request_ev () =
       Alcotest.(check (pair int int)) "pos" (100, 100) ev.pos;
       Alcotest.(check (pair int int)) "size" (800, 600) ev.size;
       Alcotest.(check int) "border_width" 1 ev.border_width;
-      Alcotest.(check int) "above" 9003 (Unsigned.ULong.to_int ev.above);
+      Alcotest.(check (option int))
+        "above" None
+        (Option.map Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "detail" true (ev.detail = Above);
       Alcotest.(check int) "value_mask" 15 ev.value_mask
   | _ -> Alcotest.fail "Expected ConfigureRequest"
@@ -34,7 +36,9 @@ let test_configure_request_restack_ev () =
       Alcotest.(check (pair int int)) "pos" (-50, -20) ev.pos;
       Alcotest.(check (pair int int)) "size" (640, 480) ev.size;
       Alcotest.(check int) "border_width" 0 ev.border_width;
-      Alcotest.(check int) "above" 9005 (Unsigned.ULong.to_int ev.above);
+      Alcotest.(check (option int))
+        "above" (Some 9005)
+        (Option.map Unsigned.ULong.to_int ev.above);
       Alcotest.(check bool) "detail" true (ev.detail = Below);
       (* CWX | CWY | CWSibling | CWStackMode *)
       Alcotest.(check int) "value_mask" (1 + 2 + 32 + 64) ev.value_mask

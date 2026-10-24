@@ -16,7 +16,9 @@ let test_motion_notify_ev () =
       Alcotest.(check int) "display" 0x9abc (display_address ev.display);
       Alcotest.(check int) "window" 211 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check int) "root" 212 (Unsigned.ULong.to_int ev.root);
-      Alcotest.(check int) "subwindow" 213 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check (option int))
+        "subwindow" (Some 213)
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check int) "time" 3000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (30, 40) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (130, 240) ev.pos_root;
@@ -29,6 +31,9 @@ let test_motion_notify_hint_ev () =
   match xevent_of_raw_address (get_raw_motion_notify_hint_ev ()) with
   | MotionNotify ev ->
       Alcotest.(check int) "serial" 201 (Unsigned.ULong.to_int ev.serial);
+      Alcotest.(check (option int))
+        "subwindow" None
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check (pair int int)) "pos" (31, 41) ev.pos;
       Alcotest.(check int) "state" 256 ev.state;
       Alcotest.(check bool) "is_hint" true ev.is_hint;

@@ -13,7 +13,9 @@ let test_button_press_ev () =
       Alcotest.(check int) "display" 0x5678 (display_address ev.display);
       Alcotest.(check int) "window" 111 (Unsigned.ULong.to_int ev.window);
       Alcotest.(check int) "root" 222 (Unsigned.ULong.to_int ev.root);
-      Alcotest.(check int) "subwindow" 333 (Unsigned.ULong.to_int ev.subwindow);
+      Alcotest.(check (option int))
+        "subwindow" (Some 333)
+        (Option.map Unsigned.ULong.to_int ev.subwindow);
       Alcotest.(check int) "time" 2000 (Unsigned.ULong.to_int ev.time);
       Alcotest.(check (pair int int)) "pos" (50, 75) ev.pos;
       Alcotest.(check (pair int int)) "pos_root" (150, 250) ev.pos_root;
