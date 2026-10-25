@@ -21,14 +21,19 @@ jobs:
       - uses: actions/checkout@v4
       # ctypes compiles its stubs against Xlib's headers
       - run: sudo apt-get update && sudo apt-get install -y libx11-dev
-      # keep compiler and packages from dune.lock between runs
-      - uses: actions/cache@v4
-        with:
-          path: ~/.cache/dune
-          key: dune-${{ runner.os }}-${{ hashFiles('dune.lock/**') }}
-      - run: |
+      - id: dune
+        run: |
           curl -fsSL https://get.dune.build/install | sh -s - --release latest
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "version=$("$HOME/.local/bin/dune" --version)" >> "$GITHUB_OUTPUT"
+      # The packages built from dune.lock (compiler, ctypes, odoc...) live in
+      # _build/_private. A new dune version rebuilds them, hence the key.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/dune
+            _build
+          key: dune-${{ runner.os }}-${{ steps.dune.outputs.version }}-${{ hashFiles('dune.lock/**') }}
       - run: dune tools install odoc
       - run: dune build --display short @doc
       - uses: actions/upload-pages-artifact@v3
