@@ -1,5 +1,5 @@
-(* Each module tests one function against Xvfb. A new one must be added here,
-   or its tests won't run. *)
+(* Each module tests one function or feature against Xvfb. A new one must be
+   added here, or its tests won't run. *)
 let () =
   Alcotest.run "X11 Integration"
     [

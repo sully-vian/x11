@@ -1,6 +1,7 @@
 ; Tests of the public API against an X server: each one starts its own Xvfb
-; on :99 and drives it with xdotool. One module per tested function, each
-; exporting a `suite` that main.ml runs.
+; on a free display (see helpers.ml) and drives or inspects it with xdotool
+; and xprop. One module per tested function or feature, each exporting a
+; `suite` that main.ml runs.
 
 (test
  (name main)

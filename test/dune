@@ -1,6 +1,6 @@
 ; Tests of the public API (x11 library), one executable per suite.
-; test_x needs a running X server ($DISPLAY). Tests against Xvfb are in
-; integration/.
+; test_mask and test_keysym need no X server, test_x needs a running one
+; ($DISPLAY). Tests against Xvfb are in integration/.
 
 (tests
  (names test_mask test_keysym test_x)

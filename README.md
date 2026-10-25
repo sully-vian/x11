@@ -21,7 +21,9 @@ Unit tests live in `test/internal/` and depend on `x11_internal`, so they see
 the real types (`window` is `Unsigned.ULong.t`, `display` a ctypes pointer) and
 can check every field without `Obj.magic`. They need no X server:
 `dune test test/internal`. Tests in `test/` depend on `x11` and exercise the
-public API, some of them against an X server (or Xvfb).
+public API: `test/integration/` runs them against Xvfb, and `test/typing/`
+holds cram tests that check which code type-checks against `x11.mli` and
+which doesn't.
 
 `x11.mli` must keep declaring its types without equations to the internal ones
 (`type window`, not `type window = X11_internal...`): an equation would make

@@ -1,7 +1,7 @@
 type cursor
 
 type keycode
-(** {{:https://tronche.com/gui/x/iccccm/sec-4.html#4.2.1} XKeycode} *)
+(** {{:https://tronche.com/gui/x/xlib/input/keyboard-encoding.html} KeyCode} *)
 
 type display
 type window
@@ -20,7 +20,7 @@ type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
 type windowStackingMethod = Above | Below | TopIf | BottomIf | Opposite
 
-(** {1 Keycodes} *)
+(** {1 Keysyms} *)
 
 type keysym
 (** {{:https://tronche.com/gui/x/xlib/input/keyboard-encoding.html#KeySym}
