@@ -14,7 +14,8 @@ let () =
   | None -> exit 1
   | Some dpy ->
       grab_key dpy
-        (keysym_to_keycode dpy (Option.get (string_to_keysym "F1")))
+        (Option.get
+           (keysym_to_keycode dpy (Option.get (string_to_keysym "F1"))))
         mod1Mask (default_root_window dpy) true GrabModeAsync GrabModeAsync;
       grab_button dpy button1 mod1Mask (default_root_window dpy) true
         (buttonPressMask ||| buttonReleaseMask ||| pointerMotionMask)

@@ -21,7 +21,9 @@ let test_control_held () =
       select_input dpy root keyPressMask;
       flush dpy;
       ignore (Sys.command "xdotool key ctrl+a");
-      let state = key_press_state dpy (keysym_to_keycode dpy xk_a) in
+      let state =
+        key_press_state dpy (Option.get (keysym_to_keycode dpy xk_a))
+      in
       Alcotest.(check bool) "control" true (state &&& controlMask);
       Alcotest.(check bool) "shift" false (state &&& shiftMask);
       Alcotest.(check bool) "button 1" false (state &&& button1Mask);

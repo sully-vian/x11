@@ -12,7 +12,7 @@ let check_key dpy key_str expected_keysym =
       Alcotest.(check bool)
         (Printf.sprintf "KeyPress keycode match for '%s'" key_str)
         true
-        (expected_code = k.keycode)
+        (expected_code = Some k.keycode)
   | _ ->
       Alcotest.fail (Printf.sprintf "Expected KeyPress event for '%s'" key_str));
 
@@ -22,7 +22,7 @@ let check_key dpy key_str expected_keysym =
       Alcotest.(check bool)
         (Printf.sprintf "Keyrelease keycode match for '%s'" key_str)
         true
-        (expected_code = k.keycode)
+        (expected_code = Some k.keycode)
   | _ ->
       Alcotest.fail
         (Printf.sprintf "Expected KeyRelease event for '%s'" key_str)

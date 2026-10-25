@@ -54,8 +54,10 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let select_input =
     foreign "XSelectInput" (display @-> window @-> eventMask @-> returning void)
 
+  (* Returns a KeyCode, an unsigned char, which is 0 when no key produces the
+     keysym *)
   let keysym_to_keycode =
-    foreign "XKeysymToKeycode" (display @-> keysym @-> returning keycode)
+    foreign "XKeysymToKeycode" (display @-> keysym @-> returning uchar_opt)
 
   (* Returns NoSymbol (0) for an unknown name *)
   let string_to_keysym = foreign "XStringToKeysym" (string @-> returning int_opt)

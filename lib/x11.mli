@@ -764,8 +764,10 @@ val raise_window : display -> window -> unit
 val select_input : display -> window -> eventMask -> unit
 (** {{:https://man.archlinux.org/man/XSelectInput.3.en} XSelectInput} *)
 
-val keysym_to_keycode : display -> keysym -> keycode
-(** {{:https://man.archlinux.org/man/XKeysymToKeycode.3.en} XKeysymToKeycode} *)
+val keysym_to_keycode : display -> keysym -> keycode option
+(** {{:https://man.archlinux.org/man/XKeysymToKeycode.3.en} XKeysymToKeycode}: a
+    key that produces [keysym] in the current keyboard mapping, [None] if no key
+    does *)
 
 val string_to_keysym : string -> keysym option
 (** {{:https://man.archlinux.org/man/XStringToKeysym.3} XStringToKeysym}: the
