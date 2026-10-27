@@ -36,12 +36,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let store_name =
     foreign "XStoreName" (display @-> window @-> string @-> returning void)
 
-  let create_simple_window_verbose =
+  let create_simple_window_stub =
     foreign "XCreateSimpleWindow"
       (display @-> window @-> int @-> int @-> int @-> int @-> int @-> int
      @-> int @-> returning window)
 
-  let move_resize_window_verbose =
+  let move_resize_window_stub =
     foreign "XMoveResizeWindow"
       (display @-> window @-> int @-> int @-> int @-> int @-> returning void)
 
