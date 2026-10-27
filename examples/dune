@@ -1,3 +1,3 @@
 (executables
- (names event_loop click_windows tinywm)
+ (names event_loop click_windows tinywm sowm)
  (libraries x11))

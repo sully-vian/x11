@@ -63,3 +63,53 @@ selections, an extension, or for `GraphicsExpose`/`NoExpose` the program's own
 `XCopyArea`/`XCopyPlane`, which isn't bound. A window manager that selects
 `SubstructureRedirect` on the root and `StructureNotify` on its clients only
 gets ported events.
+
+## Towards the `sowm` example
+
+`examples/sowm.ml` is meant to port [sowm](https://github.com/dylanaraps/sowm),
+a small floating window manager, in one file. What it needs from the bindings:
+
+Needed:
+
+- [ ] `XSetErrorHandler`: sowm ignores every error, while Xlib's default
+      handler exits on the first one (e.g. `BadWindow` for a client that just
+      closed). Xlib calls the handler from C, which needs `ctypes.foreign`
+      (libffi), a new dependency, or a narrower API (only "ignore all errors")
+      with some C.
+- [ ] `XSetInputFocus`, with a `revertTo` variant (sowm uses `RevertToParent`)
+      and `currentTime`.
+- [ ] `XUnmapWindow`, to hide the windows of the workspace being left.
+- [ ] `XKillClient`, for the close binding.
+- [ ] `XkbKeycodeToKeysym` (from `XKBlib.h`), to find the binding of a
+      `KeyPress`.
+- [ ] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering
+      and fullscreen.
+- [ ] Turning a `ConfigureRequest` into `windowChanges`, to grant it with
+      `configure_window`: `configureRequestEvent.value_mask` is still an `int`.
+- [ ] Mask difference/intersection and equality, to drop NumLock and CapsLock
+      from an event's `state` before comparing it with a binding (sowm's
+      `mod_clean`).
+- [ ] Check whether the X connection needs closing in a launched program
+      before `exec`, as sowm does.
+
+Can be left out or simplified at first:
+
+- [ ] `XCheckTypedEvent`, only used to drop queued `EnterNotify`/`MotionNotify`.
+- [ ] `XGetModifierMapping`/`XFreeModifiermap`, to find NumLock's modifier:
+      `mod2Mask` almost always.
+- [ ] `XUngrabKey`/`XRefreshKeyboardMapping`, to grab keys again after a
+      keymap change. The latter takes the event back as a C struct, which the
+      bindings can't write yet.
+- [ ] `XDefineCursor`/`XCreateFontCursor`, which only set the root's cursor.
+
+Already covered:
+
+- [x] `XOpenDisplay`, `XNextEvent`, `XSelectInput`, `XMapWindow`,
+      `XRaiseWindow`, `XMoveResizeWindow`, `XConfigureWindow`,
+      `XKeysymToKeycode`, `XGrabKey`, `XGrabButton`.
+- [x] `XMoveWindow` and `XGetGeometry`, through `configure_window` and
+      `get_window_attributes`.
+- [x] The XF86 media keys, through `string_to_keysym` (e.g.
+      `"XF86AudioRaiseVolume"`).
+- [x] Launching programs (`fork`/`execvp`, ignoring `SIGCHLD`), with OCaml's
+      `Unix` and `Sys`.
