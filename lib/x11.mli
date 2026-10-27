@@ -834,3 +834,36 @@ val get_window_attributes : display -> window -> windowAttributes option
      XGetWindowAttributes}. [None] if the request fails. Note that with Xlib's
     default error handler, a [BadWindow] error exits the program before this
     returns. *)
+
+type windowChanges = {
+  x : int option;
+  y : int option;
+  width : int option;
+  height : int option;
+  border_width : int option;
+  stacking : (windowStackingMethod * window option) option;
+}
+(** {{:https://man.archlinux.org/man/XConfigureWindow.3} XWindowChanges} and its
+    [value_mask] in one value: a field is [Some v] when C would set it to [v]
+    and add its [CW*] flag to the mask, [None] when the flag would be left out.
+
+    [stacking] holds [stack_mode] and [sibling] together, since X refuses
+    [CWSibling] without [CWStackMode]: [Some (mode, None)] stands for
+    [CWStackMode] alone, [Some (mode, Some s)] for both flags. *)
+
+val window_changes :
+  ?x:int ->
+  ?y:int ->
+  ?width:int ->
+  ?height:int ->
+  ?border_width:int ->
+  ?stacking:windowStackingMethod * window option ->
+  unit ->
+  windowChanges
+(** The changes with the given fields set, as in
+    [window_changes ~x:10 ~y:20 ()]. [window_changes ()] has a [value_mask] of
+    0. *)
+
+val configure_window : display -> window -> windowChanges -> unit
+(** {{:https://man.archlinux.org/man/XConfigureWindow.3} XConfigureWindow}, with
+    the [value_mask] built from the fields that are [Some] *)

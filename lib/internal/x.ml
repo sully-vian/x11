@@ -1,5 +1,6 @@
 open Xevent
 open Xwindowattributes
+open Xwindowchanges
 open C.Types
 
 let next_event : display -> xEvent =
@@ -16,6 +17,14 @@ let get_window_attributes : display -> window -> windowAttributes option =
     = 0
   then None
   else Some (Xwindowattributes_ctypes.window_attributes_of_c attributes)
+
+let configure_window : display -> window -> windowChanges -> unit =
+ fun dpy window changes ->
+  let mask, c = Xwindowchanges_ctypes.window_changes_to_c changes in
+  ignore
+    (C.Functions.configure_window_stub dpy window
+       (Unsigned.UInt.of_int mask)
+       (Ctypes.addr c))
 
 (* Its only failure is not being able to intern WM_PROTOCOLS *)
 let set_wm_protocols : display -> window -> atom list -> unit =

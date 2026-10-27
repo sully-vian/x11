@@ -878,4 +878,27 @@ module Types (F : Ctypes.TYPE) = struct
   let xwa_override_redirect = field xwindowattributes "override_redirect" int
   let xwa_screen = field xwindowattributes "screen" screen
   let () = seal xwindowattributes
+
+  (* value_mask flags of XConfigureWindow: which XWindowChanges fields to use *)
+  let cwX = constant "CWX" int
+  let cwY = constant "CWY" int
+  let cwWidth = constant "CWWidth" int
+  let cwHeight = constant "CWHeight" int
+  let cwBorderWidth = constant "CWBorderWidth" int
+  let cwSibling = constant "CWSibling" int
+  let cwStackMode = constant "CWStackMode" int
+
+  type xwindowchanges
+
+  let xwindowchanges : xwindowchanges structure typ =
+    typedef (structure "xwindowchanges_anonymous") "XWindowChanges"
+
+  let xwc_x = field xwindowchanges "x" int
+  let xwc_y = field xwindowchanges "y" int
+  let xwc_width = field xwindowchanges "width" int
+  let xwc_height = field xwindowchanges "height" int
+  let xwc_border_width = field xwindowchanges "border_width" int
+  let xwc_sibling = field xwindowchanges "sibling" window
+  let xwc_stack_mode = field xwindowchanges "stack_mode" stack_mode
+  let () = seal xwindowchanges
 end

@@ -7,6 +7,7 @@ let () =
       Event_state.suite;
       Keysym_to_keycode.suite;
       Get_window_attributes.suite;
+      Configure_window.suite;
       Store_name.suite;
       Intern_atom.suite;
       Set_wm_protocols.suite;

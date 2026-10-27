@@ -79,4 +79,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let get_window_attributes_stub =
     foreign "XGetWindowAttributes"
       (display @-> window @-> ptr xwindowattributes @-> returning int)
+
+  let configure_window_stub =
+    foreign "XConfigureWindow"
+      (display @-> window @-> uint @-> ptr xwindowchanges @-> returning int)
 end

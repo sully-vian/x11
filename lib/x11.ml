@@ -4,6 +4,7 @@ include C.Functions
 include C.Types
 include Xevent
 include Xwindowattributes
+include Xwindowchanges
 include Mask
 
 type cursor = int
