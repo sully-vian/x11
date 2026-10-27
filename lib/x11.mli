@@ -294,7 +294,7 @@ type keyEvent = {
   keycode : keycode;
   same_screen : bool;
 }
-(** {{:https://man.archlinux.org/man/XKeyEvent.3.en} XKeyEvent} *)
+(** {{:https://man.archlinux.org/man/XKeyEvent.3} XKeyEvent} *)
 
 type buttonEvent = {
   serial : Unsigned.ulong;
@@ -312,13 +312,13 @@ type buttonEvent = {
   button : button;
   same_screen : bool;
 }
-(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonEvent} *)
+(** {{:https://man.archlinux.org/man/XButtonEvent.3} XButtonEvent} *)
 
 type buttonPressedEvent = buttonEvent
-(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonPressedEvent} *)
+(** {{:https://man.archlinux.org/man/XButtonEvent.3} XButtonPressedEvent} *)
 
 type buttonReleasedEvent = buttonEvent
-(** {{:https://man.archlinux.org/man/XButtonEvent.3.en} XButtonReleasedEvent} *)
+(** {{:https://man.archlinux.org/man/XButtonEvent.3} XButtonReleasedEvent} *)
 
 type motionEvent = {
   serial : Unsigned.ulong;
@@ -336,7 +336,7 @@ type motionEvent = {
   is_hint : bool;
   same_screen : bool;
 }
-(** {{:https://man.archlinux.org/man/XMotionEvent.3.en} XMotionEvent} *)
+(** {{:https://man.archlinux.org/man/XMotionEvent.3} XMotionEvent} *)
 
 type pointerMovedEvent = motionEvent
 
@@ -358,7 +358,7 @@ type crossingEvent = {
   focus : bool;
   state : stateMask;
 }
-(** {{:https://man.archlinux.org/man/XCrossingEvent.3.en} XCrossingEvent} *)
+(** {{:https://man.archlinux.org/man/XCrossingEvent.3} XCrossingEvent} *)
 
 type enterWindowEvent = crossingEvent
 type leaveWindowEvent = crossingEvent
@@ -371,8 +371,7 @@ type focusChangeEvent = {
   mode : notifyMode;
   detail : notifyDetail;
 }
-(** {{:https://man.archlinux.org/man/XFocusChangeEvent.3.en} XFocusChangeEvent}
-*)
+(** {{:https://man.archlinux.org/man/XFocusChangeEvent.3} XFocusChangeEvent} *)
 
 type focusInEvent = focusChangeEvent
 type focusOutEvent = focusChangeEvent
@@ -384,7 +383,7 @@ type keymapEvent = {
   window : window;
   key_vector : string;
 }
-(** {{:https://man.archlinux.org/man/XKeymapEvent.3.en} XKeymapEvent} *)
+(** {{:https://man.archlinux.org/man/XKeymapEvent.3} XKeymapEvent} *)
 
 type exposeEvent = {
   serial : Unsigned.ulong;
@@ -395,7 +394,7 @@ type exposeEvent = {
   size : int * int;
   count : int;
 }
-(** {{:https://man.archlinux.org/man/XExposeEvent.3.en} XExposeEvent} *)
+(** {{:https://man.archlinux.org/man/XExposeEvent.3} XExposeEvent} *)
 
 type graphicsExposeEvent = {
   serial : Unsigned.ulong;
@@ -406,7 +405,7 @@ type graphicsExposeEvent = {
   count : int;
   codes : int * int;
 }
-(** {{:https://man.archlinux.org/man/XGraphicsExposeEvent.3.en}
+(** {{:https://man.archlinux.org/man/XGraphicsExposeEvent.3}
      XGraphicsExposeEvent} *)
 
 type noExposeEvent = {
@@ -416,7 +415,7 @@ type noExposeEvent = {
   drawable : drawable;
   codes : int * int;
 }
-(** {{:https://man.archlinux.org/man/XNoExposeEvent.3.en} XNoExposeEvent} *)
+(** {{:https://man.archlinux.org/man/XNoExposeEvent.3} XNoExposeEvent} *)
 
 type visibilityEvent = {
   serial : Unsigned.ulong;
@@ -425,7 +424,7 @@ type visibilityEvent = {
   window : window;
   state : int;
 }
-(** {{:https://man.archlinux.org/man/XVisibilityEvent.3.en} XVisibilityEvent} *)
+(** {{:https://man.archlinux.org/man/XVisibilityEvent.3} XVisibilityEvent} *)
 
 type createWindowEvent = {
   serial : Unsigned.ulong;
@@ -438,8 +437,8 @@ type createWindowEvent = {
   border_width : int;
   override_redirect : bool;
 }
-(** {{:https://man.archlinux.org/man/XCreateWindowEvent.3.en}
-     XCreateWindowEvent} *)
+(** {{:https://man.archlinux.org/man/XCreateWindowEvent.3} XCreateWindowEvent}
+*)
 
 type destroyWindowEvent = {
   serial : Unsigned.ulong;
@@ -448,8 +447,8 @@ type destroyWindowEvent = {
   event : window;
   window : window;
 }
-(** {{:https://man.archlinux.org/man/XDestroyWindowEvent.3.en}
-     XDestroyWindowEvent} *)
+(** {{:https://man.archlinux.org/man/XDestroyWindowEvent.3} XDestroyWindowEvent}
+*)
 
 type unmapEvent = {
   serial : Unsigned.ulong;
@@ -459,7 +458,7 @@ type unmapEvent = {
   window : window;
   from_configure : bool;
 }
-(** {{:https://man.archlinux.org/man/XUnmapEvent.3.en} XUnmapEvent} *)
+(** {{:https://man.archlinux.org/man/XUnmapEvent.3} XUnmapEvent} *)
 
 type mapEvent = {
   serial : Unsigned.ulong;
@@ -469,7 +468,7 @@ type mapEvent = {
   window : window;
   override_redirect : bool;
 }
-(** {{:https://man.archlinux.org/man/XMapEvent.3.en} XMapEvent} *)
+(** {{:https://man.archlinux.org/man/XMapEvent.3} XMapEvent} *)
 
 type mapRequestEvent = {
   serial : Unsigned.ulong;
@@ -478,7 +477,7 @@ type mapRequestEvent = {
   parent : window;
   window : window;
 }
-(** {{:https://man.archlinux.org/man/XMapRequestEvent.3.en} XMapRequestEvent} *)
+(** {{:https://man.archlinux.org/man/XMapRequestEvent.3} XMapRequestEvent} *)
 
 type reparentEvent = {
   serial : Unsigned.ulong;
@@ -710,62 +709,60 @@ val atom_of_long : Signed.long -> atom
 (** {1 Core Functions} *)
 
 val open_display : string option -> display option
-(** {{:https://man.archlinux.org/man/XOpenDisplay.3.en} XOpenDisplay} *)
+(** {{:https://man.archlinux.org/man/XOpenDisplay.3} XOpenDisplay} *)
 
 val close_display : display -> unit
-(** {{:https://man.archlinux.org/man/XCloseDisplay.3.en} XCloseDisplay} *)
+(** {{:https://man.archlinux.org/man/XCloseDisplay.3} XCloseDisplay} *)
 
 val flush : display -> unit
-(** {{:https://man.archlinux.org/man/XFlush.3.en} XFlush} *)
+(** {{:https://man.archlinux.org/man/XFlush.3} XFlush} *)
 
 val clear_window : display -> window -> unit
-(** {{:https://man.archlinux.org/man/XClearWindow.3.en} XClearWindow} *)
+(** {{:https://man.archlinux.org/man/XClearWindow.3} XClearWindow} *)
 
 val set_window_background : display -> window -> int -> unit
-(** {{:https://man.archlinux.org/man/XSetWindowBackground.3.en}
+(** {{:https://man.archlinux.org/man/XSetWindowBackground.3}
      XSetWindowBackground} *)
 
 val destroy_window : display -> window -> unit
-(** {{:https://man.archlinux.org/man/XDestroyWindow.3.en} XDestroyWindow}:
-    destroys the window and its subwindows *)
+(** {{:https://man.archlinux.org/man/XDestroyWindow.3} XDestroyWindow}: destroys
+    the window and its subwindows *)
 
 val map_window : display -> window -> unit
-(** {{:https://man.archlinux.org/man/XMapWindow.3.en} XMapWindow} *)
+(** {{:https://man.archlinux.org/man/XMapWindow.3} XMapWindow} *)
 
 val intern_atom : display -> string -> bool -> atom option
-(** {{:https://man.archlinux.org/man/XInternAtom.3.en} XInternAtom}: the atom
-    named [name], created unless [only_if_exists] is set, in which case a
-    missing atom gives [None] *)
+(** {{:https://man.archlinux.org/man/XInternAtom.3} XInternAtom}: the atom named
+    [name], created unless [only_if_exists] is set, in which case a missing atom
+    gives [None] *)
 
 val set_wm_protocols : display -> window -> atom list -> unit
-(** {{:https://man.archlinux.org/man/XSetWMProtocols.3.en} XSetWMProtocols}:
+(** {{:https://man.archlinux.org/man/XSetWMProtocols.3} XSetWMProtocols}:
     replaces the window's [WM_PROTOCOLS], the protocols it takes part in, such
     as [WM_DELETE_WINDOW] *)
 
 val store_name : display -> window -> string -> unit
-(** {{:https://man.archlinux.org/man/XStoreName.3.en} XStoreName}: sets the
+(** {{:https://man.archlinux.org/man/XStoreName.3} XStoreName}: sets the
     window's [WM_NAME], the title window managers and tools like xdotool show *)
 
 val create_simple_window :
   display -> window -> int * int -> int * int -> int -> int -> int -> window
-(** {{:https://man.archlinux.org/man/XCreateWindow.3.en} XCreateSimpleWindow} *)
+(** {{:https://man.archlinux.org/man/XCreateWindow.3} XCreateSimpleWindow} *)
 
 val move_resize_window : display -> window -> int * int -> int * int -> unit
-(** {{:https://man.archlinux.org/man/XMoveResizeWindow.3.en} XMoveResizeWindow}
-*)
+(** {{:https://man.archlinux.org/man/XMoveResizeWindow.3} XMoveResizeWindow} *)
 
 val default_root_window : display -> window
-(** {{:https://man.archlinux.org/man/XDefaultRootWindow.3.en}
-     XDefaultRootWindow} *)
+(** {{:https://man.archlinux.org/man/DefaultRootWindow.3} XDefaultRootWindow} *)
 
 val raise_window : display -> window -> unit
-(** {{:https://man.archlinux.org/man/XRaiseWindow.3.en} XRaiseWindow} *)
+(** {{:https://man.archlinux.org/man/XRaiseWindow.3} XRaiseWindow} *)
 
 val select_input : display -> window -> eventMask -> unit
-(** {{:https://man.archlinux.org/man/XSelectInput.3.en} XSelectInput} *)
+(** {{:https://man.archlinux.org/man/XSelectInput.3} XSelectInput} *)
 
 val keysym_to_keycode : display -> keysym -> keycode option
-(** {{:https://man.archlinux.org/man/XKeysymToKeycode.3.en} XKeysymToKeycode}: a
+(** {{:https://man.archlinux.org/man/XKeysymToKeycode.3} XKeysymToKeycode}: a
     key that produces [keysym] in the current keyboard mapping, [None] if no key
     does *)
 
@@ -786,7 +783,7 @@ val grab_button :
   window option ->
   cursor option ->
   unit
-(** {{:https://man.archlinux.org/man/XGrabButton.3.en} XGrabButton} *)
+(** {{:https://man.archlinux.org/man/XGrabButton.3} XGrabButton} *)
 
 val grab_key :
   display ->
@@ -797,10 +794,10 @@ val grab_key :
   grabMode ->
   grabMode ->
   unit
-(** {{:https://man.archlinux.org/man/XGrabKey.3.en} XGrabKey} *)
+(** {{:https://man.archlinux.org/man/XGrabKey.3} XGrabKey} *)
 
 val next_event : display -> xEvent
-(** {{:https://man.archlinux.org/man/XNextEvent.3.en} XNextEvent} *)
+(** {{:https://man.archlinux.org/man/XNextEvent.3} XNextEvent} *)
 
 type visual
 type screen
@@ -830,7 +827,7 @@ type windowAttributes = {
 }
 
 val get_window_attributes : display -> window -> windowAttributes option
-(** {{:https://man.archlinux.org/man/XGetWindowAttributes.3.en}
+(** {{:https://man.archlinux.org/man/XGetWindowAttributes.3}
      XGetWindowAttributes}. [None] if the request fails. Note that with Xlib's
     default error handler, a [BadWindow] error exits the program before this
     returns. *)
