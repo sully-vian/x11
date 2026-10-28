@@ -1,19 +1,6 @@
 open X11
 open Helpers
 
-(* The names among [names] of the root's children, topmost first. xwininfo
-   prints each child as [0x200001 "name": ...] *)
-let stacking_order names =
-  let ic = Unix.open_process_in "xwininfo -root -children" in
-  let lines = In_channel.input_all ic |> String.split_on_char '\n' in
-  ignore (Unix.close_process_in ic);
-  List.filter_map
-    (fun line ->
-      match String.split_on_char '"' line with
-      | _ :: name :: _ when List.mem name names -> Some name
-      | _ -> None)
-    lines
-
 let test_geometry () =
   match open_display None with
   | None -> Alcotest.fail "Could not open display. Is Xvfb running?"

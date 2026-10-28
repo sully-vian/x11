@@ -8,6 +8,7 @@ let () =
       Keysym_to_keycode.suite;
       Get_window_attributes.suite;
       Configure_window.suite;
+      Window_mapping.suite;
       Store_name.suite;
       Intern_atom.suite;
       Set_wm_protocols.suite;

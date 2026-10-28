@@ -21,7 +21,18 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let destroy_window =
     foreign "XDestroyWindow" (display @-> window @-> returning void)
 
+  let map_raised = foreign "XMapRaised" (display @-> window @-> returning void)
+
+  let map_subwindows =
+    foreign "XMapSubwindows" (display @-> window @-> returning void)
+
   let map_window = foreign "XMapWindow" (display @-> window @-> returning void)
+
+  let unmap_subwindows =
+    foreign "XUnmapSubwindows" (display @-> window @-> returning void)
+
+  let unmap_window =
+    foreign "XUnmapWindow" (display @-> window @-> returning void)
 
   (* Returns None (atom 0) only when only_if_exists is set and the atom doesn't
      exist yet *)

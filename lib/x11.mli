@@ -728,8 +728,20 @@ val destroy_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XDestroyWindow.3} XDestroyWindow}: destroys
     the window and its subwindows *)
 
+val map_raised : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XMapRaised.3} XMapRaise} *)
+
+val map_subwindows : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XMapSubwindows.3} XMapSubwindows} *)
+
 val map_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XMapWindow.3} XMapWindow} *)
+
+val unmap_subwindows : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XUnmapSubwindows.3} XUnmapSubwindows} *)
+
+val unmap_window : display -> window -> unit
+(** {{:https://man.archlinux.org/man/XUnmapWindow.3} XUnmapWindow} *)
 
 val intern_atom : display -> string -> bool -> atom option
 (** {{:https://man.archlinux.org/man/XInternAtom.3} XInternAtom}: the atom named
