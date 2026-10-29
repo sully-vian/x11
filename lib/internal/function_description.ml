@@ -70,6 +70,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let keysym_to_keycode =
     foreign "XKeysymToKeycode" (display @-> keysym @-> returning uchar_opt)
 
+  let kill_client = foreign "XKillClient" (display @-> xid @-> returning void)
+
   (* Returns NoSymbol (0) for an unknown name *)
   let string_to_keysym = foreign "XStringToKeysym" (string @-> returning int_opt)
 

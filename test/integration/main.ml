@@ -13,4 +13,5 @@ let () =
       Intern_atom.suite;
       Set_wm_protocols.suite;
       Destroy_window.suite;
+      Kill_client.suite;
     ]

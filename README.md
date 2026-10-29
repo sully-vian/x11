@@ -79,7 +79,7 @@ Needed:
 - [ ] `XSetInputFocus`, with a `revertTo` variant (sowm uses `RevertToParent`)
       and `currentTime`.
 - [x] `XUnmapWindow`, to hide the windows of the workspace being left.
-- [ ] `XKillClient`, for the close binding.
+- [x] `XKillClient`, for the close binding.
 - [ ] `XkbKeycodeToKeysym` (from `XKBlib.h`), to find the binding of a
       `KeyPress`.
 - [ ] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering

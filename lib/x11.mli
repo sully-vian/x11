@@ -779,6 +779,9 @@ val keysym_to_keycode : display -> keysym -> keycode option
     key that produces [keysym] in the current keyboard mapping, [None] if no key
     does *)
 
+val kill_client : display -> _ xid -> unit
+(** {{:https://man.archlinux.org/man/XKillClient.3} XKillClient} *)
+
 val string_to_keysym : string -> keysym option
 (** {{:https://man.archlinux.org/man/XStringToKeysym.3} XStringToKeysym}: the
     keysym named [name] (as in [XK_name], e.g. ["space"], not [" "]), [None] if
