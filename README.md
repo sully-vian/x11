@@ -113,3 +113,63 @@ Already covered:
       `"XF86AudioRaiseVolume"`).
 - [x] Launching programs (`fork`/`execvp`, ignoring `SIGCHLD`), with OCaml's
       `Unix` and `Sys`.
+
+## Example idea: X window inspector
+
+A planned example is a small inspector for a live X server, inspired by the
+inspector in [Xplain](https://magcius.github.io/xplain/article/) (an
+interactive X11 explainer that runs a toy X server in the browser). It shows
+the window tree with each window's geometry, attributes and properties, keeps
+it updated as windows come and go, and lets the user pick a window by
+clicking on it.
+
+It's a good fit for the bindings because it is almost entirely a read-side
+client working on windows it doesn't own: `XQueryTree`, `XGetGeometry`,
+`XGetWindowAttributes`, `XTranslateCoordinates`, `XListProperties`,
+`XGetWindowProperty`, `XQueryPointer`, `XGrabPointer` and `XSelectInput`.
+That's a different slice of Xlib from the one a window manager uses, and the
+two complement each other: running the inspector against the WM in Xvfb or
+Xephyr shows reparenting happening live. Integration tests can create a known
+window hierarchy and check the tree the inspector builds.
+
+Planned stages, each adding a small set of bindings:
+
+1. Text tree: an `xwininfo -tree -root` clone with names, geometry, map state
+   and override-redirect.
+2. Live updates: select `SubstructureNotify` on every discovered window and
+   update the tree on create, destroy, map, unmap, reparent and configure.
+3. Click-to-pick: grab the pointer on the root, then descend with
+   `XQueryPointer` on button release to find the deepest window.
+4. Highlighting: outline the target with four thin override-redirect windows,
+   which needs neither SHAPE nor transparency.
+5. Optional extensions: SHAPE for bounding regions, XRes for mapping windows
+   to client PIDs, XInput2 for hover tracking.
+
+The source of Jasper St. Pierre's inspector can be found [here](https://github.com/magcius/xplain/blob/gh-pages/src/inspector/inspector.js)
+
+### What it requires from the bindings
+
+- Unknown events must not be fatal. A long-running observer receives
+  `VisibilityNotify`, `GenericEvent` and extension events such as
+  `ShapeNotify`, so `next_event` should return something like `Unknown of int`
+  instead of raising.
+- `BadWindow` must be recoverable per call, since windows can be destroyed
+  between `XQueryTree` and `XGetGeometry`. Raising an OCaml exception from an
+  `XSetErrorHandler` callback isn't safe through C frames, so the handler
+  should record the error, then `XSync` and check after the call, for example
+  behind `with_errors_trapped : display -> (unit -> 'a) -> ('a, x_error) result`.
+- `XGetWindowProperty` data needs typed decoding based on the type atom
+  (strings, atoms, cardinals, windows, raw bytes). Format-32 data comes back
+  as C `long`s, which are 64 bits on 64-bit systems.
+- Buffers returned by `XQueryTree`, `XListProperties` and
+  `XGetWindowProperty` must be copied into OCaml values and freed with
+  `XFree` right away, so user code never manages them.
+
+### Known limits
+
+Some of what Xplain's inspector shows comes from server internals that a
+real client can't read: visible regions (they can only be recomputed from
+geometry, stacking and shapes), whether a window is redirected by Composite,
+a window's background pixel or pixmap (write-only in the protocol), and the
+list of pixmaps (they belong to the client that created them). Showing these
+would require instrumenting the server, such as a patched Xephyr.
