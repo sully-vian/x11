@@ -92,9 +92,15 @@ module Types (F : Ctypes.TYPE) = struct
 
   type display = unit ptr
   type atom = Unsigned.ULong.t
-  type window = Unsigned.ULong.t
+  type 'a xid = Unsigned.ULong.t
+  type window = [ `Window ] xid
+  type pixmap = [ `Pixmap ] xid
+
+  (* Not a kind of resource of its own: X.h's Drawable is a window or a pixmap *)
+  type drawable = [ `Window | `Pixmap ] xid
+  type cursor = [ `Cursor ] xid
+  type colormap = [ `Colormap ] xid
   type time = Unsigned.ULong.t
-  type colormap = Unsigned.ULong.t
   type visual = unit ptr
   type screen = unit ptr
   type keysym = int
@@ -103,16 +109,19 @@ module Types (F : Ctypes.TYPE) = struct
 
   let display = ptr void
   let atom = ulong
-  let window = ulong
+  let xid = ulong
+  let window = xid
+  let pixmap = xid
+  let drawable = xid
+  let cursor = xid
+  let colormap = xid
   let time = ulong
-  let colormap = ulong
   let visual = ptr void
   let screen = ptr void
   let keysym = int
   let keycode = int
   let button = int
   let eventMask = int
-  let cursor = int
   let keyMask = int
   let currentTime = constant "CurrentTime" time
   let noEventMask = constant "NoEventMask" int

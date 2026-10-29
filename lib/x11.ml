@@ -7,8 +7,6 @@ include Xwindowattributes
 include Xwindowchanges
 include Mask
 
-type cursor = int
-
 let create_simple_window display root (x, y) (width, height) border_width border
     background =
   create_simple_window_stub display root x y width height border_width border

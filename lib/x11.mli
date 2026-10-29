@@ -1,20 +1,21 @@
-type cursor
-
 type keycode
 (** {{:https://tronche.com/gui/x/xlib/input/keyboard-encoding.html} KeyCode} *)
 
 type display
-type window
+type 'a xid
+type window = [ `Window ] xid
+type cursor = [ `Cursor ] xid
 type time
 
 val currentTime : time
 (** Stands for the server's current time in requests that take a timestamp, such
     as XSetInputFocus. It is never a real time, so events never carry it *)
 
-type drawable
+type drawable = [ `Window | `Pixmap ] xid
+(** A window or a pixmap, as X.h's Drawable *)
+
 type atom
-type colormap
-type xid
+type colormap = [ `Colormap ] xid
 type circulationRequest = PlaceOnTop | PlaceOnBottom
 type propertyNotification = PropertyNewValue | PropertyDelete
 type colorMapNotification = ColormapUninstalled | ColormapInstalled
@@ -630,7 +631,7 @@ type mappingEvent = {
 
 type errorEvent = {
   display : display;
-  resourceid : xid;
+  resourceid : [ `Unknown ] xid;
   serial : Unsigned.ulong;
   codes : int * int * int;
 }

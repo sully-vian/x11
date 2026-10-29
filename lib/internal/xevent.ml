@@ -1,9 +1,6 @@
 open C.Types
 open Type_description
 
-type xid
-type drawable
-
 type message_data =
   | Bytes of char array
   | Shorts of int array
@@ -328,7 +325,7 @@ type mappingEvent = {
 
 type errorEvent = {
   display : display;
-  resourceid : xid;
+  resourceid : [ `Unknown ] xid;
   serial : Unsigned.ulong;
   codes : int * int * int;
 }
