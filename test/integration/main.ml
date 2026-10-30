@@ -6,6 +6,7 @@ let () =
       Key_events.suite;
       Event_state.suite;
       Keysym_to_keycode.suite;
+      Xkb_keycode_to_keysym.suite;
       Get_window_attributes.suite;
       Configure_window.suite;
       Window_mapping.suite;

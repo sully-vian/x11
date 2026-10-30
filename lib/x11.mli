@@ -796,6 +796,10 @@ val keysym_to_keycode : display -> keysym -> keycode option
 val kill_client : display -> _ xid -> unit
 (** {{:https://man.archlinux.org/man/XKillClient.3} XKillClient} *)
 
+val xkb_keycode_to_keysym : display -> keycode -> int -> int -> keysym option
+(** {{:https://man.archlinux.org/man/XkbKeycodeToKeysym.3} XkbKeycodeToKeysym}:
+    the keysym at [group] and shift [level] of [keycode], or [None] *)
+
 val string_to_keysym : string -> keysym option
 (** {{:https://man.archlinux.org/man/XStringToKeysym.3} XStringToKeysym}: the
     keysym named [name] (as in [XK_name], e.g. ["space"], not [" "]), [None] if

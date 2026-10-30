@@ -80,7 +80,7 @@ Needed:
       and `currentTime`.
 - [x] `XUnmapWindow`, to hide the windows of the workspace being left.
 - [x] `XKillClient`, for the close binding.
-- [ ] `XkbKeycodeToKeysym` (from `XKBlib.h`), to find the binding of a
+- [x] `XkbKeycodeToKeysym` (from `XKBlib.h`), to find the binding of a
       `KeyPress`.
 - [x] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering
       and fullscreen.

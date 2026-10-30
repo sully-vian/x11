@@ -1,14 +1,6 @@
 open X11
 open Helpers
 
-(* The keycode xdotool's key press reports for [key] *)
-let pressed_keycode dpy key =
-  ignore (Sys.command ("xdotool key " ^ key));
-  let rec next () =
-    match next_event dpy with KeyPress k -> k.keycode | _ -> next ()
-  in
-  next ()
-
 let test_mapped () =
   match open_display None with
   | None -> Alcotest.fail "Could not open display. Is Xvfb running?"

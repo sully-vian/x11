@@ -81,6 +81,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   let kill_client = foreign "XKillClient" (display @-> xid @-> returning void)
 
+  (* Returns NoSymbol (0) when the group or level is out of range, or the cell
+     is empty *)
+  let xkb_keycode_to_keysym =
+    foreign "XkbKeycodeToKeysym"
+      (display @-> keycode @-> int @-> int @-> returning int_opt)
+
   (* Returns NoSymbol (0) for an unknown name *)
   let string_to_keysym = foreign "XStringToKeysym" (string @-> returning int_opt)
 

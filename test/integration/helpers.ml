@@ -37,3 +37,13 @@ let stacking_order names =
       | _ :: name :: _ when List.mem name names -> Some name
       | _ -> None)
     lines
+
+(* The keycode xdotool's key press reports for [key]. KeyPress must be selected
+   on the root *)
+let pressed_keycode dpy key =
+  let open X11 in
+  ignore (Sys.command ("xdotool key " ^ key));
+  let rec next () =
+    match next_event dpy with KeyPress k -> k.keycode | _ -> next ()
+  in
+  next ()
