@@ -59,6 +59,15 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let default_root_window =
     foreign "XDefaultRootWindow" (display @-> returning window)
 
+  let default_screen =
+    foreign "XDefaultScreen" (display @-> returning screen_number)
+
+  let display_width =
+    foreign "XDisplayWidth" (display @-> screen_number @-> returning int)
+
+  let display_height =
+    foreign "XDisplayHeight" (display @-> screen_number @-> returning int)
+
   let raise_window =
     foreign "XRaiseWindow" (display @-> window @-> returning void)
 

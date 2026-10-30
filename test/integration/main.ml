@@ -15,4 +15,5 @@ let () =
       Destroy_window.suite;
       Kill_client.suite;
       Input_focus.suite;
+      Display_size.suite;
     ]

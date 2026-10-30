@@ -82,7 +82,7 @@ Needed:
 - [x] `XKillClient`, for the close binding.
 - [ ] `XkbKeycodeToKeysym` (from `XKBlib.h`), to find the binding of a
       `KeyPress`.
-- [ ] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering
+- [x] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering
       and fullscreen.
 - [ ] Turning a `ConfigureRequest` into `windowChanges`, to grant it with
       `configure_window`: `configureRequestEvent.value_mask` is still an `int`.

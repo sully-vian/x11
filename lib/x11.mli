@@ -768,6 +768,20 @@ val move_resize_window : display -> window -> int * int -> int * int -> unit
 val default_root_window : display -> window
 (** {{:https://man.archlinux.org/man/DefaultRootWindow.3} XDefaultRootWindow} *)
 
+type screenNumber
+(** The [int screen_number] Xlib takes, as opposed to {!type-screen}, a
+    [Screen *]. Only {!default_screen} gives one: Xlib doesn't check the number,
+    and reads past its screens for an invalid one. *)
+
+val default_screen : display -> screenNumber
+(** {{:https://man.archlinux.org/man/DefaultScreen.3} XDefaultScreen} *)
+
+val display_width : display -> screenNumber -> int
+(** {{:https://man.archlinux.org/man/DisplayWidth.3} XDisplayWidth} *)
+
+val display_height : display -> screenNumber -> int
+(** {{:https://man.archlinux.org/man/DisplayHeight.3} XDisplayHeight} *)
+
 val raise_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XRaiseWindow.3} XRaiseWindow} *)
 

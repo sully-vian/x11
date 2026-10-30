@@ -1,11 +1,12 @@
 (* Runs [f] against its own Xvfb, with DISPLAY set to it. Xvfb picks a free
    display and, with -displayfd 1, writes its number to our pipe once it
-   accepts connections: no fixed wait, no clash with a running server. *)
-let with_xvfb f () =
+   accepts connections: no fixed wait, no clash with a running server. [args]
+   are passed to Xvfb, e.g. ["-screen"; "0"; "640x480x24"]. *)
+let with_xvfb ?(args = []) f () =
   let ready_out, ready_in = Unix.pipe ~cloexec:true () in
   let pid =
     Unix.create_process "Xvfb"
-      [| "Xvfb"; "-displayfd"; "1" |]
+      (Array.of_list ([ "Xvfb"; "-displayfd"; "1" ] @ args))
       Unix.stdin ready_in Unix.stderr
   in
   (* Only Xvfb holds the write end now, so the read fails if it exits *)
