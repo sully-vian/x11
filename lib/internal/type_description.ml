@@ -50,6 +50,7 @@ module Enums = struct
   type backingStore = NotUseful | WhenMapped | Always
   type grabMode = GrabModeSync | GrabModeAsync
   type mappingRequest = MappingModifier | MappingKeyboard | MappingPointer
+  type revertTo = RevertToNone | RevertToPointerRoot | RevertToParent
 
   (* Bit and window gravity share X's constants, except for 0: ForgetGravity
      for bit gravity, UnmapGravity for window gravity. Reading a bit gravity
@@ -396,6 +397,18 @@ module Types (F : Ctypes.TYPE) = struct
     let c name = constant name int64_t in
     enum "x11_grab_mode" ~typedef:true
       [ (GrabModeSync, c "GrabModeSync"); (GrabModeAsync, c "GrabModeAsync") ]
+
+  let revert_to : revertTo typ =
+    let c name = constant name int64_t in
+    enum "x11_revert_to" ~typedef:true
+      [
+        (RevertToNone, c "RevertToNone");
+        (RevertToPointerRoot, c "RevertToPointerRoot");
+        (RevertToParent, c "RevertToParent");
+      ]
+
+  (* The focus that follows the pointer from root window to root window *)
+  let pointerRoot = constant "PointerRoot" window
 
   let mapping_request : mappingRequest typ =
     let c name = constant name int64_t in

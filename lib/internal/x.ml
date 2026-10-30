@@ -26,6 +26,32 @@ let configure_window : display -> window -> windowChanges -> unit =
        (Unsigned.UInt.of_int mask)
        (Ctypes.addr c))
 
+(* X passes these as a window: None (0), PointerRoot or the window itself *)
+type focus = FocusNone | FocusPointerRoot | FocusWindow of window
+
+let set_input_focus : display -> focus -> revertTo -> time -> unit =
+ fun dpy focus revert_to time ->
+  let focus =
+    match focus with
+    | FocusNone -> Unsigned.ULong.zero
+    | FocusPointerRoot -> pointerRoot
+    | FocusWindow window -> window
+  in
+  ignore (C.Functions.set_input_focus_stub dpy focus revert_to time)
+
+let get_input_focus : display -> focus * revertTo =
+ fun dpy ->
+  let focus = Ctypes.allocate window Unsigned.ULong.zero in
+  let revert = Ctypes.allocate revert_to RevertToNone in
+  ignore (C.Functions.get_input_focus_stub dpy focus revert);
+  let focus =
+    match Ctypes.( !@ ) focus with
+    | w when Unsigned.ULong.equal w Unsigned.ULong.zero -> FocusNone
+    | w when Unsigned.ULong.equal w pointerRoot -> FocusPointerRoot
+    | w -> FocusWindow w
+  in
+  (focus, Ctypes.( !@ ) revert)
+
 (* Its only failure is not being able to intern WM_PROTOCOLS *)
 let set_wm_protocols : display -> window -> atom list -> unit =
  fun dpy window protocols ->

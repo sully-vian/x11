@@ -14,4 +14,5 @@ let () =
       Set_wm_protocols.suite;
       Destroy_window.suite;
       Kill_client.suite;
+      Input_focus.suite;
     ]

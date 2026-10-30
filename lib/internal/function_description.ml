@@ -86,6 +86,14 @@ module Functions (F : Ctypes.FOREIGN) = struct
       (display @-> keycode @-> keyMask @-> window @-> bool @-> grab_mode
      @-> grab_mode @-> returning void)
 
+  let set_input_focus_stub =
+    foreign "XSetInputFocus"
+      (display @-> window @-> revert_to @-> time @-> returning int)
+
+  let get_input_focus_stub =
+    foreign "XGetInputFocus"
+      (display @-> ptr window @-> ptr revert_to @-> returning int)
+
   let next_event_stub =
     foreign "XNextEvent" (display @-> ptr xevent_union @-> returning void)
 

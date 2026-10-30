@@ -76,7 +76,7 @@ Needed:
       closed). Xlib calls the handler from C, which needs `ctypes.foreign`
       (libffi), a new dependency, or a narrower API (only "ignore all errors")
       with some C.
-- [ ] `XSetInputFocus`, with a `revertTo` variant (sowm uses `RevertToParent`)
+- [x] `XSetInputFocus`, with a `revertTo` variant (sowm uses `RevertToParent`)
       and `currentTime`.
 - [x] `XUnmapWindow`, to hide the windows of the workspace being left.
 - [x] `XKillClient`, for the close binding.

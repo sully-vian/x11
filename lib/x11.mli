@@ -812,6 +812,22 @@ val grab_key :
   unit
 (** {{:https://man.archlinux.org/man/XGrabKey.3} XGrabKey} *)
 
+type focus =
+  | FocusNone  (** C's [None] *)
+  | FocusPointerRoot  (** C's [PointerRoot] *)
+  | FocusWindow of window  (** Any other [Window] *)
+
+type revertTo = RevertToNone | RevertToPointerRoot | RevertToParent
+
+val set_input_focus : display -> focus -> revertTo -> time -> unit
+(** {{:https://man.archlinux.org/man/XSetInputFocus.3} XSetInputFocus}. Note
+    that with Xlib's default error handler, focusing a window that isn't
+    viewable ([BadMatch]) exits the program. *)
+
+val get_input_focus : display -> focus * revertTo
+(** {{:https://man.archlinux.org/man/XGetInputFocus.3} XGetInputFocus}, with the
+    [focus_return] and [revert_to_return] out-parameters returned as a pair *)
+
 val next_event : display -> xEvent
 (** {{:https://man.archlinux.org/man/XNextEvent.3} XNextEvent} *)
 
