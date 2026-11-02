@@ -10,3 +10,4 @@ type stateMask = [ `Key | `Button ] mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
+let ( &~ ) m flags = m land lnot flags

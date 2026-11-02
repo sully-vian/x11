@@ -155,6 +155,16 @@ val ( &&& ) : 'a mask -> 'a mask -> bool
 (** [m &&& flags] is [true] when [m] holds at least one of [flags], like C's
     [m & flags]: [ev.state &&& controlMask] tests whether Control was held *)
 
+val ( &~ ) : 'a mask -> 'a mask -> 'a mask
+(** [m &~ flags] is [m] without [flags], like C's [m & ~flags].
+
+    There is no complement on its own. [~m] flips every bit of the integer, so
+    it would also set the flags of kinds ['a] excludes (the [`Button] flags in a
+    modifier mask) and bits no X mask defines: X would answer [BadValue].
+    Keeping only the bits valid for the mask isn't possible either, since the
+    tags only exist at compile time. Removing flags can't produce an invalid
+    mask, and it is what C uses [~] for. *)
+
 (** {2 Event Masks} *)
 
 (* Each tag is named after the protocol sets its flags belong to, besides

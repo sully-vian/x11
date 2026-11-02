@@ -20,3 +20,26 @@ anyModifier only exists in grabs, never in an event state:
          but an expression was expected of type [ `Button | `Key ] X11.mask
          The second variant type does not allow tag(s) `Any
   [2]
+
+Removing flags keeps the type of the mask, so it still fits its field:
+
+  $ cat > state_mask_diff.ml <<EOF
+  > open X11
+  > let f (ev : keyEvent) : stateMask = ev.state &~ (lockMask ||| button1Mask)
+  > EOF
+  $ ocamlc -I ../../lib/.x11.objs/byte -stop-after typing -c state_mask_diff.ml
+
+Flags that the mask can't hold can't be removed either:
+
+  $ cat > state_diff_any_modifier.ml <<EOF
+  > open X11
+  > let f (ev : keyEvent) = ev.state &~ anyModifier
+  > EOF
+  $ ocamlc -I ../../lib/.x11.objs/byte -stop-after typing -c state_diff_any_modifier.ml
+  File "state_diff_any_modifier.ml", line 2, characters 36-47:
+  2 | let f (ev : keyEvent) = ev.state &~ anyModifier
+                                          ^^^^^^^^^^^
+  Error: The value anyModifier has type [> `Any ] X11.mask
+         but an expression was expected of type [ `Button | `Key ] X11.mask
+         The second variant type does not allow tag(s) `Any
+  [2]
