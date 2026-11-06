@@ -136,26 +136,40 @@ val xk_asciitilde : keysym
 
 (** {1 Masks and Modifiers} *)
 
-type 'a mask
-(** A set of X flags. ['a] lists the kinds of flags it may hold: a constant such
-    as [shiftMask : [> `Key ] mask] fits any mask type that allows [`Key] flags,
+type (+'a, +'c) mask
+(** A set of X flags.
+
+    ['a] lists the kinds of flags it may hold: a constant such as
+    [shiftMask : ([> `Key ], 'c) mask] fits any field that allows [`Key] flags,
     and nothing else.
 
     The X protocol gives each mask field its own set type, listing the bits
     valid there: grab modifiers are a [SETofKEYMASK] or [AnyModifier], an event
     state a [SETofKEYBUTMASK]. These sets overlap, so a flag is often valid in
     several fields. A tag stands for a group of flags the protocol always allows
-    or refuses together, a mask type lists the tags its field accepts, and the
-    open type of a constant lets it fit every one of them. Using a flag where X
-    would answer [BadValue] is then a type error. *)
+    or refuses together, a field lists the tags it accepts, and the open type of
+    a constant lets it fit every one of them. Using a flag where X would answer
+    [BadValue] is then a type error.
 
-val ( ||| ) : 'a mask -> 'a mask -> 'a mask
+    ['c] says whether the mask can be or-ed. Only {!anyModifier} can't, since X
+    only accepts it alone. A constant fits either, so that a list can hold
+    {!anyModifier} next to sets of modifiers. *)
 
-val ( &&& ) : 'a mask -> 'a mask -> bool
+type union
+(** ['c] of the masks known not to be {!anyModifier} *)
+
+type alone
+(** ['c] of the masks that may be {!anyModifier} *)
+
+val ( ||| ) : ('a, union) mask -> ('a, union) mask -> ('a, 'c) mask
+(** Union, like C's [|]. {!anyModifier} can't be an operand: X answers
+    [AnyModifier | ShiftMask] with [BadValue]. *)
+
+val ( &&& ) : ('a, 'c) mask -> ('a, 'd) mask -> bool
 (** [m &&& flags] is [true] when [m] holds at least one of [flags], like C's
     [m & flags]: [ev.state &&& controlMask] tests whether Control was held *)
 
-val ( &~ ) : 'a mask -> 'a mask -> 'a mask
+val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
 (** [m &~ flags] is [m] without [flags], like C's [m & ~flags].
 
     There is no complement on its own. [~m] flips every bit of the integer, so
@@ -165,76 +179,103 @@ val ( &~ ) : 'a mask -> 'a mask -> 'a mask
     tags only exist at compile time. Removing flags can't produce an invalid
     mask, and it is what C uses [~] for. *)
 
+val ( &. ) :
+  ([< `Key | `Button ], 'c) mask -> ([< `Key ], 'd) mask -> ([> `Key ], 'd) mask
+(** [m &. modifiers] is the [modifiers] that [m] holds, like C's [m & modifiers].
+    The result has no buttons or XKB group, so it fits a grab: it's how an
+    event's state becomes one, as in
+    [grab_key dpy kc (ev.state &. (mod4Mask ||| shiftMask)) w ...]. It only holds
+    bits of [modifiers], so it may be {!anyModifier} only if they may. *)
+
 (** {2 Event Masks} *)
 
 (* Each tag is named after the protocol sets its flags belong to, besides
    SETofEVENT which holds them all *)
 
-type eventMask =
-  [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
-(** The events a client selects: [SETofEVENT] *)
+type eventFlags =
+  [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
 
-type pointerEventMask = [ `PointerEvent | `PointerDeviceEvent ] mask
+type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
+type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
+
+type 'a eventMask = (([> eventFlags ] as 'a), union) mask
+(** The events a client selects: [SETofEVENT]. Annotate a value with
+    [_ eventMask]: its row stays open, so it can still take other flags. Likewise
+    for the next two types. *)
+
+type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
 (** The events a pointer grab reports: [SETofPOINTEREVENT] *)
 
-type deviceEventMask = [ `DeviceEvent | `PointerDeviceEvent ] mask
+type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
 (** The events a window can keep from propagating: [SETofDEVICEEVENT] *)
 
-val noEventMask :
-  [< `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ] mask
+val noEventMask : ([< eventFlags ], 'c) mask
 (** The empty set, which fits every event mask type *)
 
-val keyPressMask : [> `DeviceEvent ] mask
-val keyReleaseMask : [> `DeviceEvent ] mask
-val buttonPressMask : [> `PointerDeviceEvent ] mask
-val buttonReleaseMask : [> `PointerDeviceEvent ] mask
-val enterWindowMask : [> `PointerEvent ] mask
-val leaveWindowMask : [> `PointerEvent ] mask
-val pointerMotionMask : [> `PointerDeviceEvent ] mask
-val pointerMotionHintMask : [> `PointerEvent ] mask
-val button1MotionMask : [> `PointerDeviceEvent ] mask
-val button2MotionMask : [> `PointerDeviceEvent ] mask
-val button3MotionMask : [> `PointerDeviceEvent ] mask
-val button4MotionMask : [> `PointerDeviceEvent ] mask
-val button5MotionMask : [> `PointerDeviceEvent ] mask
-val buttonMotionMask : [> `PointerDeviceEvent ] mask
-val keymapStateMask : [> `PointerEvent ] mask
-val exposureMask : [> `Event ] mask
-val visibilityChangeMask : [> `Event ] mask
-val structureNotifyMask : [> `Event ] mask
-val resizeRedirectMask : [> `Event ] mask
-val substructureNotifyMask : [> `Event ] mask
-val substructureRedirectMask : [> `Event ] mask
-val focusChangeMask : [> `Event ] mask
-val propertyChangeMask : [> `Event ] mask
-val colormapChangeMask : [> `Event ] mask
-val ownerGrabButtonMask : [> `Event ] mask
+val keyPressMask : ([> `DeviceEvent ], 'c) mask
+val keyReleaseMask : ([> `DeviceEvent ], 'c) mask
+val buttonPressMask : ([> `PointerDeviceEvent ], 'c) mask
+val buttonReleaseMask : ([> `PointerDeviceEvent ], 'c) mask
+val enterWindowMask : ([> `PointerEvent ], 'c) mask
+val leaveWindowMask : ([> `PointerEvent ], 'c) mask
+val pointerMotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val pointerMotionHintMask : ([> `PointerEvent ], 'c) mask
+val button1MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button2MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button3MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button4MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val button5MotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val buttonMotionMask : ([> `PointerDeviceEvent ], 'c) mask
+val keymapStateMask : ([> `PointerEvent ], 'c) mask
+val exposureMask : ([> `Event ], 'c) mask
+val visibilityChangeMask : ([> `Event ], 'c) mask
+val structureNotifyMask : ([> `Event ], 'c) mask
+val resizeRedirectMask : ([> `Event ], 'c) mask
+val substructureNotifyMask : ([> `Event ], 'c) mask
+val substructureRedirectMask : ([> `Event ], 'c) mask
+val focusChangeMask : ([> `Event ], 'c) mask
+val propertyChangeMask : ([> `Event ], 'c) mask
+val colormapChangeMask : ([> `Event ], 'c) mask
+val ownerGrabButtonMask : ([> `Event ], 'c) mask
 
 (** {2 Key and Button Masks} *)
 
-type keyMask = [ `Key | `Any ] mask
-(** The modifiers of a key or button grab: [SETofKEYMASK or AnyModifier] *)
+type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
+(** The modifiers of a key or button grab: [SETofKEYMASK or AnyModifier].
+    Annotate a value with [_ keyMask]: ['p] holds an open row and ['c], and both
+    follow the value.
 
-type stateMask = [ `Key | `Button ] mask
+    A type declaration refuses [_], so [{ m : _ keyMask }] doesn't compile. A
+    field takes {!bindingMask}, or [([ `Key ] * alone) keyMask] if it may hold
+    {!anyModifier}, or a parameter of the record. *)
+
+type bindingMask = ([ `Key ], union) mask
+(** The modifiers of a table of shortcuts without {!anyModifier}: a field of this
+    type can be or-ed, as [k.m ||| lockMask], and grabbed. *)
+
+type stateMask = ([ `Key | `Button ], union) mask
 (** The modifiers and pointer buttons held during an input event:
-    [SETofKEYBUTMASK] *)
+    [SETofKEYBUTMASK], and the XKB group *)
 
-val shiftMask : [> `Key ] mask
-val lockMask : [> `Key ] mask
-val controlMask : [> `Key ] mask
-val mod1Mask : [> `Key ] mask
-val mod2Mask : [> `Key ] mask
-val mod3Mask : [> `Key ] mask
-val mod4Mask : [> `Key ] mask
-val mod5Mask : [> `Key ] mask
-val button1Mask : [> `Button ] mask
-val button2Mask : [> `Button ] mask
-val button3Mask : [> `Button ] mask
-val button4Mask : [> `Button ] mask
-val button5Mask : [> `Button ] mask
+val noModifier : ([> `Key ], 'c) mask
+(** No modifier: C writes [0] *)
 
-val anyModifier : [> `Any ] mask
-(** Any combination of modifiers, including none: grabs only *)
+val shiftMask : ([> `Key ], 'c) mask
+val lockMask : ([> `Key ], 'c) mask
+val controlMask : ([> `Key ], 'c) mask
+val mod1Mask : ([> `Key ], 'c) mask
+val mod2Mask : ([> `Key ], 'c) mask
+val mod3Mask : ([> `Key ], 'c) mask
+val mod4Mask : ([> `Key ], 'c) mask
+val mod5Mask : ([> `Key ], 'c) mask
+val button1Mask : ([> `Button ], 'c) mask
+val button2Mask : ([> `Button ], 'c) mask
+val button3Mask : ([> `Button ], 'c) mask
+val button4Mask : ([> `Button ], 'c) mask
+val button5Mask : ([> `Button ], 'c) mask
+
+val anyModifier : ([> `Key ], alone) mask
+(** Any combination of modifiers, including none: grabs only, and alone *)
 
 type grabMode = GrabModeSync | GrabModeAsync
 type button
@@ -795,7 +836,7 @@ val display_height : display -> screenNumber -> int
 val raise_window : display -> window -> unit
 (** {{:https://man.archlinux.org/man/XRaiseWindow.3} XRaiseWindow} *)
 
-val select_input : display -> window -> eventMask -> unit
+val select_input : display -> window -> ([< eventFlags ], 'c) mask -> unit
 (** {{:https://man.archlinux.org/man/XSelectInput.3} XSelectInput} *)
 
 val keysym_to_keycode : display -> keysym -> keycode option
@@ -818,10 +859,10 @@ val string_to_keysym : string -> keysym option
 val grab_button :
   display ->
   button ->
-  keyMask ->
+  ([ `Key ], 'c) mask ->
   window ->
   bool ->
-  pointerEventMask ->
+  ([< pointerEventFlags ], 'd) mask ->
   grabMode ->
   grabMode ->
   window option ->
@@ -832,7 +873,7 @@ val grab_button :
 val grab_key :
   display ->
   keycode ->
-  keyMask ->
+  ([ `Key ], 'c) mask ->
   window ->
   bool ->
   grabMode ->
@@ -879,9 +920,9 @@ type windowAttributes = {
   colormap : colormap;
   map_installed : bool;
   map_state : mapState;
-  all_event_masks : eventMask;
-  your_event_mask : eventMask;
-  do_not_propagate_mask : deviceEventMask;
+  all_event_masks : 'a. (([> eventFlags ] as 'a), union) mask;
+  your_event_mask : 'a. (([> eventFlags ] as 'a), union) mask;
+  do_not_propagate_mask : 'a. (([> deviceEventFlags ] as 'a), union) mask;
   override_redirect : bool;
   screen : screen;
 }

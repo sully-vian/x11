@@ -46,9 +46,33 @@ let test_button_held () =
       Alcotest.(check bool) "control" false (state &&& controlMask);
       close_display dpy
 
+(* sowm's mod_clean on a real state: the held button is dropped, so it matches
+   the binding *)
+let test_state_matches_binding () =
+  match open_display None with
+  | None -> Alcotest.fail "Could not open display. Is Xvfb running?"
+  | Some dpy ->
+      let root = default_root_window dpy in
+      select_input dpy root keyPressMask;
+      flush dpy;
+      ignore (Sys.command "xdotool mousedown 1 key ctrl+a mouseup 1");
+      let state =
+        key_press_state dpy (Option.get (keysym_to_keycode dpy xk_a))
+      in
+      let usable = shiftMask ||| controlMask ||| mod1Mask ||| mod4Mask in
+      let mod_clean m = m &. usable &~ lockMask in
+      let binding : bindingMask = controlMask in
+      Alcotest.(check bool) "button 1 in the state" true (state &&& button1Mask);
+      Alcotest.(check bool)
+        "matches" true
+        (mod_clean state = mod_clean binding);
+      close_display dpy
+
 let suite =
   ( "event state",
     [
       Alcotest.test_case "control held" `Quick (with_xvfb test_control_held);
       Alcotest.test_case "button held" `Quick (with_xvfb test_button_held);
+      Alcotest.test_case "state matches a binding" `Quick
+        (with_xvfb test_state_matches_binding);
     ] )
