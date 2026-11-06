@@ -19,9 +19,9 @@ type windowAttributes = {
   colormap : colormap;
   map_installed : bool;
   map_state : mapState;
-  all_event_masks : eventMask;
-  your_event_mask : eventMask;
-  do_not_propagate_mask : deviceEventMask;
+  all_event_masks : 'a. (([> eventFlags ] as 'a), union) mask;
+  your_event_mask : 'a. (([> eventFlags ] as 'a), union) mask;
+  do_not_propagate_mask : 'a. (([> deviceEventFlags ] as 'a), union) mask;
   override_redirect : bool;
   screen : screen;
 }
