@@ -86,9 +86,9 @@ Needed:
       and fullscreen.
 - [ ] Turning a `ConfigureRequest` into `windowChanges`, to grant it with
       `configure_window`: `configureRequestEvent.value_mask` is still an `int`.
-- [ ] Mask difference/intersection and equality, to drop NumLock and CapsLock
-      from an event's `state` before comparing it with a binding (sowm's
-      `mod_clean`).
+- [x] Mask difference and intersection (`&~`, `&.`) and equality, to drop NumLock
+      and CapsLock from an event's `state` before comparing it with a binding
+      (sowm's `mod_clean`).
 - [ ] Check whether the X connection needs closing in a launched program
       before `exec`, as sowm does.
 
