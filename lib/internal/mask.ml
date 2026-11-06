@@ -11,8 +11,11 @@ type 'a eventMask = (([> eventFlags ] as 'a), union) mask
 type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
 type 'a deviceEventMask = (([> deviceEventFlags ] as 'a), union) mask
 type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
+type bindingMask = ([ `Key ], union) mask
 type stateMask = ([ `Key | `Button ], union) mask
 
 let ( ||| ) = ( lor )
 let ( &&& ) m flags = m land flags <> 0
 let ( &~ ) m flags = m land lnot flags
+let ( &. ) = ( land )
+let noModifier = 0

@@ -179,6 +179,14 @@ val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
     tags only exist at compile time. Removing flags can't produce an invalid
     mask, and it is what C uses [~] for. *)
 
+val ( &. ) :
+  ([< `Key | `Button ], 'c) mask -> ([< `Key ], 'd) mask -> ([> `Key ], 'd) mask
+(** [m &. modifiers] is the [modifiers] that [m] holds, like C's [m & modifiers].
+    The result has no buttons or XKB group, so it fits a grab: it's how an
+    event's state becomes one, as in
+    [grab_key dpy kc (ev.state &. (mod4Mask ||| shiftMask)) w ...]. It only holds
+    bits of [modifiers], so it may be {!anyModifier} only if they may. *)
+
 (** {2 Event Masks} *)
 
 (* Each tag is named after the protocol sets its flags belong to, besides
@@ -235,11 +243,22 @@ val ownerGrabButtonMask : ([> `Event ], 'c) mask
 type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
 (** The modifiers of a key or button grab: [SETofKEYMASK or AnyModifier].
     Annotate a value with [_ keyMask]: ['p] holds an open row and ['c], and both
-    follow the value. *)
+    follow the value.
+
+    A type declaration refuses [_], so [{ m : _ keyMask }] doesn't compile. A
+    field takes {!bindingMask}, or [([ `Key ] * alone) keyMask] if it may hold
+    {!anyModifier}, or a parameter of the record. *)
+
+type bindingMask = ([ `Key ], union) mask
+(** The modifiers of a table of shortcuts without {!anyModifier}: a field of this
+    type can be or-ed, as [k.m ||| lockMask], and grabbed. *)
 
 type stateMask = ([ `Key | `Button ], union) mask
 (** The modifiers and pointer buttons held during an input event:
     [SETofKEYBUTMASK], and the XKB group *)
+
+val noModifier : ([> `Key ], 'c) mask
+(** No modifier: C writes [0] *)
 
 val shiftMask : ([> `Key ], 'c) mask
 val lockMask : ([> `Key ], 'c) mask
