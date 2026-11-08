@@ -58,6 +58,52 @@ let test_stacking_sibling () =
   Alcotest.(check bool) "stack_mode" true (getf c xwc_stack_mode = Below);
   Alcotest.(check int) "sibling" 42 (Unsigned.ULong.to_int (getf c xwc_sibling))
 
+(* Every field set, as when granting a ConfigureRequest *)
+let every_field =
+  window_changes ~x:10 ~y:20 ~width:300 ~height:200 ~border_width:2
+    ~stacking:(Below, Some (Unsigned.ULong.of_int 42))
+    ()
+
+(* The mask only keeps the fields it names *)
+let test_mask_filters () =
+  let mask, c =
+    Xwindowchanges_ctypes.window_changes_to_c ~value_mask:(cwWidth lor cwY)
+      every_field
+  in
+  Alcotest.(check int) "value_mask" (cwWidth lor cwY) mask;
+  Alcotest.(check int) "width" 300 (getf c xwc_width);
+  Alcotest.(check int) "y" 20 (getf c xwc_y);
+  Alcotest.(check int) "x left at zero" 0 (getf c xwc_x)
+
+(* A flag whose field is None adds nothing, nor do bits no CW flag uses *)
+let test_mask_no_field () =
+  let mask, _ =
+    Xwindowchanges_ctypes.window_changes_to_c
+      ~value_mask:(cwX lor cwWidth lor 0x80)
+      (window_changes ~width:1 ())
+  in
+  Alcotest.(check int) "value_mask" cwWidth mask
+
+(* Without the stack mode, the sibling isn't sent either *)
+let test_mask_sibling_alone () =
+  let mask, _ =
+    Xwindowchanges_ctypes.window_changes_to_c
+      ~value_mask:(cwWidth lor cwSibling) every_field
+  in
+  Alcotest.(check int) "value_mask" cwWidth mask
+
+(* The stack mode alone: restacked against all siblings *)
+let test_mask_stack_mode_alone () =
+  let mask, c =
+    Xwindowchanges_ctypes.window_changes_to_c ~value_mask:cwStackMode
+      every_field
+  in
+  Alcotest.(check int) "value_mask" cwStackMode mask;
+  Alcotest.(check bool) "stack_mode" true (getf c xwc_stack_mode = Below);
+  Alcotest.(check int)
+    "sibling left at zero" 0
+    (Unsigned.ULong.to_int (getf c xwc_sibling))
+
 let () =
   Alcotest.run "X11 XWindowChanges"
     [
@@ -70,5 +116,15 @@ let () =
           Alcotest.test_case "stacking" `Quick test_stacking;
           Alcotest.test_case "stacking with sibling" `Quick
             test_stacking_sibling;
+        ] );
+      ( "value_mask",
+        [
+          Alcotest.test_case "keeps the fields it names" `Quick
+            test_mask_filters;
+          Alcotest.test_case "flag without a field" `Quick test_mask_no_field;
+          Alcotest.test_case "sibling without stack mode" `Quick
+            test_mask_sibling_alone;
+          Alcotest.test_case "stack mode alone" `Quick
+            test_mask_stack_mode_alone;
         ] );
     ]

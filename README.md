@@ -84,8 +84,9 @@ Needed:
       `KeyPress`.
 - [x] `XDisplayWidth`/`XDisplayHeight` (with `DefaultScreen`), for centering
       and fullscreen.
-- [ ] Turning a `ConfigureRequest` into `windowChanges`, to grant it with
-      `configure_window`: `configureRequestEvent.value_mask` is still an `int`.
+- [x] Granting a `ConfigureRequest` as asked: `configure_window` takes the
+      request's `value_mask` (a `configureWindowMask`) and only sends the
+      fields it names.
 - [x] Mask difference and intersection (`&~`, `&.`) and equality, to drop NumLock
       and CapsLock from an event's `state` before comparing it with a binding
       (sowm's `mod_clean`).

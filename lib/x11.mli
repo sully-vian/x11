@@ -968,9 +968,26 @@ val window_changes :
     [window_changes ~x:10 ~y:20 ()]. [window_changes ()] has a [value_mask] of
     0. *)
 
-val configure_window : display -> window -> windowChanges -> unit
+val configure_window :
+  ?value_mask:([< `ConfigureWindow ], 'c) mask ->
+  display ->
+  window ->
+  windowChanges ->
+  unit
 (** {{:https://man.archlinux.org/man/XConfigureWindow.3} XConfigureWindow}, with
-    the [value_mask] built from the fields that are [Some] *)
+    the [value_mask] built from the fields that are [Some].
+
+    [value_mask] only keeps some of them: a field is sent when it is [Some] and
+    its [CW*] flag is in [value_mask]. Without [CWStackMode], [stacking] isn't
+    sent, sibling included; with it but without [CWSibling], only the stack mode
+    is. This grants a [ConfigureRequest] as C does, passing every field and the
+    request's mask:
+    {[
+      configure_window ~value_mask:ev.value_mask dpy ev.window
+        (window_changes ~x:(fst ev.pos) ~y:(snd ev.pos) ~width:(fst ev.size)
+           ~height:(snd ev.size) ~border_width:ev.border_width
+           ~stacking:(ev.detail, ev.above) ())
+    ]} *)
 
 val cwX : ([> `ConfigureWindow ], 'c) mask
 val cwY : ([> `ConfigureWindow ], 'c) mask

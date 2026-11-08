@@ -18,9 +18,10 @@ let get_window_attributes : display -> window -> windowAttributes option =
   then None
   else Some (Xwindowattributes_ctypes.window_attributes_of_c attributes)
 
-let configure_window : display -> window -> windowChanges -> unit =
- fun dpy window changes ->
-  let mask, c = Xwindowchanges_ctypes.window_changes_to_c changes in
+let configure_window :
+    ?value_mask:int -> display -> window -> windowChanges -> unit =
+ fun ?value_mask dpy window changes ->
+  let mask, c = Xwindowchanges_ctypes.window_changes_to_c ?value_mask changes in
   ignore
     (C.Functions.configure_window_stub dpy window
        (Unsigned.UInt.of_int mask)
