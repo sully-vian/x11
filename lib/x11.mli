@@ -257,6 +257,12 @@ type stateMask = ([ `Key | `Button ], union) mask
 (** The modifiers and pointer buttons held during an input event:
     [SETofKEYBUTMASK], and the XKB group *)
 
+type configureWindowMask = ([ `ConfigureWindow ], union) mask
+(** The [value_mask] of a [ConfigureWindow] request, as in
+    {!configureRequestEvent}: its [CW*] flags say which fields of
+    {!windowChanges} are set. Its own tag keeps it apart from the masks whose
+    flags share its values, such as [keyPressMask] and [cwX]. *)
+
 val noModifier : ([> `Key ], 'c) mask
 (** No modifier: C writes [0] *)
 
@@ -586,7 +592,7 @@ type configureRequestEvent = {
   above : window option;
       (** Sibling to restack against, [None] if the request gives none *)
   detail : windowStackingMethod;
-  value_mask : int;
+  value_mask : configureWindowMask;
 }
 
 type circulateEvent = {
@@ -965,3 +971,11 @@ val window_changes :
 val configure_window : display -> window -> windowChanges -> unit
 (** {{:https://man.archlinux.org/man/XConfigureWindow.3} XConfigureWindow}, with
     the [value_mask] built from the fields that are [Some] *)
+
+val cwX : ([> `ConfigureWindow ], 'c) mask
+val cwY : ([> `ConfigureWindow ], 'c) mask
+val cwWidth : ([> `ConfigureWindow ], 'c) mask
+val cwHeight : ([> `ConfigureWindow ], 'c) mask
+val cwBorderWidth : ([> `ConfigureWindow ], 'c) mask
+val cwSibling : ([> `ConfigureWindow ], 'c) mask
+val cwStackMode : ([> `ConfigureWindow ], 'c) mask

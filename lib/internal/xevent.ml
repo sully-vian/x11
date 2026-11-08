@@ -232,7 +232,7 @@ type configureRequestEvent = {
   border_width : int;
   above : window option;
   detail : windowStackingMethod;
-  value_mask : int;
+  value_mask : Mask.configureWindowMask;
 }
 
 type circulateEvent = {
