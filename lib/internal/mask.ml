@@ -1,10 +1,7 @@
 type (+'a, +'c) mask = int
 type union
 type alone
-
-type eventFlags =
-  [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
-
+type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
 type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
 type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
 type 'a eventMask = (([> eventFlags ] as 'a), union) mask

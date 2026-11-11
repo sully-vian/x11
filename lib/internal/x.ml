@@ -69,7 +69,7 @@ let atom_of_long : Signed.long -> atom =
 
 external set_error_handler_stub : unit -> unit = "x11_set_error_handler"
 
-type errorHandler = display -> errorEvent ->unit
+type errorHandler = display -> errorEvent -> unit
 
 (* error_handler_stubs.c calls the registered function with the addresses of
    the display and the XErrorEvent, valid only during the call. An exception

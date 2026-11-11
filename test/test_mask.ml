@@ -80,8 +80,7 @@ let () =
           Alcotest.test_case "mod_clean" `Quick test_mod_clean;
           Alcotest.test_case "anyModifier" `Quick test_any_modifier_filter;
         ] );
-      ( "noModifier",
-        [ Alcotest.test_case "empty" `Quick test_no_modifier ] );
+      ("noModifier", [ Alcotest.test_case "empty" `Quick test_no_modifier ]);
       ( "&&&",
         [
           Alcotest.test_case "has the flag" `Quick test_has_flag;

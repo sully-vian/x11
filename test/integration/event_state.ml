@@ -63,9 +63,7 @@ let test_state_matches_binding () =
       let mod_clean m = m &. usable &~ lockMask in
       let binding : bindingMask = controlMask in
       Alcotest.(check bool) "button 1 in the state" true (state &&& button1Mask);
-      Alcotest.(check bool)
-        "matches" true
-        (mod_clean state = mod_clean binding);
+      Alcotest.(check bool) "matches" true (mod_clean state = mod_clean binding);
       close_display dpy
 
 let suite =

@@ -181,27 +181,25 @@ val ( &~ ) : ('a, 'c) mask -> ('a, 'd) mask -> ('a, 'c) mask
 
 val ( &. ) :
   ([< `Key | `Button ], 'c) mask -> ([< `Key ], 'd) mask -> ([> `Key ], 'd) mask
-(** [m &. modifiers] is the [modifiers] that [m] holds, like C's [m & modifiers].
-    The result has no buttons or XKB group, so it fits a grab: it's how an
-    event's state becomes one, as in
-    [grab_key dpy kc (ev.state &. (mod4Mask ||| shiftMask)) w ...]. It only holds
-    bits of [modifiers], so it may be {!anyModifier} only if they may. *)
+(** [m &. modifiers] is the [modifiers] that [m] holds, like C's
+    [m & modifiers]. The result has no buttons or XKB group, so it fits a grab:
+    it's how an event's state becomes one, as in
+    [grab_key dpy kc (ev.state &. (mod4Mask ||| shiftMask)) w ...]. It only
+    holds bits of [modifiers], so it may be {!anyModifier} only if they may. *)
 
 (** {2 Event Masks} *)
 
 (* Each tag is named after the protocol sets its flags belong to, besides
    SETofEVENT which holds them all *)
 
-type eventFlags =
-  [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
-
+type eventFlags = [ `Event | `PointerEvent | `DeviceEvent | `PointerDeviceEvent ]
 type pointerEventFlags = [ `PointerEvent | `PointerDeviceEvent ]
 type deviceEventFlags = [ `DeviceEvent | `PointerDeviceEvent ]
 
 type 'a eventMask = (([> eventFlags ] as 'a), union) mask
 (** The events a client selects: [SETofEVENT]. Annotate a value with
-    [_ eventMask]: its row stays open, so it can still take other flags. Likewise
-    for the next two types. *)
+    [_ eventMask]: its row stays open, so it can still take other flags.
+    Likewise for the next two types. *)
 
 type 'a pointerEventMask = (([> pointerEventFlags ] as 'a), union) mask
 (** The events a pointer grab reports: [SETofPOINTEREVENT] *)
@@ -250,8 +248,8 @@ type 'p keyMask = ('a, 'c) mask constraint 'p = ([> `Key ] as 'a) * 'c
     {!anyModifier}, or a parameter of the record. *)
 
 type bindingMask = ([ `Key ], union) mask
-(** The modifiers of a table of shortcuts without {!anyModifier}: a field of this
-    type can be or-ed, as [k.m ||| lockMask], and grabbed. *)
+(** The modifiers of a table of shortcuts without {!anyModifier}: a field of
+    this type can be or-ed, as [k.m ||| lockMask], and grabbed. *)
 
 type stateMask = ([ `Key | `Button ], union) mask
 (** The modifiers and pointer buttons held during an input event:
@@ -906,7 +904,7 @@ val get_input_focus : display -> focus * revertTo
 val next_event : display -> xEvent
 (** {{:https://man.archlinux.org/man/XNextEvent.3} XNextEvent} *)
 
-type errorHandler = display -> errorEvent ->unit
+type errorHandler = display -> errorEvent -> unit
 
 val set_error_handler : errorHandler -> unit
 (** {{:https://man.archlinux.org/man/XSetErrorHandler.3} XSetErrorHandler}. The
@@ -919,7 +917,7 @@ val set_error_handler : errorHandler -> unit
     later call replaces the handler, e.g. to ignore every error, as a window
     manager does for clients that just closed:
     {[
-      set_error_handler (fun _ _ -> ())
+    set_error_handler (fun _ _ -> ())
     ]} *)
 
 type visual
@@ -999,10 +997,10 @@ val configure_window :
     is. This grants a [ConfigureRequest] as C does, passing every field and the
     request's mask:
     {[
-      configure_window ~value_mask:ev.value_mask dpy ev.window
-        (window_changes ~x:(fst ev.pos) ~y:(snd ev.pos) ~width:(fst ev.size)
-           ~height:(snd ev.size) ~border_width:ev.border_width
-           ~stacking:(ev.detail, ev.above) ())
+    configure_window ~value_mask:ev.value_mask dpy ev.window
+      (window_changes ~x:(fst ev.pos) ~y:(snd ev.pos) ~width:(fst ev.size)
+         ~height:(snd ev.size) ~border_width:ev.border_width
+         ~stacking:(ev.detail, ev.above) ())
     ]} *)
 
 val cwX : ([> `ConfigureWindow ], 'c) mask
