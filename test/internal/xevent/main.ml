@@ -23,4 +23,5 @@ let () =
       Xproperty.suite;
       Xclient.suite;
       Xmapping.suite;
+      Xerror.suite;
     ]

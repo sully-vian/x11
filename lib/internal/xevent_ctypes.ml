@@ -257,6 +257,18 @@ let mapping_of_c ev : mappingEvent =
     count = getf ev xmapping_count;
   }
 
+(* Not an XEvent member: Xlib passes it to the error handler *)
+let error_of_c ev : errorEvent =
+  {
+    display = getf ev xerror_display;
+    resourceid = getf ev xerror_resourceid;
+    serial = getf ev xerror_serial;
+    codes =
+      ( Unsigned.UChar.to_int (getf ev xerror_error_code),
+        Unsigned.UChar.to_int (getf ev xerror_request_code),
+        Unsigned.UChar.to_int (getf ev xerror_minor_code) );
+  }
+
 let xevent_of_c (raw_ev : xevent_union union) =
   match getf (getf raw_ev xev_any) xany_type with
   | Ev.KeyPress -> KeyPress (key_of_c (getf raw_ev xev_key))

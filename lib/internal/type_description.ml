@@ -835,6 +835,20 @@ module Types (F : Ctypes.TYPE) = struct
   let xmapping_count = field xmapping_event "count" int
   let () = seal xmapping_event
 
+  type xerror_event
+
+  let xerror_event : xerror_event structure typ =
+    typedef (structure "xerror_anonymous") "XErrorEvent"
+
+  let xerror_type = field xerror_event "type" int
+  let xerror_display = field xerror_event "display" display
+  let xerror_resourceid = field xerror_event "resourceid" xid
+  let xerror_serial = field xerror_event "serial" ulong
+  let xerror_error_code = field xerror_event "error_code" uchar
+  let xerror_request_code = field xerror_event "request_code" uchar
+  let xerror_minor_code = field xerror_event "minor_code" uchar
+  let () = seal xerror_event
+
   type xevent_union
 
   let xevent_union : xevent_union union typ = union "_XEvent"

@@ -66,3 +66,26 @@ let set_wm_protocols : display -> window -> atom list -> unit =
    gives the same value *)
 let atom_of_long : Signed.long -> atom =
  fun l -> Unsigned.ULong.of_int64 (Signed.Long.to_int64 l)
+
+external set_error_handler_stub : unit -> unit = "x11_set_error_handler"
+
+type errorHandler = display -> errorEvent ->unit
+
+(* error_handler_stubs.c calls the registered function with the addresses of
+   the display and the XErrorEvent, valid only during the call. An exception
+   can't go back through Xlib: it ends the program as an uncaught one would. *)
+let set_error_handler : errorHandler -> unit =
+ fun handler ->
+  let handler display error =
+    let display = Ctypes.ptr_of_raw_address display in
+    let error =
+      Ctypes.(!@(from_voidp xerror_event (ptr_of_raw_address error)))
+    in
+    try handler display (Xevent_ctypes.error_of_c error)
+    with exn ->
+      Printexc.default_uncaught_exception_handler exn
+        (Printexc.get_raw_backtrace ());
+      exit 2
+  in
+  Callback.register "x11_error_handler" handler;
+  set_error_handler_stub ()

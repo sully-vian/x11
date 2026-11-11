@@ -18,4 +18,5 @@ let () =
       Kill_client.suite;
       Input_focus.suite;
       Display_size.suite;
+      Error_handler.suite;
     ]

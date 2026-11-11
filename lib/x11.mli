@@ -906,6 +906,22 @@ val get_input_focus : display -> focus * revertTo
 val next_event : display -> xEvent
 (** {{:https://man.archlinux.org/man/XNextEvent.3} XNextEvent} *)
 
+type errorHandler = display -> errorEvent ->unit
+
+val set_error_handler : errorHandler -> unit
+(** {{:https://man.archlinux.org/man/XSetErrorHandler.3} XSetErrorHandler}. The
+    handler replaces Xlib's default one, which prints the error and exits, and
+    is called with each error from within the call that received it, so the
+    program carries on once it returns. The error's [codes] are its
+    [error_code], [request_code] and [minor_code]. As in C, the handler must not
+    make requests to the display. It must not raise either: an exception can't
+    go back through Xlib, so it ends the program as an uncaught one would. A
+    later call replaces the handler, e.g. to ignore every error, as a window
+    manager does for clients that just closed:
+    {[
+      set_error_handler (fun _ _ -> ())
+    ]} *)
+
 type visual
 type screen
 

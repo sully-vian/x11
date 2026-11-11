@@ -5,6 +5,9 @@
  (package x11)
  (libraries ctypes ctypes.stubs)
  (c_library_flags (-lX11))
+ (foreign_stubs
+  (language c)
+  (names error_handler_stubs))
  (ctypes
   (external_library_name x11)
   ; ctypes keys each enum on its C type name, so int-valued X constants get

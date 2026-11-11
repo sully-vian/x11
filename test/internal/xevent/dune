@@ -26,7 +26,8 @@
    xcirculaterequest
    xproperty
    xclient
-   xmapping))
+   xmapping
+   xerror))
  (action
   (run %{test} --show-errors))
  (libraries x11_internal ctypes alcotest))
